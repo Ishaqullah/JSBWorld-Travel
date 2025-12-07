@@ -18,7 +18,7 @@ function App() {
     <AuthProvider>
       <BookingProvider>
         <Router>
-          <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen pt-10 md:pt-10">
             <Navbar />
             <main className="flex-1">
               <Routes>

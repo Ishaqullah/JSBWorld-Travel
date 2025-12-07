@@ -27,12 +27,12 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <>
-      {/* Top Bar - Design Handoff */ }
+    <div className="fixed top-0 left-0 right-0 z-50">
+      {/* Top Bar - Design Handoff */}
       <div className="bg-primary-600 text-white py-2.5 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center text-sm">
-            {/* Left: Phone & Email */ }
+            {/* Left: Phone & Email */}
             <div className="flex items-center space-x-6">
               <a href="tel:+1234567890" className="flex items-center space-x-2 hover:text-secondary-400 transition-colors">
                 <Phone size={16} />
@@ -44,7 +44,7 @@ export default function Navbar() {
               </a>
             </div>
 
-            {/* Right: Hours & Social */ }
+            {/* Right: Hours & Social */}
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <Clock size={16} />
@@ -56,11 +56,11 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Main Navigation */ }
-      <nav className="fixed top-0 md:top-10 w-full z-40 glass border-b border-white/20">
+      {/* Main Navigation */}
+      <nav className="glass border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            {/* Logo */ }
+            {/* Logo */}
             <Link to="/" className="flex items-center space-x-2 group">
               <motion.div
                 whileHover={{ rotate: 360 }}
@@ -106,7 +106,7 @@ export default function Navbar() {
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <img
-                      src={user.avatar}
+                      src={user.avatarUrl}
                       alt={user.name}
                       className="w-8 h-8 rounded-full ring-2 ring-primary-500"
                     />
@@ -231,6 +231,6 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </nav>
-    </>
+    </div>
   );
 }
