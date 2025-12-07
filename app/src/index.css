@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* Navy Blue and Turquoise color system */
+        --color-primary: 14 32 52;
+        /* #0E2034 */
+        --color-primary-dark: 10 26 47;
+        /* #0A1A2F */
+        --color-secondary: 0 180 216;
+        /* #00B4D8 */
+        --color-secondary-light: 42 204 201;
+        /* #2ACCC9 */
+        --color-accent: 249 115 22;
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-900 antialiased;
+        font-feature-settings: 'rlig' 1, 'calt' 1;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-display font-bold;
+        line-height: 1.15;
+    }
+
+    /* Design Handoff Typography Specifications */
+    h1 {
+        @apply text-5xl md:text-6xl lg:text-7xl;
+        /* 48px base, 64px large screens */
+    }
+
+    h2 {
+        @apply text-3xl md:text-4xl lg:text-5xl;
+        /* 32px base, 40px large screens */
+    }
+
+    h3 {
+        @apply text-2xl md:text-3xl;
+        /* 24px base, 28px+ large screens */
+    }
+
+    p,
+    body {
+        line-height: 1.6;
+    }
+}
+
+@layer components {
+
+    /* Glassmorphism card */
+    .glass {
+        @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+    }
+
+    .glass-dark {
+        @apply bg-primary-900/70 backdrop-blur-lg border border-white/10 shadow-xl;
+    }
+
+    /* Premium gradient backgrounds - Navy & Turquoise */
+    .gradient-primary {
+        @apply bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700;
+    }
+
+    .gradient-secondary {
+        @apply bg-gradient-to-br from-secondary-500 via-secondary-600 to-secondary-700;
+    }
+
+    .gradient-accent {
+        @apply bg-gradient-to-br from-accent-500 via-accent-600 to-accent-700;
+    }
+
+    /* Navy gradient overlay for hero sections */
+    .gradient-navy-overlay {
+        @apply bg-gradient-to-b from-primary-600/75 via-primary-600/60 to-primary-700/75;
+    }
+
+    /* Turquoise to Navy gradient */
+    .gradient-ocean {
+        @apply bg-gradient-to-br from-secondary-400 via-secondary-500 to-primary-600;
+    }
+
+    .gradient-forest {
+        @apply bg-gradient-to-br from-emerald-400 via-teal-500 to-green-700;
+    }
+
+    /* Animated gradient background */
+    .gradient-animated {
+        @apply bg-gradient-to-r from-secondary-400 via-secondary-500 to-primary-500 bg-[length:200%_200%] animate-gradient;
+    }
+
+    /* Text gradients */
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary-500 to-secondary-600;
+    }
+
+    .text-gradient-sunset {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-500 via-rose-500 to-purple-600;
+    }
+
+    /* Button styles */
+    .btn {
+        @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+
+    .btn-primary {
+        @apply btn bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 focus:ring-primary-500 shadow-lg hover:shadow-xl;
+    }
+
+    .btn-secondary {
+        @apply btn bg-gradient-to-r from-secondary-500 to-secondary-600 text-white hover:from-secondary-600 hover:to-secondary-700 focus:ring-secondary-500 shadow-lg hover:shadow-xl;
+    }
+
+    .btn-outline {
+        @apply btn border-2 border-primary-500 text-primary-600 hover:bg-primary-50 focus:ring-primary-500;
+    }
+
+    .btn-ghost {
+        @apply btn text-gray-700 hover:bg-gray-100 focus:ring-gray-300;
+    }
+
+    /* Input styles */
+    .input {
+        @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200 outline-none;
+    }
+
+    .input-error {
+        @apply border-red-500 focus:border-red-500 focus:ring-red-200;
+    }
+
+    /* Card hover effects */
+    .card-hover {
+        @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-2;
+    }
+
+    /* Image zoom on hover */
+    .image-zoom {
+        @apply transition-transform duration-500 group-hover:scale-110;
+    }
+
+    /* Skeleton loading */
+    .skeleton {
+        @apply animate-pulse bg-gray-200 rounded;
+    }
+
+    /* Shimmer effect */
+    .shimmer {
+        @apply relative overflow-hidden;
+    }
+
+    .shimmer::after {
+        @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent;
+        content: '';
+        animation: shimmer 2s infinite;
+    }
+}
+
+@layer utilities {
+
+    /* Custom scrollbar */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        @apply bg-gray-100 rounded-full;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        @apply bg-gray-400 rounded-full hover:bg-gray-500;
+    }
+}
