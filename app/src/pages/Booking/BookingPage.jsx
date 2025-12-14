@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { format, addDays } from 'date-fns';
+import { format } from 'date-fns';
 import { Calendar, Users, CreditCard, ArrowRight, ArrowLeft } from 'lucide-react';
-import { getTourById } from '../../data/tours';
+import { tourService } from '../../services/tourService';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBooking } from '../../contexts/BookingContext';
 import Button from '../../components/UI/Button';
@@ -13,12 +13,12 @@ export default function BookingPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { saveBooking } = useBooking();
-  const tour = getTourById(id);
-
+  const [tour, setTour] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
   const [bookingData, setBookingData] = useState({
-    startDate: tour?.availableDates[0] || '',
+    tourDateId: '',
+    startDate: '',
     adults: 2,
     children: 0,
     name: user?.name || '',
@@ -27,10 +27,34 @@ export default function BookingPage() {
     specialRequests: '',
   });
 
-  if (!tour) {
-    navigate('/tours');
-    return null;
+  useEffect(() => {
+    const fetchTour = async () => {
+      try {
+        const data = await tourService.getTourById(id);
+        setTour(data);
+        if (data.dates && data.dates.length > 0) {
+          setBookingData(prev => ({
+            ...prev,
+            tourDateId: data.dates[0].id,
+            startDate: data.dates[0].startDate
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching tour:', error);
+        navigate('/tours'); // Redirect on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTour();
+  }, [id, navigate]);
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen bg-gray-50">Loading...</div>;
   }
+
+  if (!tour) return null;
 
   const adults = bookingData.adults;
   const children = bookingData.children;
@@ -49,14 +73,25 @@ export default function BookingPage() {
   const handleSubmit = () => {
     const booking = {
       tourId: tour.id,
+      tourDateId: bookingData.tourDateId,
       tourTitle: tour.title,
       userId: user.id,
       ...bookingData,
       totalPrice: total,
+      numberOfTravelers: bookingData.adults + bookingData.children,
+      travelers: [
+        {
+          fullName: bookingData.name,
+          age: 30, // Default age
+          gender: 'Not Specified',
+          passportNumber: '',
+          dietaryRequirements: bookingData.specialRequests
+        }
+      ]
     };
     navigate(`/payment/${tour.id}`, { state: { booking, total } });
   };
-
+ console.log('tours',tour)
   return (
     <div className="min-h-screen pt-20 pb-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -110,14 +145,19 @@ export default function BookingPage() {
                     <label className="block text-sm font-medium mb-2">Start Date</label>
                     <select
                       className="input"
-                      value={bookingData.startDate}
-                      onChange={(e) =>
-                        setBookingData({ ...bookingData, startDate: e.target.value })
-                      }
+                      value={bookingData.tourDateId}
+                      onChange={(e) => {
+                        const selectedDate = tour.dates.find(d => d.id === e.target.value);
+                        setBookingData({ 
+                            ...bookingData, 
+                            tourDateId: e.target.value,
+                            startDate: selectedDate?.startDate 
+                        });
+                      }}
                     >
-                      {tour.availableDates.map((date) => (
-                        <option key={date} value={date}>
-                          {format(new Date(date), 'MMMM dd, yyyy')}
+                      {tour.dates?.map((date) => (
+                        <option key={date.id} value={date.id}>
+                          {format(new Date(date.startDate), 'MMMM dd, yyyy')}
                         </option>
                       ))}
                     </select>
@@ -286,7 +326,7 @@ export default function BookingPage() {
               <Card className="p-6">
                 <h3 className="font-bold text-lg mb-4">Booking Summary</h3>
                 <div className="aspect-video rounded-lg overflow-hidden mb-4">
-                  <img src={tour.image} alt={tour.title} className="w-full h-full object-cover" />
+                  <img src={tour.featuredImage || (tour.images && tour.images[0] ? tour.images[0].imageUrl : '')} alt={tour.title} className="w-full h-full object-cover" />
                 </div>
                 <h4 className="font-semibold mb-2">{tour.title}</h4>
                 <div className="space-y-2 text-sm text-gray-600 mb-6">

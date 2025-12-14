@@ -21,6 +21,7 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/tours', label: 'Tours' },
+    { to: '/umrah-hajj', label: 'Umrah/Hajj' },
     { to: '/about', label: 'About' },
   ];
 

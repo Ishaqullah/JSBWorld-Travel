@@ -16,6 +16,7 @@ import paymentRoutes from './routes/payment.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import userRoutes from './routes/user.routes.js';
 import categoryRoutes from './routes/category.routes.js';
+import webhookRoutes from './routes/webhook.routes.js';
 
 const app = express();
 
@@ -29,6 +30,9 @@ app.use(
     credentials: true,
   })
 );
+
+// Webhook route (must be before body parsers to get raw body)
+app.use('/api/webhook', webhookRoutes);
 
 // Body parsers
 app.use(express.json());

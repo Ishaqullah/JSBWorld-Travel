@@ -1,29 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Star, Clock, Users, SlidersHorizontal } from 'lucide-react';
-import { tours, categories, filterTours } from '../../data/tours';
+import { categories } from '../../data/tours';
+import { tourService } from '../../services/tourService';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
 
 export default function ToursListing() {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState('popular');
   const [showFilters, setShowFilters] = useState(false);
 
-  const filteredTours = filterTours({
-    category: selectedCategory,
-    minPrice: priceRange[0],
-    maxPrice: priceRange[1],
-    minRating,
-  }).sort((a, b) => {
-    if (sortBy === 'price-low') return a.price - b.price;
-    if (sortBy === 'price-high') return b.price - a.price;
-    if (sortBy === 'rating') return b.rating - a.rating;
-    return b.reviewCount - a.reviewCount; // popular
-  });
+  useEffect(() => {
+    const fetchTours = async () => {
+      setLoading(true);
+      try {
+        const filters = {
+          minPrice: priceRange[0] > 0 ? priceRange[0] : undefined,
+          maxPrice: priceRange[1] < 5000 ? priceRange[1] : undefined,
+          minRating: minRating > 0 ? minRating : undefined,
+          category: selectedCategory !== 'all' ? selectedCategory : undefined,
+        };
+
+        // Map frontend sort to backend sort
+        let sortParams = {};
+        switch (sortBy) {
+            case 'price-low':
+                sortParams = { sortBy: 'price', order: 'asc' };
+                break;
+            case 'price-high':
+                sortParams = { sortBy: 'price', order: 'desc' };
+                break;
+            case 'rating':
+                sortParams = { sortBy: 'rating', order: 'desc' };
+                break;
+            case 'popular':
+            default:
+                sortParams = { sortBy: 'reviewCount', order: 'desc' };
+                break;
+        }
+
+        const data = await tourService.getAllTours({ ...filters, ...sortParams });
+        setTours(data.tours);
+      } catch (error) {
+        console.error('Error fetching tours:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, [selectedCategory, priceRange, minRating, sortBy]);
 
   return (
     <div className="min-h-screen pt-20 pb-16">
@@ -34,7 +66,7 @@ export default function ToursListing() {
             Explore Our Tours
           </h1>
           <p className="text-xl text-white/90">
-            Discover {filteredTours.length} amazing adventures worldwide
+            Discover {tours.length} amazing adventures worldwide
           </p>
         </div>
       </div>
@@ -120,7 +152,7 @@ export default function ToursListing() {
             {/* Sort Controls */}
             <div className="flex items-center justify-between mb-6">
               <p className="text-gray-600">
-                Showing <span className="font-semibold">{filteredTours.length}</span> tours
+                Showing <span className="font-semibold">{tours.length}</span> tours
               </p>
               <select
                 value={sortBy}
@@ -135,8 +167,11 @@ export default function ToursListing() {
             </div>
 
             {/* Tours Grid */}
+            {loading ? (
+                <div className="text-center py-20">Loading tours...</div>
+            ) : (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredTours.map((tour, index) => (
+              {tours.map((tour, index) => (
                 <motion.div
                   key={tour.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -147,12 +182,12 @@ export default function ToursListing() {
                     <Card hover className="group h-full">
                       <div className="relative overflow-hidden h-56">
                         <img
-                          src={tour.image}
+                          src={tour.featuredImage}
                           alt={tour.title}
                           className="w-full h-full object-cover image-zoom"
                         />
                         <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-sm font-semibold">
-                          {tour.category}
+                          {tour.category.name}
                         </div>
                         <div className="absolute top-3 right-3 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                           {tour.duration} days
@@ -204,8 +239,9 @@ export default function ToursListing() {
                 </motion.div>
               ))}
             </div>
+            )}
 
-            {filteredTours.length === 0 && (
+            {!loading && tours.length === 0 && (
               <div className="text-center py-16">
                 <p className="text-xl text-gray-600 mb-4">
                   No tours found matching your filters

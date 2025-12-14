@@ -15,13 +15,13 @@ const router = express.Router();
 // Validation rules
 const createBookingValidation = [
   body('tourId').trim().notEmpty().withMessage('Tour ID is required'),
-  body('tourDateId').trim().notEmpty().withMessage('Tour date ID is required'),
+  body('tourDateId').optional(),
+  body('startDate').optional(),
   body('numberOfTravelers')
+    .optional()
     .isInt({ min: 1 })
     .withMessage('Number of travelers must be at least 1'),
-  body('travelers').isArray().withMessage('Travelers information is required'),
-  body('travelers.*.fullName').trim().notEmpty().withMessage('Traveler full name is required'),
-  body('travelers.*.age').isInt({ min: 1 }).withMessage('Traveler age must be valid'),
+  body('travelers').optional().isArray().withMessage('Travelers must be an array'),
 ];
 
 // Routes

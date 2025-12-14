@@ -1,13 +1,35 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Calendar, Users, Star, TrendingUp, Award, Globe, Clock } from 'lucide-react';
-import { tours } from '../data/tours';
+import { tourService } from '../services/tourService';
 import { testimonials, stats } from '../data/testimonials';
 import Button from '../components/UI/Button';
 import Card from '../components/UI/Card';
 
 export default function Home() {
-  const featuredTours = tours.slice(0, 3);
+  const [featuredTours, setFeaturedTours] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedTours = async () => {
+      try {
+        // Fetch top rated tours
+        const response = await tourService.getAllTours({ 
+          limit: 3, 
+          sortBy: 'rating', 
+          order: 'desc' 
+        });
+        setFeaturedTours(response.tours);
+      } catch (error) {
+        console.error('Failed to fetch featured tours:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedTours();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -150,7 +172,7 @@ export default function Home() {
                   <Card hover className="group">
                     <div className="relative overflow-hidden h-64">
                       <img
-                        src={tour.image}
+                        src={tour.featuredImage}
                         alt={tour.title}
                         className="w-full h-full object-cover image-zoom"
                       />

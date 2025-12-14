@@ -121,7 +121,7 @@ export const confirmPayment = asyncHandler(async (req, res) => {
   const result = await prisma.$transaction(async (tx) => {
     // Update payment
     const payment = await tx.payment.update({
-      where: { stripePaymentIntentId: paymentIntentId },
+      where: { bookingId: bookingId },
       data: {
         paymentStatus: 'COMPLETED',
         paidAt: new Date(),

@@ -24,7 +24,7 @@ export const BookingProvider = ({ children }) => {
   }, []);
 
   // Create new booking
-  const saveBooking = async (bookingData) => {
+  const saveBooking = useCallback(async (bookingData) => {
     try {
       setLoading(true);
       const newBooking = await bookingService.createBooking(bookingData);
@@ -37,10 +37,10 @@ export const BookingProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Cancel booking
-  const cancelBooking = async (bookingId, cancellationReason = '') => {
+  const cancelBooking = useCallback(async (bookingId, cancellationReason = '') => {
     try {
       setLoading(true);
       const updatedBooking = await bookingService.cancelBooking(bookingId, cancellationReason);
@@ -54,10 +54,10 @@ export const BookingProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Get booking by ID
-  const getBookingById = async (bookingId) => {
+  const getBookingById = useCallback(async (bookingId) => {
     try {
       setLoading(true);
       const booking = await bookingService.getBookingById(bookingId);
@@ -68,7 +68,7 @@ export const BookingProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Utility functions for filtering bookings (client-side)
   const getUpcomingBookings = () => {
