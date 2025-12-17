@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -83,7 +83,7 @@ enum ContactMessageStatus {
 // Models
 
 model User {
-  id                    String    @id @default(uuid())
+  id                    String    @id @default(cuid())
   email                 String    @unique
   passwordHash          String    @map("password_hash")
   name                  String
@@ -111,7 +111,7 @@ model User {
 }
 
 model Category {
-  id            String   @id @default(uuid())
+  id            String   @id @default(cuid())
   name          String   @unique
   slug          String   @unique
   icon          String
@@ -126,7 +126,7 @@ model Category {
 }
 
 model Tour {
-  id              String         @id @default(uuid())
+  id              String         @id @default(cuid())
   title           String
   slug            String         @unique
   categoryId      String         @map("category_id")
@@ -161,7 +161,7 @@ model Tour {
 }
 
 model TourImage {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   tourId       String   @map("tour_id")
   imageUrl     String   @map("image_url")
   altText      String?  @map("alt_text")
@@ -175,7 +175,7 @@ model TourImage {
 }
 
 model TourHighlight {
-  id           String @id @default(uuid())
+  id           String @id @default(cuid())
   tourId       String @map("tour_id")
   highlight    String
   displayOrder Int    @default(0) @map("display_order")
@@ -187,7 +187,7 @@ model TourHighlight {
 }
 
 model TourInclusion {
-  id           String        @id @default(uuid())
+  id           String        @id @default(cuid())
   tourId       String        @map("tour_id")
   item         String
   type         InclusionType
@@ -200,7 +200,7 @@ model TourInclusion {
 }
 
 model TourItinerary {
-  id           String @id @default(uuid())
+  id           String @id @default(cuid())
   tourId       String @map("tour_id")
   dayNumber    Int    @map("day_number")
   title        String
@@ -214,7 +214,7 @@ model TourItinerary {
 }
 
 model TourDate {
-  id             String          @id @default(uuid())
+  id             String          @id @default(cuid())
   tourId         String          @map("tour_id")
   startDate      DateTime        @map("start_date") @db.Date
   endDate        DateTime        @map("end_date") @db.Date
@@ -232,7 +232,7 @@ model TourDate {
 }
 
 model Booking {
-  id                 String        @id @default(uuid())
+  id                 String        @id @default(cuid())
   bookingNumber      String        @unique @map("booking_number")
   userId             String        @map("user_id")
   tourId             String        @map("tour_id")
@@ -259,7 +259,7 @@ model Booking {
 }
 
 model BookingTraveler {
-  id                  String   @id @default(uuid())
+  id                  String   @id @default(cuid())
   bookingId           String   @map("booking_id")
   fullName            String   @map("full_name")
   age                 Int
@@ -275,7 +275,7 @@ model BookingTraveler {
 }
 
 model Payment {
-  id                    String        @id @default(uuid())
+  id                    String        @id @default(cuid())
   paymentNumber         String        @unique @map("payment_number")
   bookingId             String        @unique @map("booking_id")
   userId                String        @map("user_id")
@@ -301,7 +301,7 @@ model Payment {
 }
 
 model Review {
-  id           String       @id @default(uuid())
+  id           String       @id @default(cuid())
   tourId       String       @map("tour_id")
   userId       String       @map("user_id")
   bookingId    String?      @unique @map("booking_id")
@@ -324,7 +324,7 @@ model Review {
 }
 
 model ReviewImage {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   reviewId  String   @map("review_id")
   imageUrl  String   @map("image_url")
   createdAt DateTime @default(now()) @map("created_at")
@@ -336,7 +336,7 @@ model ReviewImage {
 }
 
 model Wishlist {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   userId    String   @map("user_id")
   tourId    String   @map("tour_id")
   createdAt DateTime @default(now()) @map("created_at")
@@ -350,7 +350,7 @@ model Wishlist {
 }
 
 model Notification {
-  id        String           @id @default(uuid())
+  id        String           @id @default(cuid())
   userId    String           @map("user_id")
   type      NotificationType
   title     String
@@ -367,7 +367,7 @@ model Notification {
 }
 
 model ContactMessage {
-  id        String               @id @default(uuid())
+  id        String               @id @default(cuid())
   userId    String?              @map("user_id")
   name      String
   email     String
