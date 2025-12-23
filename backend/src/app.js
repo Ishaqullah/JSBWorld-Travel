@@ -23,10 +23,24 @@ const app = express();
 // Security middleware
 app.use(helmet());
 
-// CORS configuration
+// CORS configuration - Allow multiple origins for dev and production
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://travecations.jsbworld-travel.com',
+  config.clientUrl, // Fallback to env variable
+].filter(Boolean); // Remove any undefined values
+
 app.use(
   cors({
-    origin: config.clientUrl,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );
