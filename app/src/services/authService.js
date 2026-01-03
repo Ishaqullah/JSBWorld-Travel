@@ -53,4 +53,20 @@ export const authService = {
     const response = await api.post('/auth/reset-password', { token, newPassword });
     return response;
   },
+
+  // Send verification code for email signup
+  sendVerificationCode: async (email, password, name) => {
+    const response = await api.post('/auth/send-verification-code', { email, password, name });
+    return response;
+  },
+
+  // Verify code and complete signup
+  verifyCode: async (email, code) => {
+    const response = await api.post('/auth/verify-code', { email, code });
+    if (response.success && response.data.token) {
+      localStorage.setItem('travecations_token', response.data.token);
+      localStorage.setItem('travecations_user', JSON.stringify(response.data.user));
+    }
+    return response.data;
+  },
 };

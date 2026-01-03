@@ -32,13 +32,23 @@ export default {
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
   },
 
-  // Email
+  // Email / SMTP
   email: {
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT || 587,
     user: process.env.EMAIL_USER,
     password: process.env.EMAIL_PASSWORD,
     from: process.env.EMAIL_FROM || 'Travecations <noreply@travecations.com>',
+  },
+
+  // SMTP for nodemailer
+  smtp: {
+    host: process.env.SMTP_HOST || process.env.EMAIL_HOST,
+    port: parseInt(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 587,
+    secure: process.env.SMTP_SECURE === 'true',
+    user: process.env.SMTP_USER || process.env.EMAIL_USER,
+    pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD,
+    from: process.env.SMTP_FROM || process.env.EMAIL_FROM || 'Travecations <noreply@jsbworld-travel.com>',
   },
 
   // File Upload

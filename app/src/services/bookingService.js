@@ -1,9 +1,11 @@
 import api from './api';
 
+// Note: api.js interceptor already returns response.data, so 'response' here is the parsed JSON body
 export const bookingService = {
-  // Create new booking
+  // Create new booking (or return existing pending booking)
   createBooking: async (bookingData) => {
     const response = await api.post('/bookings', bookingData);
+    // Response is already { success, message, data: { booking, isExisting } }
     return response.data.booking;
   },
 
@@ -39,3 +41,4 @@ export const bookingService = {
     return response.data.booking;
   },
 };
+

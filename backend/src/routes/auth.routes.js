@@ -7,6 +7,8 @@ import {
   logout,
   forgotPassword,
   resetPassword,
+  sendVerificationCodeHandler,
+  verifyCodeAndSignup,
 } from '../controllers/authController.js';
 import { authenticate } from '../middleware/auth.middleware.js';
 import validate from '../middleware/validate.middleware.js';
@@ -38,6 +40,13 @@ const resetPasswordValidation = [
     .withMessage('Password must be at least 6 characters long'),
 ];
 
+const verifyCodeValidation = [
+  body('email').isEmail().withMessage('Please provide a valid email'),
+  body('code')
+    .isLength({ min: 6, max: 6 })
+    .withMessage('Verification code must be 6 digits'),
+];
+
 // Routes
 router.post('/signup', signupValidation, validate, signup);
 router.post('/login', loginValidation, validate, login);
@@ -45,5 +54,9 @@ router.get('/me', authenticate, getCurrentUser);
 router.post('/logout', authenticate, logout);
 router.post('/forgot-password', forgotPasswordValidation, validate, forgotPassword);
 router.post('/reset-password', resetPasswordValidation, validate, resetPassword);
+
+// Email verification routes
+router.post('/send-verification-code', signupValidation, validate, sendVerificationCodeHandler);
+router.post('/verify-code', verifyCodeValidation, validate, verifyCodeAndSignup);
 
 export default router;

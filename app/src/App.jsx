@@ -13,6 +13,7 @@ import BookingPage from './pages/Booking/BookingPage';
 import PaymentPage from './pages/Payment/PaymentPage';
 import Dashboard from './pages/Dashboard/Dashboard';
 import UmrahHajj from './pages/UmrahHajj/UmrahHajj';
+import CustomItineraryPage from './pages/CustomItinerary/CustomItineraryPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/tours" element={<ToursListing />} />
                 <Route path="/tours/:id" element={<TourDetails />} />
                 <Route path="/umrah-hajj" element={<UmrahHajj />} />
+                <Route path="/custom-itinerary" element={<CustomItineraryPage />} />
                 <Route
                   path="/booking/:id"
                   element={

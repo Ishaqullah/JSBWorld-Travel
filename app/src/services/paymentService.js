@@ -1,9 +1,17 @@
 import api from './api';
 
+// Note: api.js interceptor already returns response.data, so 'response' here is the parsed JSON body
 export const paymentService = {
-  // Create payment intent
-  createPaymentIntent: async (bookingId) => {
-    const response = await api.post('/payments/create-intent', { bookingId });
+  // Create payment intent for card
+  createPaymentIntent: async (bookingId, paymentMethod = 'CARD') => {
+    const response = await api.post('/payments/create-intent', { bookingId, paymentMethod });
+    // Response is already { success, data: { clientSecret, ... } }
+    return response.data;
+  },
+
+  // Create bank transfer invoice
+  createBankTransferInvoice: async (bookingId) => {
+    const response = await api.post('/payments/create-bank-transfer', { bookingId });
     return response.data;
   },
 
@@ -24,4 +32,25 @@ export const paymentService = {
     const response = await api.post(`/payments/${id}/refund`, { amount, reason });
     return response.data;
   },
+
+  // Submit bank transfer with receipt
+  submitBankTransfer: async (bookingId, receiptFile) => {
+    const formData = new FormData();
+    formData.append('bookingId', bookingId);
+    formData.append('receipt', receiptFile);
+    
+    const response = await api.post('/payments/bank-transfer', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  // Get bank details for bank transfer
+  getBankDetails: async () => {
+    const response = await api.get('/payments/bank-details');
+    return response.data;
+  },
 };
+

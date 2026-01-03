@@ -6,7 +6,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 100000,
   withCredentials: true, // Enable sending cookies for CORS requests
 });
 

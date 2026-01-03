@@ -1,7 +1,7 @@
 import prisma from '../config/database.js';
 import { asyncHandler } from '../middleware/error.middleware.js';
 
-// @desc    Create a new booking
+// @desc    Create a new booking (or return existing pending one)
 // @route   POST /api/bookings
 // @access  Private
 export const createBooking = asyncHandler(async (req, res) => {
@@ -12,11 +12,17 @@ export const createBooking = asyncHandler(async (req, res) => {
     numberOfTravelers,
     adults,
     children,
+    infants,
+    flightOption = 'without',
     specialRequests,
     travelers,
     name,
     email,
-    phone
+    phone,
+    selectedAddOns, // Array of { addOnId, quantity }
+    isDepositPayment = false,
+    depositAmount = null,
+    remainingBalance = null,
   } = req.body;
 
   // 1. Calculate Number of Travelers if missing
@@ -30,15 +36,6 @@ export const createBooking = asyncHandler(async (req, res) => {
     tourDate = await prisma.tourDate.findUnique({ where: { id: tourDateId } });
     console.log("here it is",tourDate);
   } else if (startDate) {
-    // Assuming startDate is "YYYY-MM-DD"
-    // We need to match it against the tourDate records. 
-    // This depends on how dates are stored. If they are DateTime, we need range or exact match.
-    // Let's assume for now we look for a record that matches the date.
-    // If your DB stores full ISO strings, this might be tricky with just a date string.
-    // Let's try to find a tourDate that *contains* this date or starts with it.
-    
-    // Better approach: Find all dates for this tour and match in JS if DB is tricky, 
-    // or assume standard format.
     const dateObj = new Date(startDate);
     
     tourDate = await prisma.tourDate.findFirst({
@@ -50,15 +47,6 @@ export const createBooking = asyncHandler(async (req, res) => {
         }
       }
     });
-
-    if (!tourDate) {
-        // Fallback: Create a TourDate if it doesn't exist? 
-        // Or strictly fail? The user's prompt implies "get this in my stripe test mode", 
-        // but for booking, if date doesn't exist, we can't book.
-        // However, the frontend showed available dates, so it SHOULD exist.
-        // Let's double check if we can just string match if stored as string.
-        // If TourDate model has 'date' as DateTime, the above query is correct.
-    }
   }
 
   const tour = await prisma.tour.findUnique({ where: { id: tourId } });
@@ -76,56 +64,56 @@ export const createBooking = asyncHandler(async (req, res) => {
       message: `No available tour date found for ${startDate}`,
     });
   }
-  
-  // 3. Check availability
-  const availableSeats = tourDate.availableSlots - tourDate.bookedSlots;
-  if (availableSeats < numberOfTravelers) {
+
+  // ========== CHECK FOR EXISTING PENDING BOOKING ==========
+  // This makes the booking flow idempotent - retries won't create duplicates
+  const existingBooking = await prisma.booking.findFirst({
+    where: {
+      userId: req.user.id,
+      tourId: tourId,
+      tourDateId: tourDate.id,
+      status: {
+        in: ['PENDING', 'CONFIRMED'], // Don't create new if pending or already confirmed
+      },
+    },
+    include: {
+      tour: {
+        include: {
+          category: true,
+          images: { take: 1 },
+        },
+      },
+      tourDate: true,
+      travelers: true,
+      addOns: {
+        include: {
+          addOn: true,
+        },
+      },
+      payment: true,
+    },
+  });
+
+  // If there's an existing CONFIRMED booking, return error
+  if (existingBooking && existingBooking.status === 'CONFIRMED') {
     return res.status(400).json({
       success: false,
-      message: `Only ${availableSeats} seats available on this date, please select another date`,
+      message: 'You already have a confirmed booking for this tour date',
+      data: { booking: existingBooking },
     });
   }
 
-  // 4. Calculate total price
-  const totalPrice = tour.price * numberOfTravelers;
-
-  // 5. Build Travelers Array if missing
-  if (!travelers || travelers.length === 0) {
-    travelers = [{
-        fullName: name || req.user.name,
-        age: 30, // Default age as it's required by schema often, or we relaxed validation?
-        gender: 'Not Specified',
-        // Optional fields can be omitted
-    }];
-    // If there are more travelers, we just add placeholders or rely on the primary one?
-    // The requirement is just to get it working.
-  }
-
-  // Generate booking number
-  const bookingNumber = `BK${Date.now()}${Math.floor(Math.random() * 1000)}`;
-
-  // Create booking
-  const booking = await prisma.$transaction(async (tx) => {
-    // Create booking
-    const newBooking = await tx.booking.create({
+  // If there's an existing PENDING booking, update deposit settings and return it
+  if (existingBooking && existingBooking.status === 'PENDING') {
+    console.log('Found existing pending booking:', existingBooking.bookingNumber);
+    
+    // Update the booking with the new deposit settings (user may have changed their choice)
+    const updatedBooking = await prisma.booking.update({
+      where: { id: existingBooking.id },
       data: {
-        bookingNumber,
-        userId: req.user.id,
-        tourId,
-        tourDateId: tourDate.id,
-        numberOfTravelers,
-        totalPrice,
-        specialRequests,
-        status: 'PENDING',
-        travelers: {
-          create: travelers.map(traveler => ({
-            fullName: traveler.fullName || 'Guest',
-            age: traveler.age || 25,
-            gender: traveler.gender || 'Other',
-            passportNumber: traveler.passportNumber,
-            dietaryRequirements: traveler.dietaryRequirements,
-          })),
-        },
+        isDepositPayment: isDepositPayment || false,
+        depositAmount: isDepositPayment && depositAmount ? parseFloat(depositAmount) : null,
+        remainingBalance: isDepositPayment && remainingBalance ? parseFloat(remainingBalance) : null,
       },
       include: {
         tour: {
@@ -136,27 +124,158 @@ export const createBooking = asyncHandler(async (req, res) => {
         },
         tourDate: true,
         travelers: true,
+        addOns: {
+          include: {
+            addOn: true,
+          },
+        },
+        payment: true,
+      },
+    });
+    
+    console.log('Updated existing booking with deposit settings - isDepositPayment:', isDepositPayment);
+    return res.status(200).json({
+      success: true,
+      message: 'Existing pending booking updated',
+      data: { booking: updatedBooking, isExisting: true },
+    });
+  }
+  
+  // 3. Check availability
+  const availableSeats = tourDate.availableSlots - tourDate.bookedSlots;
+  if (availableSeats < numberOfTravelers) {
+    return res.status(400).json({
+      success: false,
+      message: `Only ${availableSeats} seats available on this date, please select another date`,
+    });
+  }
+
+  // 4. Calculate add-ons total if any
+  let addOnsTotal = 0;
+  let addOnsData = [];
+  
+  if (selectedAddOns && selectedAddOns.length > 0) {
+    // Fetch all selected add-ons from database
+    const addOnIds = selectedAddOns.map(ao => ao.addOnId);
+    const addOns = await prisma.tourAddOn.findMany({
+      where: {
+        id: { in: addOnIds },
+        tourId: tourId,
+        isActive: true,
       },
     });
 
-    // Update tour date booked slots
-    await tx.tourDate.update({
-      where: { id: tourDate.id },
-      data: {
-        bookedSlots: { increment: numberOfTravelers },
-        status: tourDate.availableSlots - tourDate.bookedSlots - numberOfTravelers <= 0
-          ? 'FULL'
-          : 'AVAILABLE',
-      },
-    });
+    // Calculate total and prepare data
+    for (const selected of selectedAddOns) {
+      const addOn = addOns.find(a => a.id === selected.addOnId);
+      if (addOn) {
+        const quantity = parseInt(selected.quantity) || 1;
+        const price = parseFloat(addOn.price) * quantity;
+        addOnsTotal += price;
+        addOnsData.push({
+          addOnId: addOn.id,
+          quantity: quantity,
+          price: price,
+        });
+      }
+    }
+  }
 
-    return newBooking;
+  // 5. Calculate total price (base + add-ons)
+  const basePrice = parseFloat(tour.price) * numberOfTravelers;
+  const totalPrice = basePrice + addOnsTotal;
+
+  // 6. Build Travelers Array if missing
+  if (!travelers || travelers.length === 0) {
+    travelers = [{
+        fullName: name || req.user.name,
+        age: 30,
+        gender: 'Not Specified',
+    }];
+  }
+
+  // Generate booking number
+  const bookingNumber = `BK${Date.now()}${Math.floor(Math.random() * 1000)}`;
+
+  // Create booking without transaction to avoid deadlocks with remote DB
+  // Step 1: Create the booking
+  const newBooking = await prisma.booking.create({
+    data: {
+      bookingNumber,
+      userId: req.user.id,
+      tourId,
+      tourDateId: tourDate.id,
+      numberOfTravelers,
+      adultsCount: parseInt(adults) || 1,
+      childrenCount: parseInt(children) || 0,
+      infantsCount: parseInt(infants) || 0,
+      flightOption: flightOption || 'without',
+      totalPrice,
+      isDepositPayment: isDepositPayment || false,
+      depositAmount: isDepositPayment && depositAmount ? parseFloat(depositAmount) : null,
+      remainingBalance: isDepositPayment && remainingBalance ? parseFloat(remainingBalance) : null,
+      addOnsTotal: addOnsTotal > 0 ? addOnsTotal : null,
+      specialRequests,
+      status: 'PENDING',
+      travelers: {
+        create: travelers.map(traveler => ({
+          travelerType: traveler.type || 'adult',
+          fullName: traveler.fullName || 'Guest',
+          dateOfBirth: traveler.dateOfBirth ? new Date(traveler.dateOfBirth) : null,
+          age: traveler.age || null,
+          gender: traveler.gender || null,
+          nationality: traveler.nationality || null,
+          passportNumber: traveler.passportNumber || null,
+          passportExpiry: traveler.passportExpiry ? new Date(traveler.passportExpiry) : null,
+          email: traveler.email || null,
+          phone: traveler.phone || null,
+          dietaryRequirements: traveler.dietaryRequirements || null,
+        })),
+      },
+      // Create add-on records if any
+      ...(addOnsData.length > 0 && {
+        addOns: {
+          create: addOnsData,
+        },
+      }),
+    },
+  });
+
+  // Step 2: Update tour date booked slots separately
+  await prisma.tourDate.update({
+    where: { id: tourDate.id },
+    data: {
+      bookedSlots: { increment: numberOfTravelers },
+      status: tourDate.availableSlots - tourDate.bookedSlots - numberOfTravelers <= 0
+        ? 'FULL'
+        : 'AVAILABLE',
+    },
+  });
+
+  // Step 3: Fetch the complete booking with all relations
+  const booking = await prisma.booking.findUnique({
+    where: { id: newBooking.id },
+    include: {
+      tour: {
+        include: {
+          category: true,
+          images: { take: 1 },
+        },
+      },
+      tourDate: true,
+      travelers: true,
+      addOns: {
+        include: {
+          addOn: true,
+        },
+      },
+    },
   });
 
   res.status(201).json({
     success: true,
     message: 'Booking created successfully',
-    data: { booking },
+    data: { booking, isExisting: false },
   });
 });
 

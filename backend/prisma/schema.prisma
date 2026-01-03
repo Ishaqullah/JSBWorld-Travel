@@ -39,6 +39,7 @@ enum BookingStatus {
 enum PaymentStatus {
   PENDING
   PROCESSING
+  AWAITING_VERIFICATION
   COMPLETED
   FAILED
   REFUNDED
@@ -139,6 +140,7 @@ model Tour {
   difficulty      TourDifficulty
   featuredImage   String         @map("featured_image")
   description     String         @db.Text
+  depositFee      Decimal?       @db.Decimal(10, 2) @map("deposit_fee")
   status          TourStatus     @default(DRAFT)
   createdById     String         @map("created_by")
   createdAt       DateTime       @default(now()) @map("created_at")
@@ -156,6 +158,7 @@ model Tour {
   bookings        Booking[]
   reviews         Review[]
   wishlists       Wishlist[]
+  addOns          TourAddOn[]
 
   @@map("tours")
 }
@@ -200,12 +203,13 @@ model TourInclusion {
 }
 
 model TourItinerary {
-  id           String @id @default(cuid())
-  tourId       String @map("tour_id")
-  dayNumber    Int    @map("day_number")
+  id           String  @id @default(cuid())
+  tourId       String  @map("tour_id")
+  dayNumber    Int     @map("day_number")
   title        String
-  description  String @db.Text
-  displayOrder Int    @default(0) @map("display_order")
+  description  String  @db.Text
+  imageUrl     String? @map("image_url")
+  displayOrder Int     @default(0) @map("display_order")
 
   // Relations
   tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
@@ -214,15 +218,26 @@ model TourItinerary {
 }
 
 model TourDate {
-  id             String          @id @default(cuid())
-  tourId         String          @map("tour_id")
-  startDate      DateTime        @map("start_date") @db.Date
-  endDate        DateTime        @map("end_date") @db.Date
-  availableSlots Int             @map("available_slots")
-  bookedSlots    Int             @default(0) @map("booked_slots")
-  status         TourDateStatus  @default(AVAILABLE)
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
+  id                      String          @id @default(cuid())
+  tourId                  String          @map("tour_id")
+  startDate               DateTime        @map("start_date") @db.Date
+  endDate                 DateTime        @map("end_date") @db.Date
+  availableSlots          Int             @map("available_slots")
+  bookedSlots             Int             @default(0) @map("booked_slots")
+  status                  TourDateStatus  @default(AVAILABLE)
+  
+  // Pricing fields - all in USD
+  priceWithoutFlight      Decimal         @db.Decimal(10, 2) @map("price_without_flight")
+  priceWithFlight         Decimal         @db.Decimal(10, 2) @map("price_with_flight")
+  earlyBirdPriceWithout   Decimal?        @db.Decimal(10, 2) @map("early_bird_price_without")
+  earlyBirdPriceWith      Decimal?        @db.Decimal(10, 2) @map("early_bird_price_with")
+  earlyBirdDeadline       DateTime?       @map("early_bird_deadline") @db.Date
+  childPriceWithout       Decimal         @db.Decimal(10, 2) @map("child_price_without")
+  childPriceWithFlight    Decimal         @db.Decimal(10, 2) @map("child_price_with_flight")
+  singleSupplement        Decimal         @default(0) @db.Decimal(10, 2) @map("single_supplement")
+  
+  createdAt               DateTime        @default(now()) @map("created_at")
+  updatedAt               DateTime        @updatedAt @map("updated_at")
 
   // Relations
   tour     Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
@@ -238,7 +253,15 @@ model Booking {
   tourId             String        @map("tour_id")
   tourDateId         String        @map("tour_date_id")
   numberOfTravelers  Int           @map("number_of_travelers")
+  adultsCount        Int           @default(1) @map("adults_count")
+  childrenCount      Int           @default(0) @map("children_count")
+  infantsCount       Int           @default(0) @map("infants_count")
+  flightOption       String        @default("without") @map("flight_option")
   totalPrice         Decimal       @db.Decimal(10, 2) @map("total_price")
+  isDepositPayment   Boolean       @default(false) @map("is_deposit_payment")
+  depositAmount      Decimal?      @db.Decimal(10, 2) @map("deposit_amount")
+  remainingBalance   Decimal?      @db.Decimal(10, 2) @map("remaining_balance")
+  addOnsTotal        Decimal?      @db.Decimal(10, 2) @map("add_ons_total")
   bookingDate        DateTime      @default(now()) @map("booking_date")
   status             BookingStatus @default(PENDING)
   specialRequests    String?       @db.Text @map("special_requests")
@@ -254,19 +277,26 @@ model Booking {
   travelers BookingTraveler[]
   payment   Payment?
   review    Review?
+  addOns    BookingAddOn[]
 
   @@map("bookings")
 }
 
 model BookingTraveler {
-  id                  String   @id @default(cuid())
-  bookingId           String   @map("booking_id")
-  fullName            String   @map("full_name")
-  age                 Int
+  id                  String    @id @default(cuid())
+  bookingId           String    @map("booking_id")
+  travelerType        String    @default("adult") @map("traveler_type")
+  fullName            String    @map("full_name")
+  dateOfBirth         DateTime? @map("date_of_birth") @db.Date
+  age                 Int?
   gender              String?
-  passportNumber      String?  @map("passport_number")
-  dietaryRequirements String?  @map("dietary_requirements")
-  createdAt           DateTime @default(now()) @map("created_at")
+  nationality         String?
+  passportNumber      String?   @map("passport_number")
+  passportExpiry      DateTime? @map("passport_expiry") @db.Date
+  email               String?
+  phone               String?
+  dietaryRequirements String?   @map("dietary_requirements")
+  createdAt           DateTime  @default(now()) @map("created_at")
 
   // Relations
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
@@ -290,6 +320,7 @@ model Payment {
   refundedAt            DateTime?     @map("refunded_at")
   refundAmount          Decimal?      @db.Decimal(10, 2) @map("refund_amount")
   metadata              Json?
+  receiptData           String?       @db.LongText @map("receipt_data")
   createdAt             DateTime      @default(now()) @map("created_at")
   updatedAt             DateTime      @updatedAt @map("updated_at")
 
@@ -382,3 +413,71 @@ model ContactMessage {
 
   @@map("contact_messages")
 }
+
+// Tour Add-ons - optional extras users can add to their booking
+model TourAddOn {
+  id           String   @id @default(cuid())
+  tourId       String   @map("tour_id")
+  name         String
+  description  String?  @db.Text
+  price        Decimal  @db.Decimal(10, 2)
+  imageUrl     String?  @map("image_url")
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relations
+  tour         Tour           @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  bookingAddOns BookingAddOn[]
+
+  @@map("tour_add_ons")
+}
+
+// Booking Add-ons - tracks which add-ons were selected for a booking
+model BookingAddOn {
+  id        String   @id @default(cuid())
+  bookingId String   @map("booking_id")
+  addOnId   String   @map("add_on_id")
+  quantity  Int      @default(1)
+  price     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  booking Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  addOn   TourAddOn @relation(fields: [addOnId], references: [id])
+
+  @@map("booking_add_ons")
+}
+
+// Custom Itinerary - custom tour requests from users
+model CustomItinerary {
+  id                String   @id @default(cuid())
+  customerName      String   @map("customer_name")
+  customerEmail     String   @map("customer_email")
+  customerPhone     String?  @map("customer_phone")
+  destination       String
+  travelDates       String   @map("travel_dates")
+  numberOfTravelers Int      @map("number_of_travelers")
+  budget            String?
+  preferences       String?  @db.Text
+  specialRequests   String?  @db.Text @map("special_requests")
+  status            String   @default("PENDING")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("custom_itineraries")
+}
+
+// Pending Email Verification - temporary storage for signup verification
+model PendingVerification {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  verificationCode  String   @map("verification_code")
+  name              String
+  passwordHash      String   @map("password_hash")
+  expiresAt         DateTime @map("expires_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@map("pending_verifications")
+}
+

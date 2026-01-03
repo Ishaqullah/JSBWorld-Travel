@@ -17,6 +17,8 @@ import reviewRoutes from './routes/review.routes.js';
 import userRoutes from './routes/user.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
+import customItineraryRoutes from './routes/customItinerary.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
@@ -26,6 +28,7 @@ app.use(helmet());
 // CORS configuration - Allow multiple origins for dev and production
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5174', // Admin panel dev server
   'http://localhost:3000',
   'https://travecations.jsbworld-travel.com',
   config.clientUrl, // Fallback to env variable
@@ -72,6 +75,9 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Serve static files (uploaded receipts, etc.)
+app.use('/uploads', express.static('uploads'));
+
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tours', tourRoutes);
@@ -80,6 +86,9 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/custom-itinerary', customItineraryRoutes);
+app.use('/api/admin', adminRoutes);
+
 
 // 404 handler
 app.use(notFound);

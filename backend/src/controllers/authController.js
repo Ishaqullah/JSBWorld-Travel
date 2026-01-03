@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../config/database.js';
 import config from '../config/index.js';
 import { asyncHandler } from '../middleware/error.middleware.js';
+import { sendVerificationCode } from '../services/emailService.js';
 
 // Helper function to generate JWT token
 const generateToken = (userId) => {
@@ -239,4 +240,151 @@ export const resetPassword = asyncHandler(async (req, res) => {
       message: 'Invalid or expired reset token',
     });
   }
+});
+
+// Helper function to generate 6-digit verification code
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// @desc    Send verification code to email for signup
+// @route   POST /api/auth/send-verification-code
+// @access  Public
+export const sendVerificationCodeHandler = asyncHandler(async (req, res) => {
+  const { email, password, name } = req.body;
+
+  // Check if user already exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existingUser) {
+    return res.status(400).json({
+      success: false,
+      message: 'User already exists with this email',
+    });
+  }
+
+  // Generate verification code
+  const verificationCode = generateVerificationCode();
+
+  // Hash password for storage
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  // Set expiry to 10 minutes from now
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  // Upsert pending verification (update if exists, create if not)
+  await prisma.pendingVerification.upsert({
+    where: { email },
+    update: {
+      verificationCode,
+      name,
+      passwordHash,
+      expiresAt,
+    },
+    create: {
+      email,
+      verificationCode,
+      name,
+      passwordHash,
+      expiresAt,
+    },
+  });
+
+  // Send verification email
+  const emailSent = await sendVerificationCode(email, verificationCode, name);
+
+  if (!emailSent) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to send verification email. Please try again.',
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Verification code sent to your email',
+    data: {
+      email,
+      expiresIn: 600, // 10 minutes in seconds
+    },
+  });
+});
+
+// @desc    Verify code and complete signup
+// @route   POST /api/auth/verify-code
+// @access  Public
+export const verifyCodeAndSignup = asyncHandler(async (req, res) => {
+  const { email, code } = req.body;
+
+  // Find pending verification
+  const pendingVerification = await prisma.pendingVerification.findUnique({
+    where: { email },
+  });
+
+  if (!pendingVerification) {
+    return res.status(400).json({
+      success: false,
+      message: 'No verification pending for this email. Please start the signup process again.',
+    });
+  }
+
+  // Check if code matches
+  if (pendingVerification.verificationCode !== code) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid verification code. Please check and try again.',
+    });
+  }
+
+  // Check if code has expired
+  if (new Date() > pendingVerification.expiresAt) {
+    // Delete expired verification
+    await prisma.pendingVerification.delete({
+      where: { email },
+    });
+
+    return res.status(400).json({
+      success: false,
+      message: 'Verification code has expired. Please request a new one.',
+    });
+  }
+
+  // Create the actual user
+  const user = await prisma.user.create({
+    data: {
+      email: pendingVerification.email,
+      passwordHash: pendingVerification.passwordHash,
+      name: pendingVerification.name,
+      isVerified: true,
+      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(pendingVerification.name)}&background=0ea5e9&color=fff`,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      avatarUrl: true,
+      role: true,
+      isVerified: true,
+      createdAt: true,
+    },
+  });
+
+  // Delete pending verification
+  await prisma.pendingVerification.delete({
+    where: { email },
+  });
+
+  // Generate token
+  const token = generateToken(user.id);
+
+  res.status(201).json({
+    success: true,
+    message: 'Email verified and account created successfully',
+    data: {
+      user,
+      token,
+    },
+  });
 });

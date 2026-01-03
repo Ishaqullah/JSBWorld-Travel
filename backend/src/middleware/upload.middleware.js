@@ -6,8 +6,8 @@ import config from '../config/index.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure storage
-const storage = multer.diskStorage({
+// Configure disk storage (for regular file uploads)
+const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, config.upload.uploadPath);
   },
@@ -16,6 +16,9 @@ const storage = multer.diskStorage({
     cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
   },
 });
+
+// Configure memory storage (for base64 conversion)
+const memoryStorage = multer.memoryStorage();
 
 // File filter
 const fileFilter = (req, file, cb) => {
@@ -31,17 +34,29 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer upload configuration
+// Multer upload configuration (disk storage)
 export const upload = multer({
-  storage,
+  storage: diskStorage,
   limits: {
     fileSize: config.upload.maxFileSize,
   },
   fileFilter,
 });
 
-// Middleware for single file upload
+// Multer upload configuration (memory storage for base64)
+export const uploadMemory = multer({
+  storage: memoryStorage,
+  limits: {
+    fileSize: config.upload.maxFileSize,
+  },
+  fileFilter,
+});
+
+// Middleware for single file upload (disk)
 export const uploadSingle = (fieldName) => upload.single(fieldName);
+
+// Middleware for single file upload (memory - for base64)
+export const uploadSingleToMemory = (fieldName) => uploadMemory.single(fieldName);
 
 // Middleware for multiple files upload
 export const uploadMultiple = (fieldName, maxCount = 5) => 
@@ -49,3 +64,4 @@ export const uploadMultiple = (fieldName, maxCount = 5) =>
 
 // Middleware for multiple fields
 export const uploadFields = (fields) => upload.fields(fields);
+

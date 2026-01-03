@@ -5,8 +5,12 @@ import {
   confirmPayment,
   getPaymentById,
   processRefund,
+  createBankTransferInvoice,
+  submitBankTransfer,
+  getBankDetails,
 } from '../controllers/paymentController.js';
 import { authenticate, authorize } from '../middleware/auth.middleware.js';
+import { uploadSingleToMemory } from '../middleware/upload.middleware.js';
 import validate from '../middleware/validate.middleware.js';
 
 const router = express.Router();
@@ -30,7 +34,25 @@ router.post(
   createPaymentIntent
 );
 router.post('/confirm', authenticate, confirmPaymentValidation, validate, confirmPayment);
+router.post(
+  '/create-bank-transfer',
+  authenticate,
+  createPaymentIntentValidation,
+  validate,
+  createBankTransferInvoice
+);
+
+// Bank transfer with receipt upload
+router.get('/bank-details', authenticate, getBankDetails);
+router.post(
+  '/bank-transfer',
+  authenticate,
+  uploadSingleToMemory('receipt'),
+  submitBankTransfer
+);
+
 router.get('/:id', authenticate, getPaymentById);
 router.post('/:id/refund', authenticate, authorize('ADMIN'), processRefund);
 
 export default router;
+

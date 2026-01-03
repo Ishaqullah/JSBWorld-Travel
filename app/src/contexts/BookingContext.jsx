@@ -75,7 +75,8 @@ export const BookingProvider = ({ children }) => {
     const now = new Date();
     return bookings.filter(
       booking =>
-        booking.status === 'CONFIRMED' &&
+        booking.status === 'CONFIRMED' ||
+        booking.status === 'PENDING' &&
         new Date(booking.tourDate?.startDate) > now
     );
   };
