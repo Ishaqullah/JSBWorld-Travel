@@ -31,6 +31,7 @@ const allowedOrigins = [
   'http://localhost:5174', // Admin panel dev server
   'http://localhost:3000',
   'https://travecations.jsbworld-travel.com',
+  'https://jsbworld-travel.com',
   config.clientUrl, // Fallback to env variable
 ].filter(Boolean); // Remove any undefined values
 
