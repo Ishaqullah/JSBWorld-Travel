@@ -54,6 +54,48 @@ export const getAdminDashboardStats = asyncHandler(async (req, res) => {
   });
 });
 
+// ========== Bookings ==========
+export const getAllBookings = asyncHandler(async (req, res) => {
+  const { status, page = 1, limit = 50 } = req.query;
+  
+  const where = {};
+  if (status && status !== 'all') {
+    where.status = status.toUpperCase();
+  }
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+  const take = parseInt(limit);
+
+  const [bookings, totalCount] = await Promise.all([
+    prisma.booking.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: { select: { id: true, name: true, email: true, phone: true } },
+        tour: { select: { id: true, title: true, location: true } },
+        tourDate: { select: { startDate: true, endDate: true } },
+        travelers: true,
+        payment: { select: { paymentMethod: true, paymentStatus: true, amount: true } },
+      },
+    }),
+    prisma.booking.count({ where }),
+  ]);
+
+  res.status(200).json({
+    success: true,
+    data: {
+      bookings,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalCount / take),
+        totalCount,
+      },
+    },
+  });
+});
+
 // ========== Tour CRUD Operations ==========
 
 // Get all tours for admin (includes all statuses)
@@ -747,6 +789,82 @@ export const updateTourInclusions = asyncHandler(async (req, res) => {
     success: true,
     message: 'Inclusions updated successfully',
     data: { inclusions: updatedInclusions },
+  });
+});
+
+// ========== Tour Add-ons ==========
+export const updateTourAddOns = asyncHandler(async (req, res) => {
+  const { tourId } = req.params;
+  const { addOns } = req.body;
+
+  // Verify tour exists
+  const tour = await prisma.tour.findUnique({
+    where: { id: tourId },
+  });
+
+  if (!tour) {
+    return res.status(404).json({
+      success: false,
+      message: 'Tour not found',
+    });
+  }
+
+  // Get existing add-ons to determine which to delete
+  const existingAddOns = await prisma.tourAddOn.findMany({
+    where: { tourId },
+  });
+
+  const existingIds = existingAddOns.map(a => a.id);
+  const incomingIds = addOns.filter(a => a.id).map(a => a.id);
+  
+  // Delete add-ons that are no longer in the list
+  const toDelete = existingIds.filter(id => !incomingIds.includes(id));
+  if (toDelete.length > 0) {
+    await prisma.tourAddOn.deleteMany({
+      where: { id: { in: toDelete } },
+    });
+  }
+
+  // Upsert each add-on
+  for (const addOn of addOns) {
+    if (addOn.id && existingIds.includes(addOn.id)) {
+      // Update existing
+      await prisma.tourAddOn.update({
+        where: { id: addOn.id },
+        data: {
+          name: addOn.name,
+          description: addOn.description,
+          price: parseFloat(addOn.price) || 0,
+          imageUrl: addOn.imageUrl,
+          displayOrder: addOn.displayOrder || 0,
+          isActive: addOn.isActive !== false,
+        },
+      });
+    } else {
+      // Create new
+      await prisma.tourAddOn.create({
+        data: {
+          tourId,
+          name: addOn.name,
+          description: addOn.description,
+          price: parseFloat(addOn.price) || 0,
+          imageUrl: addOn.imageUrl,
+          displayOrder: addOn.displayOrder || 0,
+          isActive: addOn.isActive !== false,
+        },
+      });
+    }
+  }
+
+  const updatedAddOns = await prisma.tourAddOn.findMany({
+    where: { tourId },
+    orderBy: { displayOrder: 'asc' },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Add-ons updated successfully',
+    data: { addOns: updatedAddOns },
   });
 });
 

@@ -11,6 +11,7 @@ const TABS = [
   { id: 'itinerary', label: 'Itinerary' },
   { id: 'media', label: 'Media' },
   { id: 'details', label: 'Details' },
+  { id: 'addons', label: 'Add-ons' },
 ];
 
 const TourForm = () => {
@@ -44,6 +45,7 @@ const TourForm = () => {
   const [highlights, setHighlights] = useState([]);
   const [inclusions, setInclusions] = useState([]);
   const [exclusions, setExclusions] = useState([]);
+  const [addOns, setAddOns] = useState([]);
 
   // Temp state for adding new items
   const [newHighlight, setNewHighlight] = useState('');
@@ -92,6 +94,7 @@ const TourForm = () => {
       const excluded = tour.inclusions?.filter(i => i.type === 'EXCLUDED').map(i => i.item) || [];
       setInclusions(included);
       setExclusions(excluded);
+      setAddOns(tour.addOns || []);
     } catch (error) {
       toast.error('Failed to load tour');
       navigate('/tours');
@@ -226,6 +229,19 @@ const TourForm = () => {
               await adminService.updateTourDate(date.id, dateData);
             }
           }
+        }
+
+        // Update add-ons
+        if (addOns.length > 0) {
+          await adminService.updateTourAddOns(id, addOns.map((addOn, idx) => ({
+            id: addOn.id && !addOn.isNew ? addOn.id : undefined,
+            name: addOn.name,
+            description: addOn.description || null,
+            price: parseFloat(addOn.price) || 0,
+            imageUrl: addOn.imageUrl || null,
+            displayOrder: idx,
+            isActive: addOn.isActive !== false,
+          })));
         }
 
         toast.success('Tour updated successfully');
@@ -877,6 +893,135 @@ const TourForm = () => {
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Add-ons Tab */}
+        {activeTab === 'addons' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="font-semibold">Tour Add-ons</h3>
+                <p className="text-sm text-gray-500">Optional extras users can add to their booking</p>
+              </div>
+              <button 
+                onClick={() => setAddOns([...addOns, { 
+                  name: '', 
+                  description: '', 
+                  price: '', 
+                  imageUrl: '', 
+                  isActive: true,
+                  displayOrder: addOns.length,
+                  isNew: true 
+                }])}
+                className="btn btn-primary"
+              >
+                <Plus size={16} />
+                Add New Add-on
+              </button>
+            </div>
+
+            {addOns.length === 0 ? (
+              <div className="empty-state">
+                <p className="text-muted">No add-ons created yet. Click "Add New Add-on" to create one.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {addOns.map((addOn, index) => (
+                  <div key={addOn.id || `new-${index}`} className="border border-gray-200 rounded-lg p-4 bg-white">
+                    <div className="flex justify-between items-start mb-4">
+                      <h4 className="font-medium text-gray-700">Add-on #{index + 1}</h4>
+                      <button
+                        onClick={() => setAddOns(addOns.filter((_, i) => i !== index))}
+                        className="text-red-500 hover:text-red-700 p-1"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="input-group">
+                        <label className="input-label required">Name</label>
+                        <input
+                          type="text"
+                          className="input"
+                          placeholder="e.g., Airport Pickup"
+                          value={addOn.name}
+                          onChange={(e) => {
+                            const updated = [...addOns];
+                            updated[index].name = e.target.value;
+                            setAddOns(updated);
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="input-group">
+                        <label className="input-label required">Price ($)</label>
+                        <input
+                          type="number"
+                          className="input"
+                          placeholder="50.00"
+                          min="0"
+                          step="0.01"
+                          value={addOn.price}
+                          onChange={(e) => {
+                            const updated = [...addOns];
+                            updated[index].price = e.target.value;
+                            setAddOns(updated);
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="input-group md:col-span-2">
+                        <label className="input-label">Description</label>
+                        <textarea
+                          className="input"
+                          rows="2"
+                          placeholder="Brief description of the add-on..."
+                          value={addOn.description || ''}
+                          onChange={(e) => {
+                            const updated = [...addOns];
+                            updated[index].description = e.target.value;
+                            setAddOns(updated);
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="input-group">
+                        <label className="input-label">Image URL</label>
+                        <input
+                          type="url"
+                          className="input"
+                          placeholder="https://example.com/image.jpg"
+                          value={addOn.imageUrl || ''}
+                          onChange={(e) => {
+                            const updated = [...addOns];
+                            updated[index].imageUrl = e.target.value;
+                            setAddOns(updated);
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="input-group flex items-center">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={addOn.isActive !== false}
+                            onChange={(e) => {
+                              const updated = [...addOns];
+                              updated[index].isActive = e.target.checked;
+                              setAddOns(updated);
+                            }}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm text-gray-700">Active</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

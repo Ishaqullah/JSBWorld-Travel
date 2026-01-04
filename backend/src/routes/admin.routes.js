@@ -17,6 +17,8 @@ import {
   updateTourImages,
   updateTourHighlights,
   updateTourInclusions,
+  updateTourAddOns,
+  getAllBookings,
   getAdminDashboardStats,
   getPendingBankTransfers,
   approveBankTransfer,
@@ -31,6 +33,9 @@ router.use(authorize('ADMIN'));
 
 // Dashboard stats
 router.get('/dashboard/stats', getAdminDashboardStats);
+
+// ========== Bookings Routes ==========
+router.get('/bookings', getAllBookings);
 
 // Tour validation rules
 const tourValidation = [
@@ -79,6 +84,9 @@ router.put('/tours/:tourId/highlights', updateTourHighlights);
 
 // ========== Tour Inclusions Routes ==========
 router.put('/tours/:tourId/inclusions', updateTourInclusions);
+
+// ========== Tour Add-ons Routes ==========
+router.put('/tours/:tourId/addons', updateTourAddOns);
 
 // ========== Bank Transfer Payment Management ==========
 router.get('/payments/pending-transfers', getPendingBankTransfers);

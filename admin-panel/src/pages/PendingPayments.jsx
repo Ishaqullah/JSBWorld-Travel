@@ -168,28 +168,10 @@ export default function PendingPayments() {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSelectedPayment(payment)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
                   >
                     <Eye size={18} />
                     View Receipt
-                  </button>
-                  <button
-                    onClick={() => handleApprove(payment.id)}
-                    disabled={processing}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50"
-                  >
-                    <CheckCircle size={18} />
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedPayment(payment);
-                      setShowRejectModal(true);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                  >
-                    <XCircle size={18} />
-                    Reject
                   </button>
                 </div>
               </div>

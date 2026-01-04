@@ -83,6 +83,18 @@ export const adminService = {
     return response.data.data.inclusions;
   },
 
+  // Tour Add-ons
+  updateTourAddOns: async (tourId, addOns) => {
+    const response = await api.put(`/admin/tours/${tourId}/addons`, { addOns });
+    return response.data.data.addOns;
+  },
+
+  // ========== Bookings ==========
+  getAllBookings: async (params = {}) => {
+    const response = await api.get('/admin/bookings', { params });
+    return response.data.data;
+  },
+
   // Categories
   getCategories: async () => {
     const response = await api.get('/categories');
