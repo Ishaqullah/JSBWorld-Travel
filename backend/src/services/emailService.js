@@ -11,6 +11,10 @@ const createTransporter = () => {
       user: config.smtp?.user || process.env.SMTP_USER,
       pass: config.smtp?.pass || process.env.SMTP_PASS,
     },
+    tls: {
+      // Allow self-signed or hostname-mismatched certificates (common on shared hosting)
+      rejectUnauthorized: false,
+    },
   });
 };
 
