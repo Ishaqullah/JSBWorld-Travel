@@ -41,7 +41,7 @@ export default function Footer() {
               <div className="bg-gradient-to-br from-secondary-500 to-primary-800 p-2 rounded-lg">
                 <Plane className="text-white" size={24} />
               </div>
-              <span className="text-2xl font-display font-bold">Travecations</span>
+              <span className="text-2xl font-display font-bold">JSBWORLD TRAVEL</span>
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
               Discover the world with expertly curated tours. From beaches to mountains,
@@ -139,7 +139,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-          <p>&copy; {currentYear} Travecations. All rights reserved.</p>
+          <p>&copy; {currentYear} JSBWORLD TRAVEL. All rights reserved.</p>
         </div>
       </div>
     </footer>

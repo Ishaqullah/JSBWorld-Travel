@@ -40,9 +40,9 @@ export default function Navbar() {
                 <Phone size={16} />
                 <span>+1 (234) 567-890</span>
               </a>
-              <a href="mailto:info@travecations.com" className="flex items-center space-x-2 hover:text-secondary-400 transition-colors">
+              <a href="mailto:info@jsbworld-travel.com" className="flex items-center space-x-2 hover:text-secondary-400 transition-colors">
                 <Mail size={16} />
-                <span>info@travecations.com</span>
+                <span>info@jsbworld-travel.com</span>
               </a>
             </div>
 
@@ -72,7 +72,7 @@ export default function Navbar() {
                 <Plane className="text-white" size={24} />
               </motion.div>
               <span className="text-2xl font-display font-bold text-gradient">
-                Travecations
+                JSBWORLD TRAVEL
               </span>
             </Link>
 

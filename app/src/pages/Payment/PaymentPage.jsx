@@ -25,7 +25,7 @@ const BankTransferForm = ({ bookingId, bookingNumber, total, onSuccess }) => {
 
   const bankDetails = {
     bankName: 'First National Bank',
-    accountName: 'Travecations Ltd',
+    accountName: 'JSBWORLD TRAVEL Ltd',
     accountNumber: '1234567890',
     sortCode: '12-34-56',
     swiftBic: 'FNBKUS33',

@@ -72,14 +72,14 @@ function About() {
     <div className="min-h-screen pt-20 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 className="text-5xl font-display font-bold text-center mb-6">
-          About <span className="text-gradient">Travecations</span>
+          About <span className="text-gradient">JSBWORLD TRAVEL</span>
         </h1>
         <p className="text-xl text-gray-600 text-center mb-12">
           Your gateway to extraordinary adventures around the world
         </p>
         <div className="prose prose-lg max-w-none">
           <p>
-            Travecations is your trusted partner in creating unforgettable travel experiences.
+            JSBWORLD TRAVEL is your trusted partner in creating unforgettable travel experiences.
             We believe that travel is more than just visiting new places—it's about creating
             memories, discovering cultures, and connecting with people from around the world.
           </p>

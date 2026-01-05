@@ -81,7 +81,7 @@ export default function UmrahHajj() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">
-            Why Choose Travecations for Your Pilgrimage?
+            Why Choose JSBWORLD TRAVEL for Your Pilgrimage?
           </h2>
           <p className="text-lg text-gray-600">
             We understand the spiritual significance of your journey. Our dedicated team ensures every detail is taken care of, allowing you to focus on your worship.
