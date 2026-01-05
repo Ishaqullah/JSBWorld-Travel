@@ -218,6 +218,15 @@ export default function ToursListing() {
                           </div>
                         </div>
 
+                        {/* Add-ons Badge */}
+                        {tour.addOns && tour.addOns.length > 0 && (
+                          <div className="mb-4">
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary-100 text-secondary-700">
+                              +{tour.addOns.length} Add-on{tour.addOns.length > 1 ? 's' : ''} available
+                            </span>
+                          </div>
+                        )}
+
                         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                           <div className="flex items-center text-amber-500">
                             <Star size={18} fill="currentColor" className="mr-1" />

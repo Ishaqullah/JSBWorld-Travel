@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import prisma from '../config/database.js';
 import config from '../config/index.js';
 import { asyncHandler } from '../middleware/error.middleware.js';
+import { sendBookingConfirmation, sendBookingPendingEmail, sendBookingNotificationToAdmin } from '../services/emailService.js';
 
 const stripe = new Stripe(config.stripe.secretKey);
 
@@ -272,6 +273,18 @@ export const confirmPayment = asyncHandler(async (req, res) => {
     } catch (notifError) {
       console.error('Failed to create notification:', notifError.message);
       // Don't throw - notification failure shouldn't fail the payment confirmation
+    }
+
+    // Send confirmation email to user and notification to admin (non-critical)
+    try {
+      const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+      if (user) {
+        await sendBookingConfirmation(booking, user);
+        await sendBookingNotificationToAdmin(booking, user, 'COMPLETED');
+      }
+    } catch (emailError) {
+      console.error('Failed to send booking emails:', emailError.message);
+      // Don't throw - email failure shouldn't fail the payment confirmation
     }
 
     res.status(200).json({
@@ -619,6 +632,22 @@ export const submitBankTransfer = asyncHandler(async (req, res) => {
       },
     },
   });
+
+  // Send pending email to user and notification to admin (non-critical)
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    const bookingWithDetails = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { tour: true, tourDate: true },
+    });
+    if (user && bookingWithDetails) {
+      await sendBookingPendingEmail(bookingWithDetails, user);
+      await sendBookingNotificationToAdmin(bookingWithDetails, user, 'AWAITING_VERIFICATION');
+    }
+  } catch (emailError) {
+    console.error('Failed to send bank transfer emails:', emailError.message);
+    // Don't throw - email failure shouldn't fail the submission
+  }
 
   res.status(200).json({
     success: true,

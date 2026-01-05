@@ -419,6 +419,43 @@ export default function TourDetails() {
                   </Card>
                 )}
               </div>
+
+              {/* Add-ons Section */}
+              {tour.addOns && tour.addOns.length > 0 && (
+                <Card className="p-6">
+                  <h3 className="text-xl font-bold mb-4">Optional Add-ons</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {tour.addOns.map((addOn) => (
+                      <div 
+                        key={addOn.id} 
+                        className="flex items-start gap-3 p-4 bg-gradient-to-r from-secondary-50 to-primary-50 rounded-lg border border-secondary-100"
+                      >
+                        {addOn.imageUrl && (
+                          <img 
+                            src={addOn.imageUrl} 
+                            alt={addOn.name}
+                            className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-semibold text-gray-900">{addOn.name}</h4>
+                            <span className="text-primary-600 font-bold whitespace-nowrap">
+                              +${parseFloat(addOn.price).toFixed(0)}
+                            </span>
+                          </div>
+                          {addOn.description && (
+                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{addOn.description}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-4">
+                    Add-ons can be selected during the booking process
+                  </p>
+                </Card>
+              )}
             </div>
 
             {/* Right Column - Itinerary */}

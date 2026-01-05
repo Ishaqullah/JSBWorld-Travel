@@ -80,6 +80,10 @@ export const getAllTours = asyncHandler(async (req, res) => {
           orderBy: { displayOrder: 'asc' },
           take: 1,
         },
+        addOns: {
+          where: { isActive: true },
+          select: { id: true, name: true, price: true },
+        },
         _count: {
           select: { reviews: true },
         },
