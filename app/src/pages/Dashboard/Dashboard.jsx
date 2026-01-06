@@ -230,7 +230,7 @@ export default function Dashboard() {
                 onClick={() => setActiveTab('upcoming')}
                 className={`px-6 py-3 rounded-lg font-semibold transition-all ${
                   activeTab === 'upcoming'
-                    ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white'
+                    ? 'bg-gradient-to-r from-secondary-300 to-secondary-500 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
@@ -240,7 +240,7 @@ export default function Dashboard() {
                 onClick={() => setActiveTab('past')}
                 className={`px-6 py-3 rounded-lg font-semibold transition-all ${
                   activeTab === 'past'
-                    ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white'
+                    ? 'bg-gradient-to-r from-secondary-300 to-secondary-500 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >

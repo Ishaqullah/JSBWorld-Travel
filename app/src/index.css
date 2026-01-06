@@ -4,16 +4,17 @@
 
 @layer base {
     :root {
-        /* Navy Blue and Turquoise color system */
-        --color-primary: 14 32 52;
-        /* #0E2034 */
-        --color-primary-dark: 10 26 47;
-        /* #0A1A2F */
-        --color-secondary: 0 180 216;
-        /* #00B4D8 */
-        --color-secondary-light: 42 204 201;
-        /* #2ACCC9 */
-        --color-accent: 249 115 22;
+        /* Dark Blue and Golden color system */
+        --color-primary: 23 40 62;
+        /* #17283e */
+        --color-primary-dark: 19 34 53;
+        /* #132235 */
+        --color-secondary: 194 142 56;
+        /* #c28e38 */
+        --color-secondary-light: 226 198 113;
+        /* #e2c671 */
+        --color-accent: 194 142 56;
+        /* Golden accent */
     }
 
     body {
@@ -68,41 +69,45 @@
         @apply bg-primary-900/70 backdrop-blur-lg border border-white/10 shadow-xl;
     }
 
-    /* Premium gradient backgrounds - Navy & Turquoise */
+    /* Premium gradient backgrounds - Dark Blue & Golden */
     .gradient-primary {
         @apply bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700;
     }
 
     .gradient-secondary {
-        @apply bg-gradient-to-br from-secondary-500 via-secondary-600 to-secondary-700;
+        /* Golden gradient: #e2c671 to #c28e38 */
+        @apply bg-gradient-to-br from-secondary-300 via-secondary-400 to-secondary-500;
     }
 
     .gradient-accent {
-        @apply bg-gradient-to-br from-accent-500 via-accent-600 to-accent-700;
+        /* Golden gradient: #e2c671 to #c28e38 */
+        @apply bg-gradient-to-br from-secondary-300 via-secondary-400 to-secondary-500;
     }
 
-    /* Navy gradient overlay for hero sections */
+    /* Dark Blue gradient overlay for hero sections */
     .gradient-navy-overlay {
         @apply bg-gradient-to-b from-primary-600/75 via-primary-600/60 to-primary-700/75;
     }
 
-    /* Turquoise to Navy gradient */
+    /* Golden gradient (replaces ocean) */
     .gradient-ocean {
-        @apply bg-gradient-to-br from-secondary-400 via-secondary-500 to-primary-600;
+        /* Golden gradient: #e2c671 to #c28e38 */
+        @apply bg-gradient-to-br from-secondary-300 via-secondary-400 to-secondary-500;
     }
 
     .gradient-forest {
         @apply bg-gradient-to-br from-emerald-400 via-teal-500 to-green-700;
     }
 
-    /* Animated gradient background */
+    /* Animated gradient background - Golden only */
     .gradient-animated {
-        @apply bg-gradient-to-r from-secondary-400 via-secondary-500 to-primary-500 bg-[length:200%_200%] animate-gradient;
+        @apply bg-gradient-to-r from-secondary-300 via-secondary-400 to-secondary-500 bg-[length:200%_200%] animate-gradient;
     }
 
-    /* Text gradients */
+    /* Text gradients - Golden */
     .text-gradient {
-        @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary-500 to-secondary-600;
+        /* Golden gradient: #e2c671 to #c28e38 */
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary-300 to-secondary-500;
     }
 
     .text-gradient-sunset {

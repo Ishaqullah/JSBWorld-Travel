@@ -7,47 +7,47 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Navy Blue - Primary Color
+        // Dark Blue - Primary Color (#17283e)
         primary: {
-          50: '#e8edf2',
-          100: '#d1dae5',
-          200: '#a3b5cb',
-          300: '#7590b1',
-          400: '#476b97',
-          500: '#0E2034', // Base Navy
-          600: '#0A1A2F', // Darker Navy
-          700: '#08141f',
-          800: '#050d17',
-          900: '#03070f',
+          50: '#e9ecf0',
+          100: '#c8d0da',
+          200: '#a4b3c3',
+          300: '#8095ac',
+          400: '#4c6a89',
+          500: '#17283e', // Base Dark Blue
+          600: '#132235', // Darker
+          700: '#0f1b2b',
+          800: '#0b1421',
+          900: '#070d17',
         },
-        // Turquoise/Aqua - Accent Color
+        // Golden - Secondary Color (#c28e38)
         secondary: {
-          50: '#e0f7fb',
-          100: '#b3ecf5',
-          200: '#80e0ef',
-          300: '#4dd4e9',
-          400: '#2accc9', // Lighter Turquoise
-          500: '#00B4D8', // Base Turquoise
-          600: '#0090ad',
-          700: '#006c82',
-          800: '#004857',
-          900: '#00242c',
+          50: '#fdf8ed',
+          100: '#f9efd3',
+          200: '#f3dfa8',
+          300: '#e2c671', // Light Gold (gradient start)
+          400: '#d4a94f',
+          500: '#c28e38', // Base Golden
+          600: '#a87830',
+          700: '#8e6328',
+          800: '#734e20',
+          900: '#593a18',
         },
         // White and Light Grey
         white: '#FFFFFF',
         lightGrey: '#F5F5F5',
-        // Accent (keeping orange for variety)
+        // Accent - Golden variants for consistency
         accent: {
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#f97316',
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
+          50: '#fdf8ed',
+          100: '#f9efd3',
+          200: '#f3dfa8',
+          300: '#e2c671',
+          400: '#d4a94f',
+          500: '#c28e38',
+          600: '#a87830',
+          700: '#8e6328',
+          800: '#734e20',
+          900: '#593a18',
         },
       },
       fontFamily: {

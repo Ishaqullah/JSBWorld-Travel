@@ -1,35 +1,82 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, Calendar, Users, Star, TrendingUp, Award, Globe, Clock } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, Star, TrendingUp, Award, Globe, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { tourService } from '../services/tourService';
 import { testimonials, stats } from '../data/testimonials';
 import Button from '../components/UI/Button';
 import Card from '../components/UI/Card';
 
 export default function Home() {
-  const [featuredTours, setFeaturedTours] = useState([]);
+  const [allTours, setAllTours] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardsToShow, setCardsToShow] = useState(3);
+  const autoPlayRef = useRef(null);
+
+  // Handle responsive cards per view
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setCardsToShow(1);
+      } else if (window.innerWidth < 1024) {
+        setCardsToShow(2);
+      } else {
+        setCardsToShow(3);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
-    const fetchFeaturedTours = async () => {
+    const fetchAllTours = async () => {
       try {
-        // Fetch top rated tours
+        // Fetch all tours
         const response = await tourService.getAllTours({ 
-          limit: 3, 
           sortBy: 'rating', 
           order: 'desc' 
         });
-        setFeaturedTours(response.tours);
+        setAllTours(response.tours);
       } catch (error) {
-        console.error('Failed to fetch featured tours:', error);
+        console.error('Failed to fetch tours:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFeaturedTours();
+    fetchAllTours();
   }, []);
+
+  // Auto-scroll carousel
+  useEffect(() => {
+    if (allTours.length <= cardsToShow) return;
+    
+    autoPlayRef.current = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const maxIndex = allTours.length - cardsToShow;
+        return prev >= maxIndex ? 0 : prev + 1;
+      });
+    }, 5000);
+
+    return () => clearInterval(autoPlayRef.current);
+  }, [allTours.length, cardsToShow]);
+
+  const nextSlide = () => {
+    const maxIndex = allTours.length - cardsToShow;
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    const maxIndex = allTours.length - cardsToShow;
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  };
+
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
 
   return (
     <div className="min-h-screen">
@@ -142,8 +189,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Featured Tours */}
-      <section className="section-padding bg-gray-50">
+      {/* All Tours Carousel */}
+      <section style={{ marginTop: '50px' }} className="section-padding bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <motion.h2
@@ -152,66 +199,114 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-4xl md:text-5xl font-display font-bold mb-4"
             >
-              Featured <span className="text-gradient">Adventures</span>
+              Explore Our <span className="text-gradient">Adventures</span>
             </motion.h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Handpicked experiences for unforgettable journeys
+              Discover unforgettable experiences across the world
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {featuredTours.map((tour, index) => (
+          {/* Carousel Container */}
+          <div className="relative px-12 md:px-16">
+            {/* Navigation Arrows */}
+            {allTours.length > cardsToShow && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 shadow-lg rounded-full p-3 transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-secondary-500 bg-gradient-to-br from-secondary-300 to-secondary-500"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="text-white" size={24} />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 shadow-lg rounded-full p-3 transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-secondary-500 bg-gradient-to-br from-secondary-300 to-secondary-500"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="text-white" size={24} />
+                </button>
+              </>
+            )}
+
+            {/* Carousel Track */}
+            <div className="overflow-hidden px-2 py-10">
               <motion.div
-                key={tour.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                className="flex gap-6"
+                animate={{ x: `-${currentIndex * (100 / cardsToShow)}%` }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
-                <Link to={`/tours/${tour.id}`}>
-                  <Card hover className="group">
-                    <div className="relative overflow-hidden h-64">
-                      <img
-                        src={tour.featuredImage}
-                        alt={tour.title}
-                        className="w-full h-full object-cover image-zoom"
-                      />
-                      <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-semibold text-secondary-600">
-                        {tour.duration} days
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-                        <div className="flex items-center text-white text-sm mb-2">
-                          <MapPin size={16} className="mr-1" />
-                          {tour.location}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-2xl font-bold mb-2 group-hover:text-secondary-600 transition-colors">
-                        {tour.title}
-                      </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-2">{tour.description}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center text-amber-500">
-                          <Star size={18} fill="currentColor" className="mr-1" />
-                          <span className="font-semibold">{tour.rating}</span>
-                          <span className="text-gray-500 ml-1">({tour.reviewCount})</span>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-500">From</div>
-                          <div className="text-2xl font-bold text-secondary-600">
-                            ${tour.price}
+                {allTours.map((tour) => (
+                  <motion.div
+                    key={tour.id}
+                    className="flex-shrink-0"
+                    style={{ width: `calc(${100 / cardsToShow}% - ${(cardsToShow - 1) * 24 / cardsToShow}px)` }}
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Link to={`/tours/${tour.id}`}>
+                      <Card hover className="group h-full">
+                        <div className="relative overflow-hidden h-64">
+                          <img
+                            src={tour.featuredImage}
+                            alt={tour.title}
+                            className="w-full h-full object-cover image-zoom"
+                          />
+                          <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-semibold text-secondary-600">
+                            {tour.duration} days
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+                            <div className="flex items-center text-white text-sm mb-2">
+                              <MapPin size={16} className="mr-1" />
+                              {tour.location}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
+                        <div className="p-6">
+                          <h3 className="text-2xl font-bold mb-2 group-hover:text-secondary-600 transition-colors">
+                            {tour.title}
+                          </h3>
+                          <p className="text-gray-600 mb-4 line-clamp-2">{tour.description}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center text-amber-500">
+                              <Star size={18} fill="currentColor" className="mr-1" />
+                              <span className="font-semibold">{tour.rating}</span>
+                              <span className="text-gray-500 ml-1">({tour.reviewCount})</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-sm text-gray-500">From</div>
+                              <div className="text-2xl font-bold text-secondary-600">
+                                ${tour.price}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                ))}
               </motion.div>
-            ))}
+            </div>
+
+            {/* Dot Indicators */}
+            {allTours.length > cardsToShow && (
+              <div className="flex justify-center gap-2 mt-8">
+                {Array.from({ length: allTours.length - cardsToShow + 1 }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      currentIndex === index
+                        ? 'bg-secondary-500 w-8'
+                        : 'bg-gray-300 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="text-center">
+          <div className="text-center mt-12">
             <Link to="/tours">
               <Button size="lg" variant="primary">
                 View All Tours
@@ -261,7 +356,7 @@ export default function Home() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card className="p-8 text-center h-full">
-                  <div className="inline-flex p-4 bg-gradient-to-br from-secondary-500 to-primary-600 rounded-2xl mb-4">
+                  <div className="inline-flex p-4 bg-gradient-to-br from-secondary-300 to-secondary-500 rounded-2xl mb-4">
                     <feature.icon className="text-white" size={32} />
                   </div>
                   <h3 className="text-xl font-bold mb-3">{feature.title}</h3>

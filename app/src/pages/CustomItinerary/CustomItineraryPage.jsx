@@ -93,7 +93,7 @@ export default function CustomItineraryPage() {
   return (
     <div className="min-h-screen pt-20 pb-16 bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-600 to-secondary-600 text-white py-16">
+      <div className="bg-gradient-to-br from-secondary-300 to-secondary-500 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -178,12 +178,12 @@ export default function CustomItineraryPage() {
                       When do you want to travel? *
                     </label>
                     <input
-                      type="text"
+                      type="date"
                       name="travelDates"
                       value={formData.travelDates}
                       onChange={handleChange}
                       className="input"
-                      placeholder="e.g., March 2025, 10-15 April..."
+                      min={new Date().toISOString().split('T')[0]}
                       required
                     />
                   </div>

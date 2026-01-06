@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LogOut, LayoutDashboard, Plane, Phone, Mail, Clock } from 'lucide-react';
+import { Menu, X, User, LogOut, LayoutDashboard, Phone, Mail, Clock } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import Button from '../UI/Button';
+import Logo from '../../assets/cropped_circle_image.png';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,7 +22,7 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/tours', label: 'Tours' },
-    { to: '/umrah-hajj', label: 'Umrah/Hajj' },
+    { to: '/umrah', label: 'Umrah' },
     { to: '/custom-itinerary', label: 'Custom Trip' },
     { to: '/about', label: 'About' },
   ];
@@ -38,7 +39,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-6">
               <a href="tel:+1234567890" className="flex items-center space-x-2 hover:text-secondary-400 transition-colors">
                 <Phone size={16} />
-                <span>+1 (234) 567-890</span>
+                <span>+1 (469) 799-0834</span>
               </a>
               <a href="mailto:info@jsbworld-travel.com" className="flex items-center space-x-2 hover:text-secondary-400 transition-colors">
                 <Mail size={16} />
@@ -61,28 +62,30 @@ export default function Navbar() {
       {/* Main Navigation */}
       <nav className="glass border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 group">
+          <div className="flex justify-between items-center h-28"> {/* Increased from h-20 to h-28 */}
+            {/* Logo - Increased Size */}
+            <Link to="/" className="flex items-center space-x-3 group"> {/* Increased space-x */}
               <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-                className="bg-gradient-to-br from-secondary-500 to-primary-600 p-2 rounded-lg"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+                className="py-2"
               >
-                <Plane className="text-white" size={24} />
+                <img 
+                  src={Logo} 
+                  alt="JSBWORLD TRAVEL Logo" 
+                  className="h-24 w-24 object-contain rounded-full" /* Increased from h-20 w-20 to h-24 w-24 */
+                />
               </motion.div>
-              <span className="text-2xl font-display font-bold text-gradient">
-                JSBWORLD TRAVEL
-              </span>
+             
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-10"> {/* Increased space-x */}
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`relative font-medium transition-colors ${
+                  className={`relative font-medium text-lg transition-colors ${ /* Added text-lg */
                     isActive(link.to)
                       ? 'text-primary-600'
                       : 'text-gray-700 hover:text-primary-500'
@@ -92,7 +95,7 @@ export default function Navbar() {
                   {isActive(link.to) && (
                     <motion.div
                       layoutId="activeNav"
-                      className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500"
+                      className="absolute -bottom-3 left-0 right-0 h-1 bg-gradient-to-r from-secondary-300 to-secondary-500" /* Increased from -bottom-2 and h-0.5 */
                     />
                   )}
                 </Link>
@@ -100,19 +103,19 @@ export default function Navbar() {
             </div>
 
             {/* Auth Buttons */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-6"> {/* Increased space-x */}
               {isAuthenticated ? (
                 <div className="relative">
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors" /* Increased p-2 to p-3 */
                   >
                     <img
                       src={user.avatarUrl}
                       alt={user.name}
-                      className="w-8 h-8 rounded-full ring-2 ring-primary-500"
+                      className="w-10 h-10 rounded-full ring-2 ring-primary-500" /* Increased from w-8 h-8 to w-10 h-10 */
                     />
-                    <span className="font-medium text-gray-700">{user.name}</span>
+                    <span className="font-medium text-gray-700 text-lg">{user.name}</span> {/* Added text-lg */}
                   </button>
 
                   <AnimatePresence>
@@ -121,21 +124,21 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-56 glass rounded-lg shadow-xl overflow-hidden"
+                        className="absolute right-0 mt-2 w-64 glass rounded-lg shadow-xl overflow-hidden" /* Increased w-56 to w-64 */
                       >
                         <Link
                           to="/dashboard"
-                          className="flex items-center space-x-3 px-4 py-3 hover:bg-primary-50 transition-colors"
+                          className="flex items-center space-x-3 px-5 py-4 hover:bg-primary-50 transition-colors text-lg" /* Increased padding */
                           onClick={() => setIsUserMenuOpen(false)}
                         >
-                          <LayoutDashboard size={18} className="text-primary-600" />
+                          <LayoutDashboard size={20} className="text-primary-600" /> {/* Increased size */}
                           <span>Dashboard</span>
                         </Link>
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600"
+                          className="w-full flex items-center space-x-3 px-5 py-4 hover:bg-red-50 transition-colors text-red-600 text-lg" /* Increased padding */
                         >
-                          <LogOut size={18} />
+                          <LogOut size={20} /> {/* Increased size */}
                           <span>Logout</span>
                         </button>
                       </motion.div>
@@ -144,22 +147,30 @@ export default function Navbar() {
                 </div>
               ) : (
                 <>
-                  <Button variant="ghost" onClick={() => navigate('/login')}>
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => navigate('/login')}
+                    className="text-lg px-6 py-3" /* Added className for size */
+                  >
                     Login
                   </Button>
-                  <Button variant="primary" onClick={() => navigate('/signup')}>
+                  <Button 
+                    variant="primary" 
+                    onClick={() => navigate('/signup')}
+                    className="text-lg px-6 py-3" /* Added className for size */
+                  >
                     Sign Up
                   </Button>
                 </>
               )}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Increased size */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="md:hidden p-3 rounded-lg hover:bg-gray-100 transition-colors" /* Increased p-2 to p-3 */
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} />} {/* Increased from size={24} to size={28} */}
             </button>
           </div>
         </div>
@@ -173,12 +184,12 @@ export default function Navbar() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden glass border-t border-white/20"
             >
-              <div className="px-4 py-4 space-y-3">
+              <div className="px-4 py-4 space-y-4"> {/* Increased space-y */}
                 {navLinks.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`block px-4 py-2 rounded-lg font-medium transition-colors ${
+                    className={`block px-5 py-3 rounded-lg font-medium text-lg transition-colors ${ /* Increased padding and text-lg */
                       isActive(link.to)
                         ? 'bg-primary-50 text-primary-600'
                         : 'text-gray-700 hover:bg-gray-50'
@@ -192,14 +203,14 @@ export default function Navbar() {
                   <>
                     <Link
                       to="/dashboard"
-                      className="block px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-50"
+                      className="block px-5 py-3 rounded-lg font-medium text-lg text-gray-700 hover:bg-gray-50" /* Increased padding */
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Dashboard
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 rounded-lg font-medium text-red-600 hover:bg-red-50"
+                      className="w-full text-left px-5 py-3 rounded-lg font-medium text-lg text-red-600 hover:bg-red-50" /* Increased padding */
                     >
                       Logout
                     </button>
@@ -208,7 +219,7 @@ export default function Navbar() {
                   <>
                     <Button
                       variant="ghost"
-                      className="w-full"
+                      className="w-full py-3 text-lg" /* Added text-lg and py-3 */
                       onClick={() => {
                         navigate('/login');
                         setIsMenuOpen(false);
@@ -218,7 +229,7 @@ export default function Navbar() {
                     </Button>
                     <Button
                       variant="primary"
-                      className="w-full"
+                      className="w-full py-3 text-lg" /* Added text-lg and py-3 */
                       onClick={() => {
                         navigate('/signup');
                         setIsMenuOpen(false);

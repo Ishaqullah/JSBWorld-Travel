@@ -29,7 +29,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/tours" element={<ToursListing />} />
                 <Route path="/tours/:id" element={<TourDetails />} />
-                <Route path="/umrah-hajj" element={<UmrahHajj />} />
+                <Route path="/umrah" element={<UmrahHajj />} />
                 <Route path="/custom-itinerary" element={<CustomItineraryPage />} />
                 <Route
                   path="/booking/:id"

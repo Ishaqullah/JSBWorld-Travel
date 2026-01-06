@@ -234,7 +234,7 @@ export default function BookingPage() {
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
                     s <= step
-                      ? 'bg-gradient-to-br from-primary-500 to-secondary-500 text-white'
+                      ? 'bg-gradient-to-br from-secondary-300 to-secondary-500 text-white'
                       : 'bg-gray-300 text-gray-600'
                   }`}
                 >

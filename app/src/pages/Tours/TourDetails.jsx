@@ -474,7 +474,7 @@ export default function TourDetails() {
                       return (
                         <div key={dayNumber} className="relative">
                           {/* Timeline marker */}
-                          <div className="absolute left-0 top-4 w-6 h-6 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center z-10">
+                          <div className="absolute left-0 top-4 w-6 h-6 rounded-full bg-gradient-to-br from-secondary-300 to-secondary-500 flex items-center justify-center z-10">
                             <div className="w-2 h-2 bg-white rounded-full"></div>
                           </div>
                           
