@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, User, AlertCircle, CheckCircle2, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authService } from '../../services/authService';
+import { tourService } from '../../services/tourService';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
 import Card from '../../components/UI/Card';
@@ -22,7 +23,11 @@ export default function Signup() {
   const [expiryTime, setExpiryTime] = useState(null);
   const { setUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const codeInputRefs = useRef([]);
+
+  // Check if redirected from booking page for payment
+  const { returnToPayment, tourId } = location.state || {};
 
   // Countdown timer effect
   useEffect(() => {
@@ -170,6 +175,64 @@ export default function Signup() {
       if (data.user) {
         // Update auth context with the new user
         setUser(data.user);
+        
+        // Check if we need to redirect to payment with stored booking data
+        const pendingBookingStr = sessionStorage.getItem('pendingBooking');
+        if (returnToPayment && pendingBookingStr) {
+          try {
+            const pendingBooking = JSON.parse(pendingBookingStr);
+            
+            // Fetch tour data to complete the booking object
+            const tour = await tourService.getTourById(pendingBooking.tourId);
+            
+            const depositFeePerPerson = tour.depositFee ? parseFloat(tour.depositFee) : 0;
+            const numberOfTravelers = pendingBooking.bookingData.adults + pendingBooking.bookingData.children;
+            const totalDepositFee = depositFeePerPerson * numberOfTravelers;
+            
+            // Build the complete booking object
+            const booking = {
+              tourId: tour.id,
+              tourDateId: pendingBooking.tourDateId,
+              tourTitle: tour.title,
+              userId: data.user.id,
+              ...pendingBooking.bookingData,
+              flightOption: pendingBooking.flightOption,
+              selectedAddOns: pendingBooking.selectedAddOns,
+              addOnsTotal: pendingBooking.addOnsTotal,
+              totalPrice: pendingBooking.total,
+              isDepositPayment: pendingBooking.isDepositPayment,
+              depositAmount: pendingBooking.isDepositPayment ? totalDepositFee : null,
+              remainingBalance: pendingBooking.isDepositPayment ? (pendingBooking.total - totalDepositFee) : null,
+              numberOfTravelers: numberOfTravelers,
+              travelers: pendingBooking.travelers
+            };
+            
+            // Clear the stored data
+            sessionStorage.removeItem('pendingBooking');
+            
+            // Calculate payment amount
+            const paymentAmount = pendingBooking.isDepositPayment ? totalDepositFee : pendingBooking.total;
+            
+            // Navigate to payment page with booking data
+            navigate(`/payment/${tour.id}`, { 
+              state: { 
+                booking, 
+                total: paymentAmount, 
+                addOnsTotal: pendingBooking.addOnsTotal, 
+                isDepositPayment: pendingBooking.isDepositPayment, 
+                fullTotal: pendingBooking.total, 
+                depositAmount: totalDepositFee, 
+                remainingBalance: pendingBooking.total - totalDepositFee 
+              } 
+            });
+            return;
+          } catch (parseError) {
+            console.error('Error processing pending booking:', parseError);
+            sessionStorage.removeItem('pendingBooking');
+          }
+        }
+        
+        // Default navigation
         navigate('/dashboard');
       }
     } catch (err) {

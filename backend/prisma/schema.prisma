@@ -455,12 +455,15 @@ model CustomItinerary {
   customerName      String   @map("customer_name")
   customerEmail     String   @map("customer_email")
   customerPhone     String?  @map("customer_phone")
+  departureCity     String?  @map("departure_city")
   destination       String
   travelDates       String   @map("travel_dates")
-  numberOfTravelers Int      @map("number_of_travelers")
-  budget            String?
-  preferences       String?  @db.Text
-  specialRequests   String?  @db.Text @map("special_requests")
+  totalDays         Int      @default(1) @map("total_days")
+  adultsCount       Int      @default(1) @map("adults_count")
+  childrenCount     Int      @default(0) @map("children_count")
+  infantsCount      Int      @default(0) @map("infants_count")
+  tourType          String?  @map("tour_type")
+  details           String?  @db.Text
   status            String   @default("PENDING")
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
@@ -479,5 +482,16 @@ model PendingVerification {
   createdAt         DateTime @default(now()) @map("created_at")
 
   @@map("pending_verifications")
+}
+
+// Password Reset OTP - temporary storage for forgot password OTP
+model PasswordResetOTP {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  otpCode   String   @map("otp_code")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("password_reset_otps")
 }
 

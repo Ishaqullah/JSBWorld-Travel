@@ -192,6 +192,76 @@ export const removeFromWishlist = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Add tour to wishlist by email (for logged-out users)
+// @route   POST /api/users/wishlist-by-email
+// @access  Public
+export const addToWishlistByEmail = asyncHandler(async (req, res) => {
+  const { email, tourId } = req.body;
+
+  if (!email || !tourId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email and tourId are required',
+    });
+  }
+
+  // Check if tour exists
+  const tour = await prisma.tour.findUnique({
+    where: { id: tourId },
+  });
+
+  if (!tour) {
+    return res.status(404).json({
+      success: false,
+      message: 'Tour not found',
+    });
+  }
+
+  // Find user by email
+  let user = await prisma.user.findUnique({
+    where: { email: email.toLowerCase() },
+  });
+
+  // If user doesn't exist, we can't add to wishlist (they need to register)
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'No account found with this email. Please sign up first.',
+    });
+  }
+
+  // Check if already in wishlist
+  const existingWishlist = await prisma.wishlist.findUnique({
+    where: {
+      userId_tourId: {
+        userId: user.id,
+        tourId,
+      },
+    },
+  });
+
+  if (existingWishlist) {
+    return res.status(200).json({
+      success: true,
+      message: 'Tour is already in your wishlist',
+      alreadyExists: true,
+    });
+  }
+
+  // Add to wishlist
+  await prisma.wishlist.create({
+    data: {
+      userId: user.id,
+      tourId,
+    },
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'Tour added to wishlist! Login to view your wishlist.',
+  });
+});
+
 // @desc    Get user notifications
 // @route   GET /api/users/notifications
 // @access  Private

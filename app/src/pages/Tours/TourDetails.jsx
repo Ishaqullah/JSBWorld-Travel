@@ -16,12 +16,16 @@ import {
   ChevronUp,
   Heart,
   FileEdit,
+  Mail,
+  Loader2,
 } from 'lucide-react';
 import { tourService } from '../../services/tourService';
+import { userService } from '../../services/userService';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBooking } from '../../contexts/BookingContext';
 import Button from '../../components/UI/Button';
 import Card from '../../components/UI/Card';
+import Input from '../../components/UI/Input';
 
 // Pricing Table Component - Uses prices from database
 function PricingTable({ dates, duration, onReserve }) {
@@ -156,13 +160,20 @@ function PricingTable({ dates, duration, onReserve }) {
 export default function TourDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { setCurrentBooking } = useBooking();
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [saved, setSaved] = useState(false);
-  const [expandedItineraryDays, setExpandedItineraryDays] = useState({ 1: true }); // First day expanded by default
+  const [expandedItineraryDays, setExpandedItineraryDays] = useState({ 1: true });
+  
+  // Wishlist states
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [emailSuccess, setEmailSuccess] = useState('');
 
   useEffect(() => {
     const fetchTour = async () => {
@@ -178,6 +189,75 @@ export default function TourDetails() {
 
     fetchTour();
   }, [id]);
+
+  // Check if tour is in wishlist on mount (for logged-in users)
+  useEffect(() => {
+    const checkWishlist = async () => {
+      if (isAuthenticated && tour) {
+        try {
+          const wishlistTours = await userService.getWishlist();
+          const isInWishlist = wishlistTours.some(t => t.id === tour.id);
+          setSaved(isInWishlist);
+        } catch (error) {
+          console.error('Error checking wishlist:', error);
+        }
+      }
+    };
+    checkWishlist();
+  }, [isAuthenticated, tour]);
+
+  // Handle wishlist toggle for logged-in users
+  const handleWishlistToggle = async () => {
+    if (!isAuthenticated) {
+      // Show email modal for logged-out users
+      setShowEmailModal(true);
+      return;
+    }
+
+    setWishlistLoading(true);
+    try {
+      if (saved) {
+        await userService.removeFromWishlist(tour.id);
+        setSaved(false);
+      } else {
+        await userService.addToWishlist(tour.id);
+        setSaved(true);
+      }
+    } catch (error) {
+      console.error('Error updating wishlist:', error);
+      alert(error.response?.data?.message || 'Failed to update wishlist');
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  // Handle wishlist add by email (for logged-out users)
+  const handleEmailWishlist = async (e) => {
+    e.preventDefault();
+    setEmailError('');
+    setEmailSuccess('');
+
+    if (!email || !email.includes('@')) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    setWishlistLoading(true);
+    try {
+      const response = await userService.addToWishlistByEmail(email, tour.id);
+      setEmailSuccess(response.message);
+      setSaved(true);
+      setTimeout(() => {
+        setShowEmailModal(false);
+        setEmail('');
+        setEmailSuccess('');
+      }, 2000);
+    } catch (error) {
+      setEmailError(error.response?.data?.message || 'Failed to add to wishlist');
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -202,10 +282,8 @@ export default function TourDetails() {
   }
 
   const handleReserve = (selectedDate) => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
+    // Allow all users (logged in or not) to proceed to booking page
+    // Authentication will be checked when proceeding to payment
     setCurrentBooking({ tour, selectedDateId: selectedDate.id });
     navigate(`/booking/${tour.id}`);
   };
@@ -241,21 +319,12 @@ export default function TourDetails() {
         {/* Main Content - Full Width */}
         <div className="space-y-8">
           {/* Image Gallery */}
-          <div className="relative rounded-2xl overflow-hidden h-96 group">
+          <div className="mt-10 relative rounded-2xl overflow-hidden h-96 group">
             <img
               src={currentImage}
               alt={tour.title}
               className="w-full h-full object-cover"
             />
-            <button
-              onClick={() => setSaved(!saved)}
-              className="absolute top-4 right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
-            >
-              <Heart
-                size={24}
-                className={saved ? 'text-red-500 fill-red-500' : 'text-gray-600'}
-              />
-            </button>
             {images.length > 1 && (
               <>
                 <button
@@ -287,10 +356,11 @@ export default function TourDetails() {
             )}
           </div>
 
-          {/* Title and Info */}
-          <div>
-            <div className="flex items-start justify-between mb-4">
-              <div>
+          {/* Title, Info and Action Buttons */}
+          <Card className="p-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              {/* Left side - Tour Info */}
+              <div className="flex-1">
                 <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                   <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full font-medium">
                     {tour.category?.name || tour.category}
@@ -311,33 +381,68 @@ export default function TourDetails() {
                     {tour.location}
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="flex gap-6 py-4 border-y border-gray-200">
-              <div className="flex items-center">
-                <Clock size={20} className="text-primary-600 mr-2" />
-                <div>
-                  <div className="text-sm text-gray-600">Duration</div>
-                  <div className="font-semibold">{tour.duration} days</div>
+                {/* Tour Quick Stats */}
+                <div className="flex gap-6 py-4 mt-4 border-t border-gray-200">
+                  <div className="flex items-center">
+                    <Clock size={20} className="text-primary-600 mr-2" />
+                    <div>
+                      <div className="text-sm text-gray-600">Duration</div>
+                      <div className="font-semibold">{tour.duration} days</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <Users size={20} className="text-primary-600 mr-2" />
+                    <div>
+                      <div className="text-sm text-gray-600">Group Size</div>
+                      <div className="font-semibold">Max {tour.maxGroupSize}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <Calendar size={20} className="text-primary-600 mr-2" />
+                    <div>
+                      <div className="text-sm text-gray-600">Starting From</div>
+                      <div className="font-semibold text-primary-600">${parseFloat(tour.price).toLocaleString()}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center">
-                <Users size={20} className="text-primary-600 mr-2" />
-                <div>
-                  <div className="text-sm text-gray-600">Group Size</div>
-                  <div className="font-semibold">Max {tour.maxGroupSize}</div>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <Calendar size={20} className="text-primary-600 mr-2" />
-                <div>
-                  <div className="text-sm text-gray-600">Starting From</div>
-                  <div className="font-semibold text-primary-600">${parseFloat(tour.price).toLocaleString()}</div>
-                </div>
+
+              {/* Right side - Action Buttons */}
+              <div className="flex flex-col gap-3 lg:items-end">
+                {/* Add to Wishlist Button */}
+                <button
+                  onClick={handleWishlistToggle}
+                  disabled={wishlistLoading}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all disabled:opacity-50 ${
+                    saved
+                      ? 'bg-red-50 text-red-600 border-2 border-red-200 hover:bg-red-100'
+                      : 'bg-gray-50 text-gray-700 border-2 border-gray-200 hover:bg-gray-100'
+                  }`}
+                >
+                  {wishlistLoading ? (
+                    <Loader2 size={20} className="animate-spin" />
+                  ) : (
+                    <Heart
+                      size={20}
+                      className={saved ? 'fill-red-500' : ''}
+                    />
+                  )}
+                  {saved ? 'Saved to Wishlist' : 'Add to Wishlist'}
+                </button>
+
+                {/* Add Custom Itinerary Button */}
+                <Button
+                  onClick={() => navigate('/custom-itinerary')}
+                  variant="outline"
+                  icon={FileEdit}
+                  className="px-6"
+                >
+                  Add Custom Itinerary
+                </Button>
               </div>
             </div>
-          </div>
+          </Card>
 
           {/* Pricing Table */}
           {tourDates.length > 0 && (
@@ -354,17 +459,7 @@ export default function TourDetails() {
             </Card>
           )}
 
-          {/* Add Custom Itinerary Button */}
-          <div className="flex justify-center">
-            <Button
-              onClick={() => navigate('/custom-itinerary')}
-              variant="outline"
-              icon={FileEdit}
-              className="px-8"
-            >
-              Add Custom Itinerary
-            </Button>
-          </div>
+
 
           {/* Two Column Layout for Details */}
           <div className="grid lg:grid-cols-2 gap-8">
@@ -527,6 +622,81 @@ export default function TourDetails() {
           </div>
         </div>
       </div>
+
+      {/* Email Modal for Logged-out Users */}
+      {showEmailModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl max-w-md w-full p-6"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Add to Wishlist</h2>
+              <button 
+                onClick={() => {
+                  setShowEmailModal(false);
+                  setEmail('');
+                  setEmailError('');
+                  setEmailSuccess('');
+                }}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <p className="text-gray-600 mb-4">
+              Enter your email to save this tour to your wishlist. You'll need an account to view your wishlist later.
+            </p>
+
+            <form onSubmit={handleEmailWishlist}>
+              <div className="mb-4">
+                <Input
+                  icon={Mail}
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {emailError && (
+                  <p className="text-red-500 text-sm mt-2">{emailError}</p>
+                )}
+                {emailSuccess && (
+                  <p className="text-green-500 text-sm mt-2">{emailSuccess}</p>
+                )}
+              </div>
+
+              <div className="flex gap-3">
+                <Button 
+                  type="submit" 
+                  className="flex-1"
+                  disabled={wishlistLoading}
+                >
+                  {wishlistLoading ? (
+                    <Loader2 size={20} className="animate-spin mr-2" />
+                  ) : (
+                    <Heart size={20} className="mr-2" />
+                  )}
+                  Save to Wishlist
+                </Button>
+              </div>
+
+              <p className="text-xs text-gray-500 mt-4 text-center">
+                Don't have an account?{' '}
+                <button 
+                  type="button"
+                  onClick={() => navigate('/signup')}
+                  className="text-primary-600 hover:underline"
+                >
+                  Sign up
+                </button>{' '}
+                to manage your wishlist.
+              </p>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

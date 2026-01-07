@@ -7,6 +7,7 @@ import {
   getUserWishlist,
   addToWishlist,
   removeFromWishlist,
+  addToWishlistByEmail,
   getUserNotifications,
   markNotificationAsRead,
   markAllNotificationsAsRead,
@@ -38,6 +39,7 @@ router.put('/change-password', authenticate, changePasswordValidation, validate,
 router.get('/wishlist', authenticate, getUserWishlist);
 router.post('/wishlist/:tourId', authenticate, addToWishlist);
 router.delete('/wishlist/:tourId', authenticate, removeFromWishlist);
+router.post('/wishlist-by-email', addToWishlistByEmail); // Public route for logged-out users
 
 router.get('/notifications', authenticate, getUserNotifications);
 router.put('/notifications/:id/read', authenticate, markNotificationAsRead);

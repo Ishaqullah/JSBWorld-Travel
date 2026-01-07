@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Calendar, Users, CreditCard, ArrowRight, ArrowLeft, Plus, Check, ChevronDown, ChevronUp, Minus } from 'lucide-react';
@@ -24,6 +24,8 @@ export default function BookingPage() {
   const [rooms, setRooms] = useState([{ adults: 2, children: 0 }]);
   const [travelers, setTravelers] = useState([]);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [travelerErrors, setTravelerErrors] = useState({});
+  const travelersFormRef = useRef(null);
   const [bookingData, setBookingData] = useState({
     tourDateId: '',
     startDate: '',
@@ -148,8 +150,8 @@ export default function BookingPage() {
     return sum + (addOn ? parseFloat(addOn.price) * selected.quantity * numberOfTravelers : 0);
   }, 0);
   
-  const taxesAndFees = (basePrice + addOnsTotal) * 0.15;
-  const total = basePrice + addOnsTotal + taxesAndFees;
+  // No taxes & fees - only 4% card fee will be added at payment if paying by card
+  const total = basePrice + addOnsTotal;
 
   const handleAddOnToggle = (addOnId) => {
     const exists = selectedAddOns.find(s => s.addOnId === addOnId);
@@ -164,7 +166,90 @@ export default function BookingPage() {
     return selectedAddOns.some(s => s.addOnId === addOnId);
   };
 
+  // Validate traveler required fields
+  const validateTravelers = () => {
+    const errors = {};
+    let hasErrors = false;
+    
+    travelers.forEach((traveler, idx) => {
+      const key = `${traveler.type}-${traveler.index}`;
+      const travelerErrors = {};
+      
+      // Required fields for all travelers
+      if (!traveler.fullName?.trim()) {
+        travelerErrors.fullName = 'Full name is required';
+        hasErrors = true;
+      }
+      if (!traveler.dateOfBirth) {
+        travelerErrors.dateOfBirth = 'Date of birth is required';
+        hasErrors = true;
+      }
+      if (!traveler.gender) {
+        travelerErrors.gender = 'Gender is required';
+        hasErrors = true;
+      }
+      if (!traveler.nationality?.trim()) {
+        travelerErrors.nationality = 'Nationality is required';
+        hasErrors = true;
+      }
+      if (!traveler.passportNumber?.trim()) {
+        travelerErrors.passportNumber = 'Passport number is required';
+        hasErrors = true;
+      }
+      if (!traveler.passportExpiry) {
+        travelerErrors.passportExpiry = 'Passport expiry is required';
+        hasErrors = true;
+      }
+      
+      // Additional required fields for adults
+      if (traveler.type === 'adult') {
+        if (!traveler.email?.trim()) {
+          travelerErrors.email = 'Email is required';
+          hasErrors = true;
+        }
+        if (!traveler.phone?.trim()) {
+          travelerErrors.phone = 'Phone is required';
+          hasErrors = true;
+        }
+      }
+      
+      if (Object.keys(travelerErrors).length > 0) {
+        errors[key] = travelerErrors;
+      }
+    });
+    
+    setTravelerErrors(errors);
+    return !hasErrors;
+  };
+
   const handleNext = () => {
+    if (step === 1) {
+      // Validate travelers before proceeding
+      if (!validateTravelers()) {
+        // Expand all travelers with errors
+        const newExpanded = { ...expandedTravelers };
+        Object.keys(travelerErrors).forEach(key => {
+          newExpanded[key] = true;
+        });
+        // Also expand any travelers that have newly detected errors
+        travelers.forEach((traveler) => {
+          const key = `${traveler.type}-${traveler.index}`;
+          const hasError = !traveler.fullName?.trim() || !traveler.dateOfBirth || !traveler.gender || 
+                           !traveler.nationality?.trim() || !traveler.passportNumber?.trim() || !traveler.passportExpiry ||
+                           (traveler.type === 'adult' && (!traveler.email?.trim() || !traveler.phone?.trim()));
+          if (hasError) {
+            newExpanded[key] = true;
+          }
+        });
+        setExpandedTravelers(newExpanded);
+        
+        // Scroll to travelers form
+        if (travelersFormRef.current) {
+          travelersFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        return;
+      }
+    }
     if (step < 3) setStep(step + 1);
   };
 
@@ -173,6 +258,35 @@ export default function BookingPage() {
   };
 
   const handleSubmit = (isDepositPayment = false) => {
+    // Check if user is logged in before proceeding to payment
+    if (!user) {
+      // Store all booking data in sessionStorage before redirecting to login
+      const pendingBookingData = {
+        tourId: tour.id,
+        tourDateId: bookingData.tourDateId,
+        startDate: bookingData.startDate,
+        bookingData: bookingData,
+        flightOption,
+        selectedAddOns,
+        travelers,
+        termsAccepted,
+        isDepositPayment,
+        addOnsTotal,
+        total,
+      };
+      sessionStorage.setItem('pendingBooking', JSON.stringify(pendingBookingData));
+      
+      // Redirect to login with return information
+      navigate('/login', { 
+        state: { 
+          from: `/booking/${tour.id}`,
+          returnToPayment: true,
+          tourId: tour.id
+        } 
+      });
+      return;
+    }
+
     const depositFeePerPerson = tour.depositFee ? parseFloat(tour.depositFee) : 0;
     const numberOfTravelers = bookingData.adults + bookingData.children;
     const totalDepositFee = depositFeePerPerson * numberOfTravelers;
@@ -477,122 +591,163 @@ export default function BookingPage() {
                   </Card> */}
 
                   {/* Traveler Details Accordions */}
-                  <div className="space-y-2">
+                  <div className="space-y-2" ref={travelersFormRef}>
                     {travelers.map((traveler, idx) => {
                       const key = `${traveler.type}-${traveler.index}`;
                       const isExpanded = expandedTravelers[key];
                       const label = traveler.type === 'adult' ? `Adult ${traveler.index}` : `Child ${traveler.index}`;
+                      const errors = travelerErrors[key] || {};
+                      const hasErrors = Object.keys(errors).length > 0;
                       
                       return (
-                        <Card key={key} className="overflow-hidden">
+                        <Card key={key} className={`overflow-hidden ${hasErrors ? 'border-red-300 border-2' : ''}`}>
                           <button
                             type="button"
                             onClick={() => setExpandedTravelers({ ...expandedTravelers, [key]: !isExpanded })}
-                            className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                            className={`w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${hasErrors ? 'bg-red-50' : ''}`}
                           >
-                            <span className="font-semibold text-gray-800">{label}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold text-gray-800">{label}</span>
+                              {hasErrors && <span className="text-xs text-red-600 font-medium">• Missing required fields</span>}
+                            </div>
                             {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                           </button>
                           
                           {isExpanded && (
                             <div className="px-6 pb-6 space-y-4 border-t border-gray-100">
                               <div className="grid md:grid-cols-2 gap-4 pt-4">
-                                <Input
-                                  label="Full Name"
-                                  value={traveler.fullName}
-                                  onChange={(e) => {
-                                    const newTravelers = [...travelers];
-                                    newTravelers[idx].fullName = e.target.value;
-                                    setTravelers(newTravelers);
-                                  }}
-                                  required
-                                />
-                                <Input
-                                  label="Date of Birth"
-                                  type="date"
-                                  value={traveler.dateOfBirth}
-                                  onChange={(e) => {
-                                    const newTravelers = [...travelers];
-                                    newTravelers[idx].dateOfBirth = e.target.value;
-                                    setTravelers(newTravelers);
-                                  }}
-                                />
+                                <div>
+                                  <Input
+                                    label="Full Name"
+                                    value={traveler.fullName}
+                                    onChange={(e) => {
+                                      const newTravelers = [...travelers];
+                                      newTravelers[idx].fullName = e.target.value;
+                                      setTravelers(newTravelers);
+                                    }}
+                                    required
+                                    className={errors.fullName ? 'border-red-500' : ''}
+                                  />
+                                  {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
+                                </div>
+                                <div>
+                                  <Input
+                                    label="Date of Birth"
+                                    type="date"
+                                    value={traveler.dateOfBirth}
+                                    onChange={(e) => {
+                                      const newTravelers = [...travelers];
+                                      newTravelers[idx].dateOfBirth = e.target.value;
+                                      setTravelers(newTravelers);
+                                    }}
+                                    required
+                                    className={errors.dateOfBirth ? 'border-red-500' : ''}
+                                  />
+                                  {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
+                                </div>
                               </div>
                               <div className="grid md:grid-cols-2 gap-4">
                                 <div>
-                                  <label className="block text-sm font-medium mb-2">Gender</label>
+                                  <label className="block text-sm font-medium mb-2">Gender <span className="text-red-500">*</span></label>
                                   <select
-                                    className="input"
+                                    className={`input ${errors.gender ? 'border-red-500' : ''}`}
                                     value={traveler.gender}
                                     onChange={(e) => {
                                       const newTravelers = [...travelers];
                                       newTravelers[idx].gender = e.target.value;
                                       setTravelers(newTravelers);
                                     }}
+                                    required
                                   >
                                     <option value="">Select Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
                                   </select>
+                                  {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
                                 </div>
-                                <Input
-                                  label="Nationality"
-                                  value={traveler.nationality}
-                                  onChange={(e) => {
-                                    const newTravelers = [...travelers];
-                                    newTravelers[idx].nationality = e.target.value;
-                                    setTravelers(newTravelers);
-                                  }}
-                                />
+                                <div>
+                                  <Input
+                                    label="Nationality"
+                                    value={traveler.nationality}
+                                    onChange={(e) => {
+                                      const newTravelers = [...travelers];
+                                      newTravelers[idx].nationality = e.target.value;
+                                      setTravelers(newTravelers);
+                                    }}
+                                    required
+                                    className={errors.nationality ? 'border-red-500' : ''}
+                                  />
+                                  {errors.nationality && <p className="text-red-500 text-xs mt-1">{errors.nationality}</p>}
+                                </div>
                               </div>
                               <div className="grid md:grid-cols-2 gap-4">
-                                <Input
-                                  label="Passport Number"
-                                  value={traveler.passportNumber}
-                                  onChange={(e) => {
-                                    const newTravelers = [...travelers];
-                                    newTravelers[idx].passportNumber = e.target.value;
-                                    setTravelers(newTravelers);
-                                  }}
-                                />
-                                <Input
-                                  label="Passport Expiry"
-                                  type="date"
-                                  value={traveler.passportExpiry}
-                                  onChange={(e) => {
-                                    const newTravelers = [...travelers];
-                                    newTravelers[idx].passportExpiry = e.target.value;
-                                    setTravelers(newTravelers);
-                                  }}
-                                />
+                                <div>
+                                  <Input
+                                    label="Passport Number"
+                                    value={traveler.passportNumber}
+                                    onChange={(e) => {
+                                      const newTravelers = [...travelers];
+                                      newTravelers[idx].passportNumber = e.target.value;
+                                      setTravelers(newTravelers);
+                                    }}
+                                    required
+                                    className={errors.passportNumber ? 'border-red-500' : ''}
+                                  />
+                                  {errors.passportNumber && <p className="text-red-500 text-xs mt-1">{errors.passportNumber}</p>}
+                                </div>
+                                <div>
+                                  <Input
+                                    label="Passport Expiry"
+                                    type="date"
+                                    value={traveler.passportExpiry}
+                                    onChange={(e) => {
+                                      const newTravelers = [...travelers];
+                                      newTravelers[idx].passportExpiry = e.target.value;
+                                      setTravelers(newTravelers);
+                                    }}
+                                    required
+                                    className={errors.passportExpiry ? 'border-red-500' : ''}
+                                  />
+                                  {errors.passportExpiry && <p className="text-red-500 text-xs mt-1">{errors.passportExpiry}</p>}
+                                </div>
                               </div>
                               {traveler.type === 'adult' && (
                                 <div className="grid md:grid-cols-2 gap-4">
-                                  <Input
-                                    label="Email"
-                                    type="email"
-                                    value={traveler.email}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].email = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                  />
-                                  <Input
-                                    label="Phone"
-                                    type="tel"
-                                    value={traveler.phone}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].phone = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                  />
+                                  <div>
+                                    <Input
+                                      label="Email"
+                                      type="email"
+                                      value={traveler.email}
+                                      onChange={(e) => {
+                                        const newTravelers = [...travelers];
+                                        newTravelers[idx].email = e.target.value;
+                                        setTravelers(newTravelers);
+                                      }}
+                                      required
+                                      className={errors.email ? 'border-red-500' : ''}
+                                    />
+                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                                  </div>
+                                  <div>
+                                    <Input
+                                      label="Phone"
+                                      type="tel"
+                                      value={traveler.phone}
+                                      onChange={(e) => {
+                                        const newTravelers = [...travelers];
+                                        newTravelers[idx].phone = e.target.value;
+                                        setTravelers(newTravelers);
+                                      }}
+                                      required
+                                      className={errors.phone ? 'border-red-500' : ''}
+                                    />
+                                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                                  </div>
                                 </div>
                               )}
                               <Input
-                                label="Dietary Requirements / Special Requests"
+                                label="Dietary Requirements / Special Requests (Optional)"
                                 value={traveler.dietaryRequirements}
                                 onChange={(e) => {
                                   const newTravelers = [...travelers];
@@ -937,9 +1092,9 @@ export default function BookingPage() {
                       <span>${addOnsTotal.toFixed(2)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm">
-                    <span>Taxes & fees</span>
-                    <span>${taxesAndFees.toFixed(2)}</span>
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>Card payment fee (if applicable)</span>
+                    <span>+4%</span>
                   </div>
                 </div>
 

@@ -42,15 +42,15 @@ export const authService = {
     }
   },
 
-  // Forgot password
-  forgotPassword: async (email) => {
-    const response = await api.post('/auth/forgot-password', { email });
+  // Forgot password - send OTP
+  sendPasswordResetOTP: async (email) => {
+    const response = await api.post('/auth/send-password-reset-otp', { email });
     return response;
   },
 
-  // Reset password
-  resetPassword: async (token, newPassword) => {
-    const response = await api.post('/auth/reset-password', { token, newPassword });
+  // Verify OTP and reset password
+  verifyOTPAndResetPassword: async (email, otp, newPassword) => {
+    const response = await api.post('/auth/verify-otp-reset-password', { email, otp, newPassword });
     return response;
   },
 

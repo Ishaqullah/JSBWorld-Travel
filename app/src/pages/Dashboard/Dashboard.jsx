@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, X, User, Mail, Phone, Loader2, Eye } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Calendar, MapPin, X, User, Mail, Phone, Loader2, Eye, Heart, Star, FileText } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBooking } from '../../contexts/BookingContext';
+import { userService } from '../../services/userService';
 import Card from '../../components/UI/Card';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
@@ -15,6 +17,8 @@ export default function Dashboard() {
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [wishlistTours, setWishlistTours] = useState([]);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   // Fetch user's bookings on mount
   useEffect(() => {
@@ -24,6 +28,34 @@ export default function Dashboard() {
       });
     }
   }, [user, fetchMyBookings]);
+
+  // Fetch wishlist
+  const fetchWishlist = useCallback(async () => {
+    setWishlistLoading(true);
+    try {
+      const tours = await userService.getWishlist();
+      setWishlistTours(tours || []);
+    } catch (error) {
+      console.error('Failed to fetch wishlist:', error);
+    } finally {
+      setWishlistLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchWishlist();
+    }
+  }, [user, fetchWishlist]);
+
+  const handleRemoveFromWishlist = async (tourId) => {
+    try {
+      await userService.removeFromWishlist(tourId);
+      setWishlistTours(prev => prev.filter(tour => tour.id !== tourId));
+    } catch (error) {
+      console.error('Failed to remove from wishlist:', error);
+    }
+  };
 
   const upcomingBookings = getUpcomingBookings();
   const pastBookings = getPastBookings();
@@ -225,7 +257,7 @@ export default function Dashboard() {
           {/* Bookings */}
           <div className="lg:col-span-2">
             {/* Tabs */}
-            <div className="flex gap-4 mb-6">
+            <div className="flex gap-4 mb-6 flex-wrap">
               <button
                 onClick={() => setActiveTab('upcoming')}
                 className={`px-6 py-3 rounded-lg font-semibold transition-all ${
@@ -245,6 +277,17 @@ export default function Dashboard() {
                 }`}
               >
                 Past ({pastBookings.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('wishlist')}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                  activeTab === 'wishlist'
+                    ? 'bg-gradient-to-r from-secondary-300 to-secondary-500 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <Heart size={18} className={activeTab === 'wishlist' ? 'fill-white' : ''} />
+                Wishlist ({wishlistTours.length})
               </button>
             </div>
 
@@ -272,13 +315,81 @@ export default function Dashboard() {
                     </Button>
                   </Card>
                 )
-              ) : pastBookings.length > 0 ? (
-                pastBookings.map((booking) => (
-                  <BookingCard key={booking.id} booking={booking} />
-                ))
+              ) : activeTab === 'past' ? (
+                pastBookings.length > 0 ? (
+                  pastBookings.map((booking) => (
+                    <BookingCard key={booking.id} booking={booking} />
+                  ))
+                ) : (
+                  <Card className="p-12 text-center">
+                    <p className="text-gray-600">No past bookings</p>
+                  </Card>
+                )
+              ) : wishlistLoading ? (
+                <Card className="p-12 text-center">
+                  <Loader2 className="mx-auto mb-4 text-primary-500 animate-spin" size={48} />
+                  <p className="text-gray-600">Loading your wishlist...</p>
+                </Card>
+              ) : wishlistTours.length > 0 ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {wishlistTours.map((tour) => (
+                    <Card key={tour.id} className="p-4">
+                      <div className="flex gap-4">
+                        <img
+                          src={tour.featuredImage}
+                          alt={tour.title}
+                          className="w-24 h-24 rounded-lg object-cover"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <Link to={`/tours/${tour.id}`} className="hover:text-secondary-600 transition-colors">
+                              <h3 className="font-bold text-lg truncate">{tour.title}</h3>
+                            </Link>
+                            <button
+                              onClick={() => handleRemoveFromWishlist(tour.id)}
+                              className="p-1.5 rounded-full bg-red-50 hover:bg-red-100 text-red-500 transition-colors flex-shrink-0"
+                              title="Remove from wishlist"
+                            >
+                              <Heart size={16} fill="currentColor" />
+                            </button>
+                          </div>
+                          <div className="flex items-center text-gray-600 text-sm mt-1">
+                            <MapPin size={14} className="mr-1" />
+                            {tour.location}
+                          </div>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center text-amber-500 text-sm">
+                              <Star size={14} fill="currentColor" className="mr-1" />
+                              <span>{tour.rating}</span>
+                            </div>
+                            <div className="text-secondary-600 font-bold">${tour.price}</div>
+                          </div>
+                          <div className="flex gap-2 mt-3">
+                            <Link to={`/tours/${tour.id}`}>
+                              <Button size="sm" variant="outline">View Details</Button>
+                            </Link>
+                            <Link to="/custom-itinerary">
+                              <Button size="sm" variant="ghost" className="text-secondary-600">
+                                <FileText size={14} className="mr-1" />
+                                Custom
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
               ) : (
                 <Card className="p-12 text-center">
-                  <p className="text-gray-600">No past bookings</p>
+                  <Heart className="mx-auto mb-4 text-gray-400" size={48} />
+                  <h3 className="text-xl font-semibold mb-2">Your wishlist is empty</h3>
+                  <p className="text-gray-600 mb-6">
+                    Save tours you love by clicking the heart icon!
+                  </p>
+                  <Button onClick={() => (window.location.href = '/tours')}>
+                    Browse Tours
+                  </Button>
                 </Card>
               )}
             </div>

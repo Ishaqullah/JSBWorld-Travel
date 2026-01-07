@@ -91,56 +91,131 @@ export const sendVerificationCode = async (email, code, name) => {
 };
 
 /**
+ * Send OTP code for password reset
+ */
+export const sendPasswordResetOTP = async (email, code) => {
+  const transporter = createTransporter();
+  
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+      <div style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+        <h1 style="color: #fff; margin: 0; font-size: 28px;">JSBWorld Travel</h1>
+        <p style="color: #e0e7ff; margin: 10px 0 0 0; font-size: 14px;">Password Reset Request</p>
+      </div>
+      
+      <div style="padding: 40px 30px;">
+        <h2 style="color: #1e3a5f; margin-top: 0;">Reset Your Password</h2>
+        
+        <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+          We received a request to reset your password. Use the verification code below to proceed:
+        </p>
+        
+        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%); border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0; border: 1px solid #bee3f8;">
+          <p style="color: #64748b; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Your Verification Code</p>
+          <div style="font-size: 42px; font-weight: bold; color: #1e3a5f; letter-spacing: 8px; font-family: 'Courier New', monospace;">
+            ${code}
+          </div>
+          <p style="color: #94a3b8; margin: 15px 0 0 0; font-size: 13px;">This code expires in 10 minutes</p>
+        </div>
+        
+        <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+          If you didn't request a password reset, please ignore this email. Your password will remain unchanged.
+        </p>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+          <p style="color: #4a5568; margin: 0;">
+            Best regards,<br>
+            <strong style="color: #1e3a5f;">The JSBWorld Travel Team</strong>
+          </p>
+        </div>
+      </div>
+      
+      <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+        <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+          © ${new Date().getFullYear()} JSBWorld Travel by JSB World Travel. All rights reserved.
+        </p>
+        <p style="color: #94a3b8; font-size: 12px; margin: 10px 0 0 0;">
+          This is an automated message. Please do not reply to this email.
+        </p>
+      </div>
+    </div>
+  `;
+
+  const mailOptions = {
+    from: config.smtp?.from || '"JSBWorld Travel" <info@jsbworld-travel.com>',
+    to: email,
+    subject: `${code} - Reset your JSBWorld Travel password`,
+    html: htmlContent,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Password reset OTP sent to ${email}`);
+    return true;
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    return false;
+  }
+};
+
+/**
  * Send email notification to company about new custom itinerary request
  */
 export const sendCustomItineraryNotification = async (itineraryData) => {
   const transporter = createTransporter();
   
+  // Calculate total travelers
+  const totalTravelers = (itineraryData.adultsCount || 0) + (itineraryData.childrenCount || 0) + (itineraryData.infantsCount || 0);
+  
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #1e3a5f; border-bottom: 2px solid #f5a623; padding-bottom: 10px;">
-        New Custom Itinerary Request
-      </h2>
-      
-      <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #333; margin-top: 0;">Customer Details</h3>
-        <p><strong>Name:</strong> ${itineraryData.customerName}</p>
-        <p><strong>Email:</strong> ${itineraryData.customerEmail}</p>
-        <p><strong>Phone:</strong> ${itineraryData.customerPhone || 'Not provided'}</p>
+      <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+        <h1 style="color: #fff; margin: 0;">New Custom Itinerary Request</h1>
       </div>
       
-      <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #333; margin-top: 0;">Trip Details</h3>
-        <p><strong>Destination:</strong> ${itineraryData.destination}</p>
-        <p><strong>Travel Dates:</strong> ${itineraryData.travelDates}</p>
-        <p><strong>Number of Travelers:</strong> ${itineraryData.numberOfTravelers}</p>
-        <p><strong>Budget:</strong> ${itineraryData.budget || 'Not specified'}</p>
+      <div style="padding: 30px;">
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Customer Details</h3>
+          <p><strong>Name:</strong> ${itineraryData.customerName}</p>
+          <p><strong>Email:</strong> ${itineraryData.customerEmail}</p>
+          <p><strong>Phone:</strong> ${itineraryData.customerPhone || 'Not provided'}</p>
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Trip Details</h3>
+          <p><strong>Departure City:</strong> ${itineraryData.departureCity || 'Not specified'}</p>
+          <p><strong>Destination:</strong> ${itineraryData.destination}</p>
+          <p><strong>Travel Date:</strong> ${itineraryData.travelDates}</p>
+          <p><strong>Total Days:</strong> ${itineraryData.totalDays || 1}</p>
+          <p><strong>Tour Type:</strong> ${itineraryData.tourType || 'Not specified'}</p>
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Travelers</h3>
+          <p><strong>Adults:</strong> ${itineraryData.adultsCount || 1}</p>
+          <p><strong>Children:</strong> ${itineraryData.childrenCount || 0}</p>
+          <p><strong>Infants:</strong> ${itineraryData.infantsCount || 0}</p>
+          <p><strong>Total Travelers:</strong> ${totalTravelers}</p>
+        </div>
+        
+        ${itineraryData.details ? `
+          <div style="background: #fff8e7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #c28e38;">
+            <h3 style="color: #1e3a5f; margin-top: 0;">Additional Details</h3>
+            <p style="white-space: pre-wrap;">${itineraryData.details}</p>
+          </div>
+        ` : ''}
+        
+        <p style="color: #666; font-size: 12px; margin-top: 30px;">
+          This request was submitted on ${new Date().toLocaleString()}
+        </p>
       </div>
-      
-      ${itineraryData.preferences ? `
-        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="color: #333; margin-top: 0;">Preferences</h3>
-          <p>${itineraryData.preferences}</p>
-        </div>
-      ` : ''}
-      
-      ${itineraryData.specialRequests ? `
-        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="color: #333; margin-top: 0;">Special Requests</h3>
-          <p>${itineraryData.specialRequests}</p>
-        </div>
-      ` : ''}
-      
-      <p style="color: #666; font-size: 12px; margin-top: 30px;">
-        This request was submitted on ${new Date().toLocaleString()}
-      </p>
     </div>
   `;
 
   const mailOptions = {
     from: config.smtp?.from || '"JSBWorld Travel" <noreply@jsbworld-travel.com>',
     to: 'info@jsbworld-travel.com',
-    subject: `New Custom Itinerary Request - ${itineraryData.destination}`,
+    subject: `New Custom Itinerary Request - ${itineraryData.destination} (${itineraryData.tourType || 'General'})`,
     html: htmlContent,
   };
 
@@ -157,11 +232,15 @@ export const sendCustomItineraryNotification = async (itineraryData) => {
 /**
  * Send confirmation email to customer about their custom itinerary request
  */
-/**
- * Send confirmation email to customer about their custom itinerary request
- */
 export const sendCustomItineraryConfirmation = async (itineraryData) => {
   const transporter = createTransporter();
+  
+  // Extract last name from full name (text after last space)
+  const nameParts = itineraryData.customerName.trim().split(' ');
+  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : nameParts[0];
+  
+  // Calculate total travelers
+  const totalTravelers = (itineraryData.adultsCount || 0) + (itineraryData.childrenCount || 0) + (itineraryData.infantsCount || 0);
   
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
@@ -174,7 +253,7 @@ export const sendCustomItineraryConfirmation = async (itineraryData) => {
         <h2 style="color: #1e3a5f; margin-top: 0; font-size: 24px;">Request Received!</h2>
         
         <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
-          Dear ${itineraryData.customerName},
+          Dear ${lastName},
         </p>
         
         <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
@@ -182,7 +261,14 @@ export const sendCustomItineraryConfirmation = async (itineraryData) => {
         </p>
         
         <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid #e2e8f0;">
-          <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px;">Trip Summary</h3>
+          <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Trip Summary</h3>
+          
+          ${itineraryData.departureCity ? `
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Departure City</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${itineraryData.departureCity}</p>
+          </div>
+          ` : ''}
           
           <div style="margin-bottom: 10px;">
             <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Destination</p>
@@ -190,21 +276,29 @@ export const sendCustomItineraryConfirmation = async (itineraryData) => {
           </div>
           
           <div style="margin-bottom: 10px;">
-            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Dates</p>
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Travel Date</p>
             <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${itineraryData.travelDates}</p>
           </div>
           
           <div style="margin-bottom: 10px;">
-            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Travelers</p>
-            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${itineraryData.numberOfTravelers}</p>
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Duration</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${itineraryData.totalDays || 1} day(s)</p>
           </div>
           
-          ${itineraryData.budget ? `
-          <div>
-            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Budget</p>
-            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${itineraryData.budget}</p>
+          ${itineraryData.tourType ? `
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Tour Type</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${itineraryData.tourType}</p>
           </div>
           ` : ''}
+          
+          <div>
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Travelers</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">
+              ${itineraryData.adultsCount || 1} Adult(s)${itineraryData.childrenCount > 0 ? `, ${itineraryData.childrenCount} Child(ren)` : ''}${itineraryData.infantsCount > 0 ? `, ${itineraryData.infantsCount} Infant(s)` : ''} 
+              (Total: ${totalTravelers})
+            </p>
+          </div>
         </div>
         
         <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 20px; border-radius: 4px;">
@@ -244,7 +338,7 @@ export const sendCustomItineraryConfirmation = async (itineraryData) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Confirmation email sent to customer (Appealing Version)');
+    console.log('Confirmation email sent to customer');
     return true;
   } catch (error) {
     console.error('Error sending customer confirmation:', error);
@@ -447,6 +541,7 @@ export const sendBookingNotificationToAdmin = async (booking, user, paymentStatu
 
 export default {
   sendVerificationCode,
+  sendPasswordResetOTP,
   sendCustomItineraryNotification,
   sendCustomItineraryConfirmation,
   sendBookingConfirmation,

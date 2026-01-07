@@ -9,6 +9,8 @@ import {
   resetPassword,
   sendVerificationCodeHandler,
   verifyCodeAndSignup,
+  sendPasswordResetOTPHandler,
+  verifyOTPAndResetPassword,
 } from '../controllers/authController.js';
 import { authenticate } from '../middleware/auth.middleware.js';
 import validate from '../middleware/validate.middleware.js';
@@ -58,5 +60,23 @@ router.post('/reset-password', resetPasswordValidation, validate, resetPassword)
 // Email verification routes
 router.post('/send-verification-code', signupValidation, validate, sendVerificationCodeHandler);
 router.post('/verify-code', verifyCodeValidation, validate, verifyCodeAndSignup);
+
+// Password reset OTP routes
+const passwordResetOTPValidation = [
+  body('email').isEmail().withMessage('Please provide a valid email'),
+];
+
+const verifyOTPResetPasswordValidation = [
+  body('email').isEmail().withMessage('Please provide a valid email'),
+  body('otp')
+    .isLength({ min: 6, max: 6 })
+    .withMessage('OTP must be 6 digits'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long'),
+];
+
+router.post('/send-password-reset-otp', passwordResetOTPValidation, validate, sendPasswordResetOTPHandler);
+router.post('/verify-otp-reset-password', verifyOTPResetPasswordValidation, validate, verifyOTPAndResetPassword);
 
 export default router;

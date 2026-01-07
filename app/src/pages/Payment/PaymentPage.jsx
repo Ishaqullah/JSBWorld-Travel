@@ -652,11 +652,7 @@ export default function PaymentPage() {
               <div className="space-y-2 mb-6 pb-6 border-t border-b border-gray-200 pt-4">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal</span>
-                  <span>${(paymentDetails.baseAmount / 1.15)?.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Taxes & Fees</span>
-                  <span>${(paymentDetails.baseAmount - paymentDetails.baseAmount / 1.15)?.toFixed(2)}</span>
+                  <span>${paymentDetails.baseAmount?.toFixed(2)}</span>
                 </div>
                 {paymentDetails.cardFee > 0 && (
                   <div className="flex justify-between text-sm text-amber-600">

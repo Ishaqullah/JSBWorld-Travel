@@ -6,6 +6,7 @@ import Footer from './components/Layout/Footer';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Auth/Login';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 import Signup from './pages/Auth/Signup';
 import ToursListing from './pages/Tours/ToursListing';
 import TourDetails from './pages/Tours/TourDetails';
@@ -26,6 +27,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/tours" element={<ToursListing />} />
                 <Route path="/tours/:id" element={<TourDetails />} />
@@ -33,11 +35,7 @@ function App() {
                 <Route path="/custom-itinerary" element={<CustomItineraryPage />} />
                 <Route
                   path="/booking/:id"
-                  element={
-                    <ProtectedRoute>
-                      <BookingPage />
-                    </ProtectedRoute>
-                  }
+                  element={<BookingPage />}
                 />
                 <Route
                   path="/payment/:id"

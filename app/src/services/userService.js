@@ -40,6 +40,12 @@ export const userService = {
     return response;
   },
 
+  // Add to wishlist by email (for logged-out users)
+  addToWishlistByEmail: async (email, tourId) => {
+    const response = await api.post('/users/wishlist-by-email', { email, tourId });
+    return response; // api interceptor already unwraps response.data
+  },
+
   // Get notifications
   getNotifications: async (page = 1, limit = 20) => {
     const response = await api.get('/users/notifications', {

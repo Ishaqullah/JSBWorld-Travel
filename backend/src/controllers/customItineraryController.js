@@ -13,19 +13,22 @@ export const createCustomItinerary = asyncHandler(async (req, res) => {
     customerName,
     customerEmail,
     customerPhone,
+    departureCity,
     destination,
     travelDates,
-    numberOfTravelers,
-    budget,
-    preferences,
-    specialRequests,
+    totalDays,
+    adultsCount,
+    childrenCount,
+    infantsCount,
+    tourType,
+    details,
   } = req.body;
 
   // Validate required fields
-  if (!customerName || !customerEmail || !destination || !travelDates || !numberOfTravelers) {
+  if (!customerName || !customerEmail || !customerPhone || !destination || !travelDates) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide all required fields: name, email, destination, travel dates, and number of travelers',
+      message: 'Please provide all required fields: name, email, phone number, destination, and travel date',
     });
   }
 
@@ -35,12 +38,15 @@ export const createCustomItinerary = asyncHandler(async (req, res) => {
       customerName,
       customerEmail,
       customerPhone,
+      departureCity,
       destination,
       travelDates,
-      numberOfTravelers: parseInt(numberOfTravelers),
-      budget,
-      preferences,
-      specialRequests,
+      totalDays: parseInt(totalDays) || 1,
+      adultsCount: parseInt(adultsCount) || 1,
+      childrenCount: parseInt(childrenCount) || 0,
+      infantsCount: parseInt(infantsCount) || 0,
+      tourType,
+      details,
       status: 'PENDING',
     },
   });
