@@ -15,9 +15,9 @@ export default function Footer() {
   const footerLinks = {
     company: [
       { label: 'About Us', to: '/about' },
-      { label: 'Our Team', to: '/' },
-      { label: 'Careers', to: '/' },
-      { label: 'Press', to: '/' },
+      { label: 'Tours', to: '/tours' },
+      { label: 'Umrah & Hajj', to: '/umrah' },
+      { label: 'Custom Itinerary', to: '/custom-itinerary' },
     ],
     support: [
       { label: 'Help Center', to: '/' },
@@ -26,9 +26,9 @@ export default function Footer() {
       { label: 'Contact Us', to: '/' },
     ],
     legal: [
-      { label: 'Privacy Policy', to: '/' },
-      { label: 'Terms of Service', to: '/' },
-      { label: 'Refund Policy', to: '/' },
+      { label: 'Privacy Policy', to: '/privacy-policy' },
+      { label: 'Terms of Service', to: '/terms-of-service' },
+      { label: 'Refund Policy', to: '/refund-policy' },
     ],
   };
 
@@ -109,7 +109,7 @@ export default function Footer() {
         </div>
 
         {/* Newsletter */}
-        <div className="border-t border-gray-800 pt-8 mb-8">
+        {/* <div className="border-t border-gray-800 pt-8 mb-8">
           <div className="max-w-md mx-auto text-center">
             <Mail className="mx-auto mb-4 text-primary-400" size={32} />
             <h3 className="text-xl font-semibold mb-2">Subscribe to our newsletter</h3>
@@ -130,7 +130,7 @@ export default function Footer() {
               </button>
             </form>
           </div>
-        </div>
+        </div> */}
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">

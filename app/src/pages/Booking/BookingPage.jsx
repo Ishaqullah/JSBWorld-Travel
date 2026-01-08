@@ -341,7 +341,7 @@ export default function BookingPage() {
     <div className="min-h-screen pt-20 pb-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress Steps */}
-        <div className="mb-8">
+        <div className="mb-8 mt-10">
           <div className="flex items-center justify-center">
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center">
@@ -1015,7 +1015,7 @@ export default function BookingPage() {
                         className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                       />
                       <label htmlFor="terms" className="text-sm text-gray-700">
-                        I accept the <a href="/terms" target="_blank" className="text-primary-600 hover:underline font-medium">Terms and Conditions</a>
+                        I accept the <a href="/terms-of-service" target="_blank" className="text-primary-600 hover:underline font-medium">Terms and Conditions</a>
                       </label>
                     </div>
                     
