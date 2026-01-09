@@ -23,6 +23,7 @@ export default function Navbar() {
     { to: '/', label: 'Home' },
     { to: '/tours', label: 'Tours' },
     { to: '/umrah', label: 'Umrah' },
+    { to: '/hajj', label: 'Hajj' },
     { to: '/custom-itinerary', label: 'Custom Trip' },
     { to: '/about', label: 'About' },
   ];

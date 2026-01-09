@@ -495,3 +495,68 @@ model PasswordResetOTP {
   @@map("password_reset_otps")
 }
 
+// Hajj Pre-Registration
+model HajjRegistration {
+  id                   String   @id @default(cuid())
+  // Contact Information (Step 1)
+  package              String
+  name                 String
+  phone                String
+  email                String
+  streetAddress        String?  @map("street_address")
+  addressLine2         String?  @map("address_line_2")
+  postalCode           String?  @map("postal_code")
+  country              String
+  state                String?
+  city                 String?
+  referralSource       String?  @map("referral_source")
+  teamMember           String?  @map("team_member")
+  
+  // Travel Details (Step 2)
+  roomType             String?  @map("room_type")
+  preferredGateway     String?  @map("preferred_gateway")
+  hajjBefore           Boolean  @default(false) @map("hajj_before")
+  lastHajjYear         Int?     @map("last_hajj_year")
+  manasikCamp          String?  @map("manasik_camp")
+  
+  // Finalize (Step 4)
+  dietaryRestrictions  Boolean  @default(false) @map("dietary_restrictions")
+  physicalDisabilities Boolean  @default(false) @map("physical_disabilities")
+  travelingAlone       Boolean  @default(false) @map("traveling_alone")
+  over65Alone          Boolean  @default(false) @map("over_65_alone")
+  profession           String?
+  firstLanguage        String?  @map("first_language")
+  localMasjid          String?  @map("local_masjid")
+  additionalNotes      String?  @db.Text @map("additional_notes")
+  documentUrls         String?  @db.Text @map("document_urls")
+  
+  status               String   @default("PENDING")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  travelers            HajjTraveler[]
+
+  @@map("hajj_registrations")
+}
+
+model HajjTraveler {
+  id                 String    @id @default(cuid())
+  registrationId     String    @map("registration_id")
+  firstName          String    @map("first_name")
+  middleName         String?   @map("middle_name")
+  lastName           String    @map("last_name")
+  dateOfBirth        DateTime? @db.Date @map("date_of_birth")
+  gender             String?
+  email              String?
+  passportNumber     String?   @map("passport_number")
+  passportIssueDate  DateTime? @db.Date @map("passport_issue_date")
+  passportExpiryDate DateTime? @db.Date @map("passport_expiry_date")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  registration HajjRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@map("hajj_travelers")
+}
+

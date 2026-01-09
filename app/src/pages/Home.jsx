@@ -82,7 +82,7 @@ export default function Home() {
     <div className="min-h-screen">
       {/* Hero Section */}
       {/* Hero Section - Design Handoff: 650-850px */}
-      <section className="relative h-[700px] md:h-[800px] flex items-center justify-center overflow-hidden pt-20 md:pt-10">
+      <section className="relative h-[980px] md:h-[800px] flex items-start md:items-center justify-center overflow-hidden pt-36 md:pt-10">
         {/* Background Image with Navy Gradient Overlay */}
         <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920')"}}></div>
         <div className="absolute inset-0 gradient-navy-overlay"></div>

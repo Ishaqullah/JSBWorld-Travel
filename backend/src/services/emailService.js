@@ -539,6 +539,199 @@ export const sendBookingNotificationToAdmin = async (booking, user, paymentStatu
   }
 };
 
+/**
+ * Send email notification to company about new Hajj pre-registration
+ */
+export const sendHajjRegistrationNotification = async (registrationData) => {
+  const transporter = createTransporter();
+  
+  const travelersHtml = (registrationData.travelers || []).map((t, i) => `
+    <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 3px solid #1e3a5f;">
+      <p style="margin: 0 0 5px 0; font-weight: bold; color: #1e3a5f;">Traveler ${i + 1}</p>
+      <p style="margin: 3px 0;"><strong>Name:</strong> ${t.firstName} ${t.middleName || ''} ${t.lastName}</p>
+      <p style="margin: 3px 0;"><strong>DOB:</strong> ${t.dateOfBirth ? new Date(t.dateOfBirth).toLocaleDateString() : 'Not provided'}</p>
+      <p style="margin: 3px 0;"><strong>Gender:</strong> ${t.gender || 'Not provided'}</p>
+      <p style="margin: 3px 0;"><strong>Email:</strong> ${t.email || 'Not provided'}</p>
+      <p style="margin: 3px 0;"><strong>Passport:</strong> ${t.passportNumber || 'Not provided'}</p>
+      <p style="margin: 3px 0;"><strong>Passport Issue:</strong> ${t.passportIssueDate ? new Date(t.passportIssueDate).toLocaleDateString() : 'N/A'}</p>
+      <p style="margin: 3px 0;"><strong>Passport Expiry:</strong> ${t.passportExpiryDate ? new Date(t.passportExpiryDate).toLocaleDateString() : 'N/A'}</p>
+    </div>
+  `).join('');
+  
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto;">
+      <div style="text-align: center; padding: 25px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+        <h1 style="color: #fff; margin: 0; font-size: 26px;">New Hajj 2025 Pre-Registration</h1>
+      </div>
+      
+      <div style="padding: 30px;">
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Contact Information</h3>
+          <p><strong>Package:</strong> ${registrationData.package}</p>
+          <p><strong>Name:</strong> ${registrationData.name}</p>
+          <p><strong>Phone:</strong> ${registrationData.phone}</p>
+          <p><strong>Email:</strong> ${registrationData.email}</p>
+          <p><strong>Address:</strong> ${registrationData.streetAddress || ''} ${registrationData.addressLine2 || ''}</p>
+          <p><strong>City/State:</strong> ${registrationData.city || ''}, ${registrationData.state || ''} ${registrationData.postalCode || ''}</p>
+          <p><strong>Country:</strong> ${registrationData.country}</p>
+          <p><strong>Referral Source:</strong> ${registrationData.referralSource || 'Not specified'}</p>
+          <p><strong>Team Member:</strong> ${registrationData.teamMember || 'Not specified'}</p>
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Travel Details</h3>
+          <p><strong>Room Type:</strong> ${registrationData.roomType || 'Not specified'}</p>
+          <p><strong>Preferred Gateway:</strong> ${registrationData.preferredGateway || 'Not specified'}</p>
+          <p><strong>Previous Hajj:</strong> ${registrationData.hajjBefore ? 'Yes' : 'No'}</p>
+          ${registrationData.lastHajjYear ? `<p><strong>Last Hajj Year:</strong> ${registrationData.lastHajjYear}</p>` : ''}
+          <p><strong>Manasik Camp:</strong> ${registrationData.manasikCamp || 'Not specified'}</p>
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Travelers (${registrationData.travelers?.length || 0})</h3>
+          ${travelersHtml || '<p>No traveler details provided</p>'}
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Additional Information</h3>
+          <p><strong>Dietary Restrictions:</strong> ${registrationData.dietaryRestrictions ? 'Yes' : 'No'}</p>
+          <p><strong>Physical Disabilities:</strong> ${registrationData.physicalDisabilities ? 'Yes' : 'No'}</p>
+          <p><strong>Traveling Alone:</strong> ${registrationData.travelingAlone ? 'Yes' : 'No'}</p>
+          <p><strong>Over 65 Alone:</strong> ${registrationData.over65Alone ? 'Yes' : 'No'}</p>
+          <p><strong>Profession:</strong> ${registrationData.profession || 'Not specified'}</p>
+          <p><strong>First Language:</strong> ${registrationData.firstLanguage || 'Not specified'}</p>
+          <p><strong>Local Masjid:</strong> ${registrationData.localMasjid || 'Not specified'}</p>
+          ${registrationData.additionalNotes ? `<p><strong>Additional Notes:</strong> ${registrationData.additionalNotes}</p>` : ''}
+        </div>
+        
+        <p style="color: #666; font-size: 12px; margin-top: 30px;">
+          This registration was submitted on ${new Date().toLocaleString()}
+        </p>
+      </div>
+    </div>
+  `;
+
+  const mailOptions = {
+    from: config.smtp?.from || '"JSBWorld Travel" <noreply@jsbworld-travel.com>',
+    to: 'info@jsbworld-travel.com',
+    subject: `New Hajj 2025 Pre-Registration - ${registrationData.name} (${registrationData.package})`,
+    html: htmlContent,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Hajj registration notification sent to company');
+    return true;
+  } catch (error) {
+    console.error('Error sending Hajj registration notification:', error);
+    return false;
+  }
+};
+
+/**
+ * Send confirmation email to customer about their Hajj pre-registration
+ */
+export const sendHajjRegistrationConfirmation = async (registrationData) => {
+  const transporter = createTransporter();
+  
+  // Extract last name from full name
+  const nameParts = registrationData.name.trim().split(' ');
+  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : nameParts[0];
+  
+  const travelersCount = registrationData.travelers?.length || 0;
+  
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+      <div style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+        <h1 style="color: #fff; margin: 0; font-size: 28px;">JSBWorld Travel</h1>
+        <p style="color: #e0e7ff; margin: 10px 0 0 0; font-size: 14px;">Hajj 2025 Pre-Registration</p>
+      </div>
+      
+      <div style="padding: 40px 30px;">
+        <h2 style="color: #1e3a5f; margin-top: 0; font-size: 24px;">Registration Received!</h2>
+        
+        <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+          Dear ${lastName},
+        </p>
+        
+        <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+          Thank you for your interest in performing Hajj 2025 with JSBWorld Travel! We have received your pre-registration and our team will review your application shortly.
+        </p>
+        
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid #e2e8f0;">
+          <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Registration Summary</h3>
+          
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Selected Package</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${registrationData.package}</p>
+          </div>
+          
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Room Type</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${registrationData.roomType || 'Not specified'}</p>
+          </div>
+          
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Preferred Gateway</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${registrationData.preferredGateway || 'Not specified'}</p>
+          </div>
+          
+          <div style="margin-bottom: 10px;">
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Manasik Camp</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${registrationData.manasikCamp || 'Not specified'}</p>
+          </div>
+          
+          <div>
+            <p style="margin: 5px 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Number of Travelers</p>
+            <p style="margin: 0; color: #334155; font-weight: 600; font-size: 16px;">${travelersCount} Traveler(s)</p>
+          </div>
+        </div>
+        
+        <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 20px; border-radius: 4px;">
+          <h4 style="color: #15803d; margin: 0 0 10px 0; font-size: 16px;">What Happens Next?</h4>
+          <ul style="margin: 0; padding-left: 20px; color: #166534; font-size: 15px;">
+            <li style="margin-bottom: 8px;">Our Hajj team will review your registration within 48 hours.</li>
+            <li style="margin-bottom: 8px;">We will contact you to discuss package details and payment options.</li>
+            <li>You will receive guidance on visa processing and travel preparations.</li>
+          </ul>
+        </div>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+          <p style="color: #4a5568; margin: 0; font-size: 16px;">
+            Best regards,<br>
+            <strong style="color: #1e3a5f;">The JSBWorld Travel Hajj Team</strong>
+          </p>
+          <p style="color: #64748b; font-size: 14px; margin-top: 10px;">
+            Questions? Contact us at <a href="mailto:info@jsbworld-travel.com" style="color: #2563eb; text-decoration: none;">info@jsbworld-travel.com</a>
+          </p>
+        </div>
+      </div>
+      
+      <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+        <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+          © ${new Date().getFullYear()} JSBWorld Travel by JSB World Travel. All rights reserved.
+        </p>
+      </div>
+    </div>
+  `;
+
+  const mailOptions = {
+    from: '"JSBWorld Travel" <info@jsbworld-travel.com>',
+    to: registrationData.email,
+    subject: 'Hajj 2025 Pre-Registration Received! 🕋',
+    html: htmlContent,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Hajj registration confirmation sent to customer');
+    return true;
+  } catch (error) {
+    console.error('Error sending Hajj registration confirmation:', error);
+    return false;
+  }
+};
+
 export default {
   sendVerificationCode,
   sendPasswordResetOTP,
@@ -547,4 +740,7 @@ export default {
   sendBookingConfirmation,
   sendBookingPendingEmail,
   sendBookingNotificationToAdmin,
+  sendHajjRegistrationNotification,
+  sendHajjRegistrationConfirmation,
 };
+

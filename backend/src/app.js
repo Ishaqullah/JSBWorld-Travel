@@ -19,6 +19,7 @@ import categoryRoutes from './routes/category.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import customItineraryRoutes from './routes/customItinerary.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import hajjRoutes from './routes/hajj.routes.js';
 
 const app = express();
 
@@ -88,6 +89,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/custom-itinerary', customItineraryRoutes);
+app.use('/api/hajj-registration', hajjRoutes);
 app.use('/api/admin', adminRoutes);
 
 

@@ -15,6 +15,7 @@ import BookingPage from './pages/Booking/BookingPage';
 import PaymentPage from './pages/Payment/PaymentPage';
 import Dashboard from './pages/Dashboard/Dashboard';
 import UmrahHajj from './pages/UmrahHajj/UmrahHajj';
+import HajjPage from './pages/Hajj/HajjPage';
 import CustomItineraryPage from './pages/CustomItinerary/CustomItineraryPage';
 import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 import TermsOfService from './pages/Legal/TermsOfService';
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/tours" element={<ToursListing />} />
                 <Route path="/tours/:id" element={<TourDetails />} />
                 <Route path="/umrah" element={<UmrahHajj />} />
+                <Route path="/hajj" element={<HajjPage />} />
                 <Route path="/custom-itinerary" element={<CustomItineraryPage />} />
                 <Route
                   path="/booking/:id"
