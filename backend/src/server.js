@@ -8,10 +8,10 @@ const PORT = config.port;
 await connectDB();
 
 // Start server
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT} in ${config.nodeEnv} mode`);
-  console.log(`📍 API available at http://localhost:${PORT}/api`);
 });
+
 
 // Graceful shutdown
 const gracefulShutdown = async (signal) => {
