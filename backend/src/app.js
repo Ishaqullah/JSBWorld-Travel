@@ -32,6 +32,7 @@ const allowedOrigins = [
   'http://localhost:5174', // Admin panel dev server
   'http://localhost:3000',
   'https://travecations.jsbworld-travel.com',
+  'https://travecations-admin-git-main-ishaqullah-siddiquis-projects.vercel.app',
   'https://jsbworld-travel.com',
   config.clientUrl, // Fallback to env variable
 ].filter(Boolean); // Remove any undefined values
