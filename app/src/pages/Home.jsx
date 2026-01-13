@@ -7,6 +7,48 @@ import { testimonials, stats } from '../data/testimonials';
 import Button from '../components/UI/Button';
 import Card from '../components/UI/Card';
 
+// Partner logo imports
+import PartnerLogo1 from '../assets/image1.png';
+import PartnerLogo2 from '../assets/image2.png';
+import PartnerLogo3 from '../assets/image3.png';
+import PartnerLogo6 from '../assets/image6.png';
+import PartnerLogo7 from '../assets/image7.png';
+import PartnerLogo8 from '../assets/image8.png';
+import PartnerLogo9 from '../assets/image9.png';
+import PartnerLogo10 from '../assets/image10.png';
+import PartnerLogo11 from '../assets/image11.png';
+import PartnerLogo12 from '../assets/image12.png';
+import PartnerLogo13 from '../assets/image13.jpg';
+import PartnerLogo14 from '../assets/image14.png';
+import PartnerLogo15 from '../assets/image15.jpeg';
+import PartnerLogo18 from '../assets/image18.png';
+import PartnerLogo19 from '../assets/image19.png';
+import PartnerLogo20 from '../assets/image20.png';
+import PartnerLogo21 from '../assets/image21.png';
+import PartnerLogo22 from '../assets/image22.png';
+
+// Partner logos array for easy mapping
+const partnerLogos = [
+  { src: PartnerLogo1, alt: 'Travel Agents Association of Pakistan' },
+  { src: PartnerLogo2, alt: 'Saudia Airlines' },
+  { src: PartnerLogo3, alt: 'American Airlines' },
+  { src: PartnerLogo6, alt: 'Etihad Airways' },
+  { src: PartnerLogo7, alt: 'IATA' },
+  { src: PartnerLogo8, alt: 'Qatar Airways' },
+  { src: PartnerLogo9, alt: 'United Airlines' },
+  { src: PartnerLogo10, alt: 'Lufthansa' },
+  { src: PartnerLogo11, alt: 'SWISS' },
+  { src: PartnerLogo12, alt: 'KLM' },
+  { src: PartnerLogo13, alt: 'Iberia' },
+  { src: PartnerLogo14, alt: 'Air France' },
+  { src: PartnerLogo15, alt: 'Marriott' },
+  { src: PartnerLogo18, alt: 'IHG Hotels' },
+  { src: PartnerLogo19, alt: 'World of Hyatt' },
+  { src: PartnerLogo20, alt: 'CLIA' },
+  { src: PartnerLogo21, alt: 'ARC' },
+  { src: PartnerLogo22, alt: 'ASTA' },
+];
+
 export default function Home() {
   const navigate = useNavigate();
   const [allTours, setAllTours] = useState([]);
@@ -310,45 +352,15 @@ export default function Home() {
           <div className="flex animate-marquee">
             {/* First set of logos */}
             <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
-              <img src="/src/assets/image1.png" alt="Travel Agents Association of Pakistan" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image2.png" alt="Saudia Airlines" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image3.png" alt="American Airlines" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image6.png" alt="Etihad Airways" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image7.png" alt="IATA" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image8.png" alt="Qatar Airways" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image9.png" alt="United Airlines" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image10.png" alt="Lufthansa" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image11.png" alt="SWISS" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image12.png" alt="KLM" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image13.jpg" alt="Iberia" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image14.png" alt="Air France" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image15.jpeg" alt="Marriott" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image18.png" alt="IHG Hotels" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image19.png" alt="World of Hyatt" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image20.png" alt="CLIA" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image21.png" alt="ARC" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image22.png" alt="ASTA" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+              {partnerLogos.map((logo, index) => (
+                <img key={index} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+              ))}
             </div>
             {/* Duplicate set for seamless loop */}
             <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
-              <img src="/src/assets/image1.png" alt="Travel Agents Association of Pakistan" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image2.png" alt="Saudia Airlines" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image3.png" alt="American Airlines" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image6.png" alt="Etihad Airways" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image7.png" alt="IATA" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image8.png" alt="Qatar Airways" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image9.png" alt="United Airlines" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image10.png" alt="Lufthansa" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image11.png" alt="SWISS" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image12.png" alt="KLM" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image13.jpg" alt="Iberia" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image14.png" alt="Air France" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image15.jpeg" alt="Marriott" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image18.png" alt="IHG Hotels" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image19.png" alt="World of Hyatt" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image20.png" alt="CLIA" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image21.png" alt="ARC" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              <img src="/src/assets/image22.png" alt="ASTA" className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+              {partnerLogos.map((logo, index) => (
+                <img key={`dup-${index}`} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+              ))}
             </div>
           </div>
         </div>

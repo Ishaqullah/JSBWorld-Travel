@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Send, AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
+import buildingPhoto from '../../assets/13747-Montfort-Dr-Dallas-TX-Building-Photo-1-Large.jpg';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function ContactPage() {
@@ -155,7 +155,7 @@ export default function ContactPage() {
               {/* Office Photo */}
               <div className="rounded-2xl overflow-hidden shadow-lg">
                 <img
-                  src="/src/assets/13747-Montfort-Dr-Dallas-TX-Building-Photo-1-Large.jpg"
+                  src={buildingPhoto}
                   alt="Office Building - 13747 Montfort Dr, Dallas"
                   className="w-full h-48 object-cover"
                 />
