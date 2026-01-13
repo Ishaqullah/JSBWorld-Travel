@@ -105,8 +105,8 @@ export default function ToursListing() {
                   </div>
                 </div>
 
-                {/* Price Range */}
-                <div className="glass p-6 rounded-xl">
+                {/* Price Range */}  {/* Rating Filter */}
+                {/* <div className="glass p-6 rounded-xl">
                   <h3 className="font-bold text-lg mb-4">Price Range</h3>
                   <div className="space-y-4">
                     <input
@@ -123,7 +123,7 @@ export default function ToursListing() {
                   </div>
                 </div>
 
-                {/* Rating Filter */}
+               
                 <div className="glass p-6 rounded-xl">
                   <h3 className="font-bold text-lg mb-4">Minimum Rating</h3>
                   <div className="space-y-2">
@@ -142,7 +142,7 @@ export default function ToursListing() {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

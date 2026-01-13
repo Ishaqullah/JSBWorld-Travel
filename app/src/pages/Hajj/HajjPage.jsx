@@ -796,17 +796,14 @@ export default function HajjPage() {
       {/* Intro Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-12">
-          <p className="text-gray-700 leading-relaxed mb-4">
-            <strong className="text-yellow-600">Hajj</strong> is one of the five pillars of Islam and represents a pinnacle of spiritual significance for Muslims. It is an annual pilgrimage to the holy city of Mecca, Saudi Arabia, and must be undertaken by Muslims who are physically and financially able to do so.
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Specialist Hajj & Umrah Services</h3>
+          <p className="text-gray-700 leading-relaxed mb-6">
+            We understand that Hajj and Umrah are more than just trips—they are sacred milestones. We provide expert guidance on visa processing, logistics, and accommodations in Makkah and Madinah, ensuring you can focus entirely on your worship.
           </p>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            At <strong>JSBWORLD-TRAVEL</strong> & JSB <strong>Hajj packages</strong> are carefully crafted to ensure a <strong className="text-yellow-600">hassle-free</strong> and spiritually fulfilling experience.
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Seamless Support & Safety</h3>
+          <p className="text-gray-700 leading-relaxed">
+            From US departures to international arrivals, we handle the complex details—international travel insurance, local transport, and 24/7 support. You'll always have a direct line to a real person if you need help while abroad.
           </p>
-          <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 mt-6">
-            <p className="text-gray-700">
-              <strong>Important Notice:</strong> If someone completes Hajj flights separately after Sep the group flight, based by JSBWORLD-TRAVEL then custom transportation needs to be arranged.
-            </p>
-          </div>
         </div>
 
         {/* Popular Hajj Packages */}

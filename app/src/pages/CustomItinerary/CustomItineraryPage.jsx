@@ -126,8 +126,8 @@ export default function CustomItineraryPage() {
 
   // Counter Component
   const Counter = ({ label, value, onChange, min = 0 }) => (
-    <div>
-      <label className="block text-sm font-semibold text-gray-800 mb-2">{label}</label>
+    <div className="flex flex-col items-center">
+      <label className="block text-sm font-semibold text-gray-800 mb-3 text-center">{label}</label>
       <div className="flex items-center gap-3">
         <button
           type="button"

@@ -20,6 +20,7 @@ import webhookRoutes from './routes/webhook.routes.js';
 import customItineraryRoutes from './routes/customItinerary.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import hajjRoutes from './routes/hajj.routes.js';
+import contactRoutes from './routes/contact.routes.js';
 
 const app = express();
 
@@ -93,6 +94,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/custom-itinerary', customItineraryRoutes);
 app.use('/api/hajj-registration', hajjRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/contact', contactRoutes);
 
 
 // 404 handler

@@ -22,9 +22,11 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/tours', label: 'Tours' },
-    { to: '/umrah', label: 'Umrah' },
     { to: '/hajj', label: 'Hajj' },
+    { to: '/umrah', label: 'Umrah' },
     { to: '/custom-itinerary', label: 'Custom Trip' },
+    { to: '/cruise', label: 'Cruise' },
+    { to: '/blog', label: 'Blog' },
     { to: '/about', label: 'About' },
   ];
 
@@ -40,7 +42,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-6">
               <a href="tel:+1234567890" className="flex items-center space-x-2 hover:text-secondary-400 transition-colors">
                 <Phone size={16} />
-                <span>+1 (469) 799-0834</span>
+                <span>+1 (682) 877-2835</span>
               </a>
               <a href="mailto:info@jsbworld-travel.com" className="flex items-center space-x-2 hover:text-secondary-400 transition-colors">
                 <Mail size={16} />
@@ -52,7 +54,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <Clock size={16} />
-                <span>Mon-Fri: 9AM-6PM</span>
+                <span>Mon-Fri: 10AM to 7PM , Sat: 12PM to 5PM</span>
               </div>
               {/* Social icons would go here */}
             </div>
@@ -63,7 +65,7 @@ export default function Navbar() {
       {/* Main Navigation */}
       <nav className="glass border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-28"> {/* Increased from h-20 to h-28 */}
+          <div className="flex justify-between items-center h-20">
             {/* Logo - Increased Size */}
             <Link to="/" className="flex items-center space-x-3 group"> {/* Increased space-x */}
               <motion.div
@@ -74,7 +76,7 @@ export default function Navbar() {
                 <img 
                   src={Logo} 
                   alt="JSBWORLD TRAVEL Logo" 
-                  className="h-24 w-24 object-contain rounded-full" /* Increased from h-20 w-20 to h-24 w-24 */
+                  className="h-16 w-16 object-contain rounded-full"
                 />
               </motion.div>
              

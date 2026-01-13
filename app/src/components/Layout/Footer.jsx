@@ -16,19 +16,18 @@ export default function Footer() {
     company: [
       { label: 'About Us', to: '/about' },
       { label: 'Tours', to: '/tours' },
-      { label: 'Umrah & Hajj', to: '/umrah' },
+      { label: 'Hajj & Umrah', to: '/umrah' },
       { label: 'Custom Itinerary', to: '/custom-itinerary' },
+      { label: 'Dallas Travel Agency', to: '/dallas-travel-agency' },
+      { label: 'Contact Us', to: '/contact' },
     ],
-    support: [
-      { label: 'Help Center', to: '/' },
-      { label: 'Safety', to: '/' },
-      { label: 'Cancellation', to: '/' },
-      { label: 'Contact Us', to: '/' },
-    ],
+    
     legal: [
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Service', to: '/terms-of-service' },
       { label: 'Refund Policy', to: '/refund-policy' },
+      { label: 'General Conditions', to: '/general-conditions' },
+      { label: 'Cookies Policy', to: '/cookies-policy' },
     ],
   };
 

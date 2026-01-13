@@ -732,6 +732,120 @@ export const sendHajjRegistrationConfirmation = async (registrationData) => {
   }
 };
 
+/**
+ * Send contact form message to company and confirmation to sender
+ */
+export const sendContactFormMessage = async (contactData) => {
+  const transporter = createTransporter();
+  
+  // Email to company
+  const companyHtmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+        <h1 style="color: #fff; margin: 0;">New Contact Form Message</h1>
+      </div>
+      
+      <div style="padding: 30px;">
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="color: #1e3a5f; margin-top: 0; border-bottom: 2px solid #c28e38; padding-bottom: 10px;">Sender Information</h3>
+          <p><strong>Name:</strong> ${contactData.name}</p>
+          <p><strong>Email:</strong> ${contactData.email}</p>
+          <p><strong>Phone:</strong> ${contactData.phone || 'Not provided'}</p>
+          <p><strong>Subject:</strong> ${contactData.subject}</p>
+        </div>
+        
+        <div style="background: #fff8e7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #c28e38;">
+          <h3 style="color: #1e3a5f; margin-top: 0;">Message</h3>
+          <p style="white-space: pre-wrap;">${contactData.message}</p>
+        </div>
+        
+        <p style="color: #666; font-size: 12px; margin-top: 30px;">
+          This message was submitted on ${new Date().toLocaleString()}
+        </p>
+      </div>
+    </div>
+  `;
+
+  const companyMailOptions = {
+    from: config.smtp?.from || '"JSBWorld Travel" <noreply@jsbworld-travel.com>',
+    replyTo: contactData.email,
+    to: 'info@jsbworld-travel.com',
+    subject: `Contact Form: ${contactData.subject} - from ${contactData.name}`,
+    html: companyHtmlContent,
+  };
+
+  // Confirmation email to sender
+  const senderHtmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+      <div style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);">
+        <h1 style="color: #fff; margin: 0; font-size: 28px;">JSBWorld Travel</h1>
+        <p style="color: #e0e7ff; margin: 10px 0 0 0; font-size: 14px;">Thank You for Contacting Us</p>
+      </div>
+      
+      <div style="padding: 40px 30px;">
+        <h2 style="color: #1e3a5f; margin-top: 0;">Message Received!</h2>
+        
+        <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+          Dear ${contactData.name},
+        </p>
+        
+        <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
+          Thank you for reaching out to JSBWorld Travel! We have received your message and our team will get back to you within 24 hours.
+        </p>
+        
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px solid #e2e8f0;">
+          <h3 style="color: #1e3a5f; margin: 0 0 15px 0; font-size: 18px;">Your Message Summary</h3>
+          <p><strong>Subject:</strong> ${contactData.subject}</p>
+          <p style="white-space: pre-wrap;"><strong>Message:</strong><br>${contactData.message.substring(0, 200)}${contactData.message.length > 200 ? '...' : ''}</p>
+        </div>
+        
+        <div style="background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 20px; border-radius: 4px;">
+          <h4 style="color: #15803d; margin: 0 0 10px 0; font-size: 16px;">Need Immediate Assistance?</h4>
+          <p style="margin: 0; color: #166534; font-size: 15px;">
+            Call us at <strong>+1 (682) 877-2835</strong><br>
+            Mon-Fri: 10AM to 7PM, Sat: 12PM to 5PM
+          </p>
+        </div>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+          <p style="color: #4a5568; margin: 0;">
+            Best regards,<br>
+            <strong style="color: #1e3a5f;">The JSBWorld Travel Team</strong>
+          </p>
+        </div>
+      </div>
+      
+      <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+        <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+          © ${new Date().getFullYear()} JSBWorld Travel. All rights reserved.
+        </p>
+      </div>
+    </div>
+  `;
+
+  const senderMailOptions = {
+    from: '"JSBWorld Travel" <info@jsbworld-travel.com>',
+    to: contactData.email,
+    subject: 'We Received Your Message! - JSBWorld Travel',
+    html: senderHtmlContent,
+  };
+
+  try {
+    // Send email to company
+    await transporter.sendMail(companyMailOptions);
+    console.log('Contact form message sent to company');
+    
+    // Send confirmation to sender
+    await transporter.sendMail(senderMailOptions);
+    console.log('Confirmation email sent to sender');
+    
+    return true;
+  } catch (error) {
+    console.error('Error sending contact form email:', error);
+    return false;
+  }
+};
+
 export default {
   sendVerificationCode,
   sendPasswordResetOTP,
@@ -742,5 +856,6 @@ export default {
   sendBookingNotificationToAdmin,
   sendHajjRegistrationNotification,
   sendHajjRegistrationConfirmation,
+  sendContactFormMessage,
 };
 
