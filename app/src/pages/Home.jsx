@@ -188,7 +188,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4"
             onClick={() => setEnquireModalOpen(false)}
           >
             <motion.div
@@ -354,7 +354,7 @@ export default function Home() {
             </div>
 
             {/* Search Input with Dropdown */}
-            <div ref={searchRef} className="relative">
+            <div ref={searchRef} className="relative z-[1000]">
               <div className="bg-white rounded-xl shadow-xl overflow-hidden">
                 <div className="flex items-center px-4 py-4">
                   <Search className="text-gray-400 mr-3 flex-shrink-0" size={20} />
@@ -375,7 +375,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-[200] max-h-80 overflow-y-auto"
+                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-[100000] max-h-80 overflow-y-auto"
                   >
                     {filteredTours.map((tour) => (
                       <div
@@ -432,35 +432,35 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Partner Logos Marquee */}
-      <section ref={nextSectionRef} className="py-8 bg-white border-b overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-          <h3 className="text-center text-gray-500 text-2xl font-medium uppercase tracking-wider">
-            Our Trusted Partners
-          </h3>
-        </div>
-        <div className="relative">
-          {/* Gradient overlays for smooth fade effect */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10" />
-          
-          {/* Marquee container */}
-          <div className="flex animate-marquee">
-            {/* First set of logos */}
-            <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
-              {partnerLogos.map((logo, index) => (
-                <img key={index} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              ))}
-            </div>
-            {/* Duplicate set for seamless loop */}
-            <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
-              {partnerLogos.map((logo, index) => (
-                <img key={`dup-${index}`} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Partner Logos Marquee - FIXED */}
+<section ref={nextSectionRef} className="py-8 bg-white border-b overflow-hidden relative z-[-30]">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+    <h3 className="text-center text-gray-500 text-2xl font-medium uppercase tracking-wider">
+      Our Trusted Partners
+    </h3>
+  </div>
+  <div className="relative">
+    {/* Gradient overlays with lower z-index */}
+    <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-20" />
+    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-20" />
+    
+    {/* Marquee container with lower z-index */}
+    <div className="flex animate-marquee relative z-10">
+      {/* First set of logos */}
+      <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
+        {partnerLogos.map((logo, index) => (
+          <img key={index} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+        ))}
+      </div>
+      {/* Duplicate set for seamless loop */}
+      <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
+        {partnerLogos.map((logo, index) => (
+          <img key={`dup-${index}`} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
   {/* All Tours Carousel */}
       <section style={{ marginTop: '50px' }} className="section-padding bg-gray-50">

@@ -24,11 +24,11 @@ const BankTransferForm = ({ bookingId, bookingNumber, total, onSuccess }) => {
   const fileInputRef = useRef(null);
 
   const bankDetails = {
-    bankName: 'First National Bank',
-    accountName: 'JSBWORLD TRAVEL Ltd',
-    accountNumber: '1234567890',
-    sortCode: '12-34-56',
-    swiftBic: 'FNBKUS33',
+    bankName: 'Wells Fargo',
+    accountName: 'JSB World LLC',
+    accountNumber: '6432984158',
+    routingNumber: '111900659',
+    accountType: 'Business',
     currency: 'USD',
   };
 
@@ -89,12 +89,12 @@ const BankTransferForm = ({ bookingId, bookingNumber, total, onSuccess }) => {
             <p className="font-medium">{bankDetails.accountNumber}</p>
           </div>
           <div>
-            <span className="text-gray-600">Sort Code:</span>
-            <p className="font-medium">{bankDetails.sortCode}</p>
+            <span className="text-gray-600">Routing Number:</span>
+            <p className="font-medium">{bankDetails.routingNumber}</p>
           </div>
           <div>
-            <span className="text-gray-600">SWIFT/BIC:</span>
-            <p className="font-medium">{bankDetails.swiftBic}</p>
+            <span className="text-gray-600">Account Type:</span>
+            <p className="font-medium">{bankDetails.accountType}</p>
           </div>
           <div>
             <span className="text-gray-600">Amount:</span>
