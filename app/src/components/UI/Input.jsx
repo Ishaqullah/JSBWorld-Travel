@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Input({ 
   label, 
@@ -10,6 +11,10 @@ export default function Input({
   ...props 
 }) {
   const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPasswordType = type === 'password';
+  const inputType = isPasswordType ? (showPassword ? 'text' : 'password') : type;
 
   return (
     <div className={`relative ${className}`}>
@@ -25,8 +30,8 @@ export default function Input({
           </div>
         )}
         <motion.input
-          type={type}
-          className={`input ${Icon ? 'pl-10' : ''} ${error ? 'input-error' : ''}`}
+          type={inputType}
+          className={`input ${Icon ? 'pl-10' : ''} ${isPasswordType ? 'pr-10' : ''} ${error ? 'input-error' : ''}`}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           animate={{
@@ -35,6 +40,16 @@ export default function Input({
           transition={{ duration: 0.2 }}
           {...props}
         />
+        {isPasswordType && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        )}
       </div>
       <AnimatePresence>
         {error && (

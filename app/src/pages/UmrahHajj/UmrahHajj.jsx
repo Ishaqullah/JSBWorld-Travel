@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Star } from 'lucide-react';
 import { tourService } from '../../services/tourService';
 import Card from '../../components/UI/Card';
-
+import banner from '../../assets/WhatsApp Image 2026-01-17 at 12.49.23 AM.jpeg';
 export default function UmrahHajj() {
   const [umrahTours, setUmrahTours] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,34 +25,27 @@ export default function UmrahHajj() {
   }, []);
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
+    <div className="min-h-screen pb-16">
       {/* Hero Section */}
-      <div className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
+      <div className="relative pt-10 md:pt-20">
+        <div className="relative">
           <img
-            src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src={banner}
             alt="Kaaba in Mecca"
-            className="w-full h-full object-cover"
+            className="w-full h-auto"
           />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-display font-bold mb-6"
-          >
-            <span className="bg-clip-text text-white">Spiritual</span>
-            <span className="ml-5 bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">Journeys</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-200 mb-8"
-          >
-            Experience the sacred pilgrimage of Umrah with peace of mind and comfort.
-          </motion.p>
+          {/* Gradient overlay at bottom for text readability */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent" />
+          <div className="absolute bottom-6 left-0 right-0 text-center z-10 px-4">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-3xl md:text-7xl font-display font-bold"
+            >
+              <span className="text-white">Spiritual</span>
+              <span className="ml-3 md:ml-5 bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">Journeys</span>
+            </motion.h1>
+          </div>
         </div>
       </div>
 
@@ -61,7 +54,7 @@ export default function UmrahHajj() {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">
             Why Choose JSBWORLD TRAVEL for Your Pilgrimage?
-          </h2>
+          </h2> 
           <p className="text-lg text-gray-600">
             We understand the spiritual significance of your journey. Our dedicated team ensures every detail is taken care of, allowing you to focus on your worship.
           </p>

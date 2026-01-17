@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LogOut, LayoutDashboard, Phone, Mail, Clock } from 'lucide-react';
+import { Menu, X, User, LogOut, LayoutDashboard, Phone, Mail, Clock, Facebook, Instagram } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import Button from '../UI/Button';
 import Logo from '../../assets/cropped_circle_image.png';
+
+// Custom TikTok icon since lucide doesn't have one
+const TikTokIcon = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+  </svg>
+);
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,8 +33,14 @@ export default function Navbar() {
     { to: '/umrah', label: 'Umrah' },
     { to: '/custom-itinerary', label: 'Custom Trip' },
     { to: '/cruise', label: 'Cruise' },
-    { to: '/blog', label: 'Blog' },
+    { to: '/airline-tickets', label: 'Airline Tickets' },
     { to: '/about', label: 'About' },
+  ];
+
+  const socialLinks = [
+    { icon: Facebook, href: 'https://www.facebook.com/share/16ZmNMPGS5/', label: 'Facebook' },
+    { icon: TikTokIcon, href: 'https://www.tiktok.com/@jsbworldtravel?_r=1&_t=ZS-92qsJnsrmCL', label: 'TikTok' },
+    { icon: Instagram, href: 'https://www.instagram.com/jsbworld_travel?igsh=MTAybW1odDFnajN1NA==', label: 'Instagram' },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -56,7 +69,20 @@ export default function Navbar() {
                 <Clock size={16} />
                 <span>Mon-Fri: 10AM to 7PM , Sat: 12PM to 5PM</span>
               </div>
-              {/* Social icons would go here */}
+              <div className="flex items-center space-x-3">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-secondary-400 transition-colors"
+                    aria-label={social.label}
+                  >
+                    {typeof social.icon === 'function' ? <social.icon size={16} /> : <social.icon size={16} />}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>

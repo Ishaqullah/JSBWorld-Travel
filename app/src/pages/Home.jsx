@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Users, Star, TrendingUp, Award, Globe, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, Star, TrendingUp, Award, Globe, Clock, ChevronLeft, ChevronRight, Phone, MessageCircle, Mail, X } from 'lucide-react';
 import { tourService } from '../services/tourService';
 import { testimonials, stats } from '../data/testimonials';
 import Button from '../components/UI/Button';
@@ -26,6 +26,9 @@ import PartnerLogo19 from '../assets/image19.png';
 import PartnerLogo20 from '../assets/image20.png';
 import PartnerLogo21 from '../assets/image21.png';
 import PartnerLogo22 from '../assets/image22.png';
+
+// Hero video import
+import HeroVideo from '../assets/AIEnhancer_overhead-aerial-view-shows-a-w.mp4';
 
 // Partner logos array for easy mapping
 const partnerLogos = [
@@ -64,6 +67,9 @@ export default function Home() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredTours, setFilteredTours] = useState([]);
   const searchRef = useRef(null);
+  
+  // Enquire modal state
+  const [enquireModalOpen, setEnquireModalOpen] = useState(false);
 
   // Handle responsive cards per view
   useEffect(() => {
@@ -88,7 +94,8 @@ export default function Home() {
         // Fetch all tours
         const response = await tourService.getAllTours({ 
           sortBy: 'rating', 
-          order: 'desc' 
+          order: 'desc',
+          limit: 1000
         });
         setAllTours(response.tours);
       } catch (error) {
@@ -174,10 +181,84 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Enquire Modal */}
+      <AnimatePresence>
+        {enquireModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+            onClick={() => setEnquireModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Contact Us</h2>
+                <button
+                  onClick={() => setEnquireModalOpen(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X size={24} className="text-gray-500" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <a
+                  href="tel:+16828772835"
+                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-r from-secondary-400 to-secondary-500 rounded-full flex items-center justify-center">
+                    <Phone className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Phone</p>
+                    <p className="font-semibold text-gray-900">+1 (682) 877-2835</p>
+                  </div>
+                </a>
+                
+                <a
+                  href="https://wa.me/16828772835"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-500 rounded-full flex items-center justify-center">
+                    <MessageCircle className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">WhatsApp</p>
+                    <p className="font-semibold text-gray-900">+1 (682) 877-2835</p>
+                  </div>
+                </a>
+                
+                <a
+                  href="mailto:info@jsbworld-travel.com"
+                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-r from-primary-400 to-primary-500 rounded-full flex items-center justify-center">
+                    <Mail className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="font-semibold text-gray-900">info@jsbworld-travel.com</p>
+                  </div>
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
-      <section className="relative h-[700px] md:h-[550px] flex items-start md:items-center justify-center pt-36 md:pt-10">
+      <section className="relative h-[750px] md:h-[650px] flex items-start md:items-center justify-center pt-36 md:pt-10 z-0">
         {/* Video Background */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 -z-10">
           <video
             autoPlay
             loop
@@ -186,10 +267,10 @@ export default function Home() {
             className="absolute inset-0 w-full h-full object-cover"
             poster="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920"
           >
-            <source src="https://videos.pexels.com/video-files/3015510/3015510-hd_1920_1080_24fps.mp4" type="video/mp4" />
+            <source src={HeroVideo} type="video/mp4" />
           </video>
         </div>
-        <div className="absolute inset-0 gradient-navy-overlay"></div>
+        <div className="absolute inset-0 bg-black/40 -z-10"></div>
         
         {/* Floating Elements */}
         <motion.div
@@ -211,9 +292,9 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6"
           >
-            Discover Your Next
+            Navigate Your Next Adventure
             <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">Adventure</span>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">with JSB WORLD</span>
           </motion.h1>
           
           <motion.p
@@ -225,6 +306,21 @@ export default function Home() {
             Explore breathtaking destinations with expert guides. From tropical paradises
             to mountain peaks, your dream journey starts here.
           </motion.p>
+
+          {/* Enquire Now Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mb-6"
+          >
+            <button
+              onClick={() => setEnquireModalOpen(true)}
+              className="px-8 py-3 bg-gradient-to-r from-secondary-400 to-secondary-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              Enquire Now
+            </button>
+          </motion.div>
 
           {/* Search Bar with Tour/Flight Tabs */}
           <motion.div
@@ -279,7 +375,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-50 max-h-80 overflow-y-auto"
+                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl overflow-hidden z-[200] max-h-80 overflow-y-auto"
                   >
                     {filteredTours.map((tour) => (
                       <div
@@ -339,7 +435,7 @@ export default function Home() {
       {/* Partner Logos Marquee */}
       <section ref={nextSectionRef} className="py-8 bg-white border-b overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-          <h3 className="text-center text-gray-500 text-sm font-medium uppercase tracking-wider">
+          <h3 className="text-center text-gray-500 text-2xl font-medium uppercase tracking-wider">
             Our Trusted Partners
           </h3>
         </div>
@@ -447,12 +543,7 @@ export default function Home() {
                             {tour.title}
                           </h3>
                           <p className="text-gray-600 mb-4 line-clamp-2">{tour.description}</p>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center text-amber-500">
-                              <Star size={18} fill="currentColor" className="mr-1" />
-                              <span className="font-semibold">{tour.rating}</span>
-                              <span className="text-gray-500 ml-1">({tour.reviewCount})</span>
-                            </div>
+                          <div className="flex items-center justify-end">
                             <div className="text-right">
                               <div className="text-sm text-gray-500">From</div>
                               <div className="text-2xl font-bold text-secondary-600">
@@ -499,70 +590,7 @@ export default function Home() {
 
 
 
-             {/* Why Choose Us - Design Handoff: 6 columns, 100-140px padding */}
-      <section className="py-24 md:py-32 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-              Why Choose <span className="text-gradient">JSB World-Travel</span> for Your Next Adventure?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              When you look for a travel agency in Dallas, you want more than a middleman—you want an advocate.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: Award,
-                title: '35 Years of Local Trust',
-                description: 'Based right here in the DFW metroplex, we aren\'t a faceless online booking engine. We are your neighbors, committed to the Dallas-Fort Worth community for over three decades.',
-              },
-              {
-                icon: Globe,
-                title: 'Global Insider Knowledge',
-                description: 'Specializing in custom tours to US and beyond, we offer "insider" access and cultural insights that generic agencies miss. We bridge the gap between East and West.',
-              },
-              {
-                icon: TrendingUp,
-                title: 'The "Anti-Algorithm" Approach',
-                description: 'We don\'t use bots or automated templates. Every hand-crafted itinerary is designed by a human expert who understands your specific needs, pace, and preferences.',
-              },
-              {
-                icon: MapPin,
-                title: 'Seamless International Logistics',
-                description: 'We handle the complex details—visa assistance, private transport, and local guides—from your US departure to your international arrival, ensuring a stress-free journey.',
-              },
-              {
-                icon: Clock,
-                title: 'Personal Accountability & Support',
-                description: 'When you book with us, you have a direct line to a real person. We provide end-to-end support from the moment you start planning until you return home safely.',
-              },
-              {
-                icon: Star,
-                title: 'Vetted Global Partners',
-                description: 'We only work with local vendors and guides that we have personally vetted for safety, quality, and authentic cultural immersion.',
-              },
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="p-8 h-full hover:shadow-xl transition-shadow duration-300">
-                  <div className="inline-flex p-4 bg-gradient-to-br from-secondary-300 to-secondary-500 rounded-2xl mb-4">
-                    <feature.icon className="text-white" size={32} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+            
       {/* Where to Next? - Destinations Grid */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -580,11 +608,11 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {[
-              { name: 'Egypt', image: 'https://images.unsplash.com/photo-1539768942893-daf53e448371?w=400', tours: 12 },
-              { name: 'Spain', image: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=400', tours: 8 },
-              { name: 'UAE', image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400', tours: 15 },
-              { name: 'Morocco', image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=400', tours: 6 },
-              { name: 'Italy', image: 'https://images.unsplash.com/photo-1515859005217-8a1f08870f59?w=400', tours: 10 },
+              { name: 'Egypt', image: 'https://images.unsplash.com/photo-1539768942893-daf53e448371?w=400' },
+              { name: 'Spain', image: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=400' },
+              { name: 'UAE', image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400' },
+              { name: 'Morocco', image: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=400' },
+              { name: 'Italy', image: 'https://images.unsplash.com/photo-1515859005217-8a1f08870f59?w=400' },
             ].map((destination, index) => (
               <motion.div
                 key={index}
@@ -604,7 +632,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                     <div className="absolute bottom-4 left-4 text-white">
                       <h3 className="text-xl font-bold">{destination.name}</h3>
-                      <p className="text-sm text-white/80">{destination.tours} tours</p>
+                      <p className="text-sm text-white/80"></p>
                     </div>
                   </div>
                 </Link>
@@ -783,7 +811,70 @@ export default function Home() {
 
 
      
+ {/* Why Choose Us - Design Handoff: 6 columns, 100-140px padding */}
+      <section className="py-24 md:py-32 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              Why Choose <span className="text-gradient">JSB World-Travel</span> for Your Next Adventure?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              When you look for a travel agency in Dallas, you want more than a middleman—you want an advocate.
+            </p>
+          </div>
 
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Award,
+                title: '35 Years of Local Trust',
+                description: 'Based right here in the DFW metroplex, we aren\'t a faceless online booking engine. We are your neighbors, committed to the Dallas-Fort Worth community for over three decades.',
+              },
+              {
+                icon: Globe,
+                title: 'Global Insider Knowledge',
+                description: 'Specializing in custom tours to US and beyond, we offer "insider" access and cultural insights that generic agencies miss. We bridge the gap between East and West.',
+              },
+              {
+                icon: TrendingUp,
+                title: 'The "Anti-Algorithm" Approach',
+                description: 'We don\'t use bots or automated templates. Every hand-crafted itinerary is designed by a human expert who understands your specific needs, pace, and preferences.',
+              },
+              {
+                icon: MapPin,
+                title: 'Seamless International Logistics',
+                description: 'We handle the complex details—visa assistance, private transport, and local guides—from your US departure to your international arrival, ensuring a stress-free journey.',
+              },
+              {
+                icon: Clock,
+                title: 'Personal Accountability & Support',
+                description: 'When you book with us, you have a direct line to a real person. We provide end-to-end support from the moment you start planning until you return home safely.',
+              },
+              {
+                icon: Star,
+                title: 'Vetted Global Partners',
+                description: 'We only work with local vendors and guides that we have personally vetted for safety, quality, and authentic cultural immersion.',
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="p-8 h-full hover:shadow-xl transition-shadow duration-300">
+                  <div className="inline-flex p-4 bg-gradient-to-br from-secondary-300 to-secondary-500 rounded-2xl mb-4">
+                    <feature.icon className="text-white" size={32} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* Testimonials */}
       <section className="py-20 md:py-24 bg-gradient-to-br from-primary-50 to-secondary-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

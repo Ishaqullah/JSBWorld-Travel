@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, ChevronDown, Upload, Check, Info, FileText, Trash2 } from 'lucide-react';
 import Button from '../../components/UI/Button';
-
+import banner from '../../assets/WhatsApp Image 2026-01-17 at 12.49.23 AM.jpeg';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Hajj Packages Data
@@ -771,22 +771,21 @@ export default function HajjPage() {
   const hasStepErrors = Object.keys(validationErrors).length > 0;
 
   return (
-    <div className="min-h-screen pt-20 pb-16 bg-gray-50">
+    <div className="min-h-screen pb-16 bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-[300px] md:h-[400px] overflow-hidden">
-        <div className="absolute inset-0">
+      <div className="relative pt-10 md:pt-20">
+        <div className="relative">
           <img
-            src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1170&auto=format&fit=crop"
+            src={banner}
             alt="Hajj Pilgrimage"
-            className="w-full h-full object-cover"
+            className="w-full h-auto"
           />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative z-10 h-full flex items-center justify-center">
+          {/* Gradient overlay at bottom for text readability */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent" />
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold text-white text-center"
+            className="absolute bottom-6 left-0 right-0 text-3xl md:text-5xl font-bold text-white text-center z-10"
           >
             Hajj Packages - 2026
           </motion.h1>

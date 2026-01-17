@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Ship, Anchor, Star, Gift, Users, Compass, Heart, HelpCircle } from 'lucide-react';
+import { ChevronDown, Plane, Globe, Star, Gift, Users, MapPin, Clock, HelpCircle, CreditCard, Briefcase } from 'lucide-react';
 import Button from '../../components/UI/Button';
 import { Link } from 'react-router-dom';
 
@@ -27,8 +27,8 @@ const FAQItem = ({ question, answer, isOpen, onClick }) => (
   </div>
 );
 
-// Cruise Type Card
-const CruiseTypeCard = ({ icon: Icon, title, description, delay }) => (
+// Service Card
+const ServiceCard = ({ icon: Icon, title, description, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -44,26 +44,7 @@ const CruiseTypeCard = ({ icon: Icon, title, description, delay }) => (
   </motion.div>
 );
 
-// Perk Card
-const PerkCard = ({ icon: Icon, title, description, delay }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    transition={{ delay }}
-    className="flex items-start gap-4 bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
-  >
-    <div className="w-10 h-10 bg-secondary-100 rounded-full flex items-center justify-center flex-shrink-0">
-      <Icon className="w-5 h-5 text-secondary-600" />
-    </div>
-    <div>
-      <h4 className="font-semibold text-gray-900">{title}</h4>
-      <p className="text-sm text-gray-600">{description}</p>
-    </div>
-  </motion.div>
-);
-
-export default function CruisePage() {
+export default function AirlineTicketsPage() {
   const [openFAQ, setOpenFAQ] = useState(null);
 
   useEffect(() => {
@@ -72,56 +53,65 @@ export default function CruisePage() {
 
   const faqs = [
     {
-      question: "Can I transfer my cruise booking to JSBWORLD-TRAVEL?",
-      answer: "Yes — if your booking is within a certain timeframe, we can take over and offer added perks."
+      question: "Can you help me find cheaper flights?",
+      answer: "Absolutely! We have access to exclusive fares, consolidator rates, and group discounts that aren't available on public booking sites. We'll search multiple options to find you the best deal."
     },
     {
-      question: "Do you charge extra fees?",
-      answer: "Nope. Our services are usually free — we're paid by the cruise lines, not our clients."
+      question: "Do you charge booking fees?",
+      answer: "Our service fees are competitive and transparent. In many cases, the savings we find you more than offset any fees. We'll always give you a clear breakdown before booking."
     },
     {
-      question: "Do I get better prices with a travel agent?",
-      answer: "Often yes — thanks to exclusive rates and group deals you won't find online."
+      question: "Can you book flights for groups?",
+      answer: "Yes! Group bookings are one of our specialties. We can arrange flights for family reunions, corporate travel, religious pilgrimages, and more with special group rates."
     },
     {
-      question: "What if something goes wrong during my trip?",
-      answer: "We're with you every step of the way — before, during, and after your cruise."
+      question: "What if I need to change my flight?",
+      answer: "We're here to help with changes and cancellations. We'll work with airlines on your behalf to find the best options and minimize any fees."
+    },
+    {
+      question: "Do you handle international flights?",
+      answer: "International flights are our specialty! From complex multi-city itineraries to simple round-trips, we handle destinations worldwide with expertise in visa requirements and travel documentation."
     }
   ];
 
-  const cruiseTypes = [
+  const services = [
     {
-      icon: Ship,
-      title: "Ocean Cruises",
-      description: "Floating resorts with pools, theaters, casinos, and dining options. Perfect for families and first-time cruisers."
+      icon: Globe,
+      title: "International Flights",
+      description: "Expert booking for international destinations with the best connections and competitive pricing worldwide."
     },
     {
-      icon: Compass,
-      title: "River Cruises",
-      description: "Smaller, scenic, and culturally immersive experiences through famous rivers."
+      icon: Plane,
+      title: "Domestic Flights",
+      description: "Quick and easy domestic flight bookings across all major US carriers with flexible options."
     },
     {
-      icon: Star,
-      title: "Luxury Cruises",
-      description: "High-end, all-suite ships with fine dining and white-glove service."
+      icon: Users,
+      title: "Group Travel",
+      description: "Special rates and coordinated bookings for groups, families, and corporate travel."
     },
     {
-      icon: Anchor,
-      title: "Expedition Cruises",
-      description: "Adventure voyages to places like Antarctica or the Galápagos."
+      icon: Briefcase,
+      title: "Business Class",
+      description: "Premium cabin bookings with exclusive perks, lounge access, and priority services."
     },
     {
-      icon: Heart,
-      title: "Themed Cruises",
-      description: "From wine to wellness to pop culture — travel with your tribe."
+      icon: MapPin,
+      title: "Multi-City Routes",
+      description: "Complex itineraries made simple. We'll optimize your multi-destination travel plans."
+    },
+    {
+      icon: Clock,
+      title: "Last-Minute Deals",
+      description: "Need to fly urgently? We find the best last-minute fares and expedite your booking."
     }
   ];
 
-  const perks = [
-    { icon: Gift, title: "Onboard Credit", description: "Extra spending money for your cruise experience" },
-    { icon: Star, title: "Room Upgrades", description: "Better cabins at no extra cost" },
-    { icon: Compass, title: "Free Shore Excursions", description: "Explore destinations without added fees" },
-    { icon: Users, title: "Dining Packages", description: "Premium dining experiences included" }
+  const benefits = [
+    { icon: Gift, title: "Exclusive Fares", description: "Access to rates not available online" },
+    { icon: Star, title: "Price Match", description: "We'll match or beat competitor prices" },
+    { icon: CreditCard, title: "Flexible Payment", description: "Multiple payment options available" },
+    { icon: Users, title: "24/7 Support", description: "Always here when you need us" }
   ];
 
   return (
@@ -130,8 +120,8 @@ export default function CruisePage() {
       <div className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden pt-20 md:pt-24">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=1920&auto=format&fit=crop"
-            alt="Cruise Ship at Sea"
+            src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1920&auto=format&fit=crop"
+            alt="Airplane in Flight"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/50" />
@@ -142,8 +132,8 @@ export default function CruisePage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-display font-bold mb-6"
           >
-            <span className="bg-clip-text text-white">Best Cruise</span>
-            <span className="ml-3 bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">Deals</span>
+            <span className="bg-clip-text text-white">Airline</span>
+            <span className="ml-3 bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">Tickets</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -151,7 +141,7 @@ export default function CruisePage() {
             transition={{ delay: 0.2 }}
             className="text-xl md:text-2xl text-gray-200 mb-8"
           >
-            Why JSBWORLD-TRAVEL Is Your Go-To Cruise Travel Agency
+            Your Flight, Our Expertise — Best Fares Guaranteed
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -163,7 +153,7 @@ export default function CruisePage() {
                 variant="primary"
                 className="bg-gradient-to-r from-secondary-300 to-secondary-500 hover:from-secondary-400 hover:to-secondary-600 text-lg px-8 py-4"
               >
-                Plan Your Cruise
+                Enquire Now
               </Button>
             </Link>
           </motion.div>
@@ -179,7 +169,7 @@ export default function CruisePage() {
           className="bg-white rounded-xl shadow-sm p-6 md:p-10 mb-16"
         >
           <p className="text-xl text-gray-700 leading-relaxed text-center max-w-3xl mx-auto">
-            Planning a cruise should feel exciting — not overwhelming. With JSBWORLD-TRAVEL, you'll enjoy expert planning, exclusive perks, and real savings on every voyage.
+            Skip the endless tabs and confusing prices. At JSB World-Travel, we leverage our airline partnerships and industry expertise to find you the perfect flight at the best price — every time.
           </p>
         </motion.div>
 
@@ -192,19 +182,19 @@ export default function CruisePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">
-              Why Should You Book Your Cruise with the Best Cruise Travel Agency?
+              Why Book Flights Through a Travel Agent?
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Cruise lines offer direct booking — sure. But what they don't offer is the kind of personalized service, added value, and insider access you'll get from a cruise-focused travel agency.
+              Online booking sites show you what's available. We show you what's best — and often find deals you'd never discover on your own.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { emoji: "🌟", text: "Exclusive deals and upgrades not available to the public" },
-              { emoji: "💰", text: "Bundled packages that save you time and money" },
-              { emoji: "🛳️", text: "Experienced planners who know the ships, routes, and best times to book" },
-              { emoji: "👨‍💼", text: "Real people who've actually sailed — not just call center scripts" }
+              { emoji: "💰", text: "Access to exclusive consolidator fares and airline deals" },
+              { emoji: "🎯", text: "Expert advice on routes, layovers, and timing" },
+              { emoji: "✈️", text: "All airlines compared in one place — major carriers and budget" },
+              { emoji: "🛡️", text: "A real person to call when things go wrong" }
             ].map((item, index) => (
               <motion.div
                 key={index}
@@ -219,18 +209,9 @@ export default function CruisePage() {
               </motion.div>
             ))}
           </div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center text-lg text-gray-600 mt-8 font-medium"
-          >
-            With a top-tier cruise agency, you're not just getting a ticket — you're getting a better vacation from start to finish.
-          </motion.p>
         </div>
 
-        {/* Types of Cruises */}
+        {/* Our Services */}
         <div className="mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -239,27 +220,27 @@ export default function CruisePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">
-              What Are the Different Types of Cruises?
+              Our Flight Services
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Cruises are not one-size-fits-all. From massive ocean liners to intimate river ships, here's a quick guide to the most popular types of cruises we book every day:
+              Whether you're flying across the country or around the world, we've got you covered with comprehensive booking services.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cruiseTypes.map((type, index) => (
-              <CruiseTypeCard
+            {services.map((service, index) => (
+              <ServiceCard
                 key={index}
-                icon={type.icon}
-                title={type.title}
-                description={type.description}
+                icon={service.icon}
+                title={service.title}
+                description={service.description}
                 delay={index * 0.1}
               />
             ))}
           </div>
         </div>
 
-        {/* Why Book With JSBWORLD-TRAVEL */}
+        {/* Why Book With JSB World-Travel */}
         <div className="mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -269,46 +250,43 @@ export default function CruisePage() {
           >
             <div className="text-center mb-10">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                Why Book Your Cruise with Us (JSBWORLD-TRAVEL)?
+                The JSB World-Travel Difference
               </h2>
               <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-                We're not generalists — we're cruise specialists. And we built JSBWORLD-TRAVEL around one simple mission: make cruising better, easier, and more rewarding for our clients.
+                With 35 years of experience in the Dallas-Fort Worth area, we combine local expertise with global connections to deliver exceptional flight booking services.
               </p>
             </div>
 
-            {/* Exclusive Perks */}
+            {/* Benefits */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8">
-              <h3 className="text-2xl font-bold mb-6 text-secondary-300">Exclusive Perks</h3>
+              <h3 className="text-2xl font-bold mb-6 text-secondary-300">What You Get</h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {perks.map((perk, index) => (
+                {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center gap-3 bg-white/10 rounded-lg p-4">
-                    <perk.icon className="w-6 h-6 text-secondary-300" />
-                    <span className="font-medium">{perk.title}</span>
+                    <benefit.icon className="w-6 h-6 text-secondary-300" />
+                    <span className="font-medium">{benefit.title}</span>
                   </div>
                 ))}
               </div>
-              <p className="text-gray-300 mt-4 text-center">
-                These perks often aren't available when booking direct.
-              </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-3 text-secondary-300">Expert Knowledge</h3>
+                <h3 className="text-xl font-bold mb-3 text-secondary-300">Airline Partnerships</h3>
                 <p className="text-gray-200">
-                  We don't just sell cruises — we sail on them. Our firsthand experience means we can recommend the right cruise line, ship, cabin, and itinerary based on what you want.
+                  Our relationships with major carriers mean better fares, easier upgrades, and priority service when you need changes.
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-3 text-secondary-300">Air and Cruise Bundles</h3>
+                <h3 className="text-xl font-bold mb-3 text-secondary-300">Complete Trip Planning</h3>
                 <p className="text-gray-200">
-                  We'll help you bundle flights, transfers, and hotel stays to make your trip smooth and cost-effective.
+                  Bundle your flights with hotels, tours, and transfers. We create complete travel packages tailored to your needs.
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-3 text-secondary-300">Stress-Free Planning</h3>
+                <h3 className="text-xl font-bold mb-3 text-secondary-300">Real Support</h3>
                 <p className="text-gray-200">
-                  From planning to booking to sailing, we handle it all — so you can just enjoy the ride.
+                  When flights are delayed or cancelled, you have a real person on your side advocating with airlines.
                 </p>
               </div>
             </div>
@@ -357,17 +335,17 @@ export default function CruisePage() {
           className="bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-2xl p-8 md:p-12 text-center"
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
-            Let's Plan Your Cruise — And Get You the Best Deal
+            Ready to Book Your Flight?
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            You deserve a cruise that's not just good — but amazing. With JSBWORLD-TRAVEL, you'll get expert advice, added value, and a smoother experience from start to finish.
+            Tell us where you want to go, and we'll find you the best flight options. No obligation, no hassle — just great fares.
           </p>
           <Link to="/custom-itinerary">
             <Button
               variant="primary"
               className="bg-white text-secondary-600 hover:bg-gray-100 text-lg px-8 py-4 font-bold"
             >
-              Start Planning Now
+              Get a Free Quote
             </Button>
           </Link>
         </motion.div>

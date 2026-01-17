@@ -23,6 +23,7 @@ import GeneralConditions from './pages/Legal/GeneralConditions';
 import CookiesPolicy from './pages/Legal/CookiesPolicy';
 import AboutUs from './pages/About/AboutUs';
 import CruisePage from './pages/Cruise/CruisePage';
+import AirlineTicketsPage from './pages/AirlineTickets/AirlineTicketsPage';
 import HoustonTravelAgency from './pages/TravelAgency/DallasTravelAgency';
 import DallasTravelAgency from './pages/TravelAgency/DallasTravelAgency';
 import BlogPage from './pages/Blog/BlogPage';
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/hajj" element={<HajjPage />} />
                 <Route path="/custom-itinerary" element={<CustomItineraryPage />} />
                 <Route path="/cruise" element={<CruisePage />} />
+                <Route path="/airline-tickets" element={<AirlineTicketsPage />} />
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/blog/:slug" element={<BlogDetail />} />
                 <Route path="/contact" element={<ContactPage />} />

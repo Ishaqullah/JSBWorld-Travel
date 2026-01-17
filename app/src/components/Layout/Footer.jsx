@@ -19,6 +19,7 @@ export default function Footer() {
       { label: 'Hajj & Umrah', to: '/umrah' },
       { label: 'Custom Itinerary', to: '/custom-itinerary' },
       { label: 'Dallas Travel Agency', to: '/dallas-travel-agency' },
+      { label: 'Blog', to: '/blog' },
       { label: 'Contact Us', to: '/contact' },
     ],
     
@@ -49,12 +50,13 @@ export default function Footer() {
                 alt="JSBWORLD TRAVEL Logo" 
                 className="h-14 w-14 object-contain rounded-full"
               />
-              <span className="text-2xl font-display font-bold">JSBWORLD TRAVEL</span>
+              <span className="text-2xl font-display font-bold">JSB World-Travel</span>
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
               Discover the world with expertly curated tours. From beaches to mountains,
               culture to adventure - your perfect journey awaits.
             </p>
+            <h4 className="text-sm font-semibold text-white mb-3 uppercase tracking-wider">Follow Us</h4>
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
                 <a
@@ -133,7 +135,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-          <p>&copy; {currentYear} JSBWORLD TRAVEL. All rights reserved.</p>
+          <p>&copy; {currentYear} JSB World-Travel. All rights reserved.</p>
         </div>
       </div>
     </footer>

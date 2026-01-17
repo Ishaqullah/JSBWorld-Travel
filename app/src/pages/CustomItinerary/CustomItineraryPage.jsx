@@ -12,14 +12,14 @@ export default function CustomItineraryPage() {
     customerName: '',
     customerPhone: '',
     customerEmail: '',
-    travelDates: '',
+    departureDate: '',
+    arrivalDate: '',
     departureCity: '',
     destination: '',
     totalDays: 1,
     adultsCount: 1,
     childrenCount: 0,
     infantsCount: 0,
-    tourType: '',
     details: '',
   });
   const [loading, setLoading] = useState(false);
@@ -154,9 +154,9 @@ export default function CustomItineraryPage() {
   );
 
   return (
-    <div className="min-h-screen pt-20 pb-16 bg-gray-50">
+    <div className="min-h-screen pb-16 bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-secondary-300 to-secondary-500 text-white py-16">
+      <div className="bg-gradient-to-br from-secondary-300 to-secondary-500 text-white pt-28 md:pt-32 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -213,29 +213,43 @@ export default function CustomItineraryPage() {
                 </div>
               </div>
 
-              {/* Row 2: Email and Date */}
+              {/* Row 2: Email */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Email</label>
+                <input
+                  type="email"
+                  name="customerEmail"
+                  value={formData.customerEmail}
+                  onChange={handleChange}
+                  placeholder="Write your email"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-400 focus:border-secondary-400 outline-none transition-all"
+                  required
+                />
+              </div>
+
+              {/* Row 3: Departure and Arrival Dates */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-2">Email</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Departure Date</label>
                   <input
-                    type="email"
-                    name="customerEmail"
-                    value={formData.customerEmail}
+                    type="date"
+                    name="departureDate"
+                    value={formData.departureDate}
                     onChange={handleChange}
-                    placeholder="Write your email"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-400 focus:border-secondary-400 outline-none transition-all"
+                    min={new Date().toISOString().split('T')[0]}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-2">Date</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Arrival Date</label>
                   <input
                     type="date"
-                    name="travelDates"
-                    value={formData.travelDates}
+                    name="arrivalDate"
+                    value={formData.arrivalDate}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-400 focus:border-secondary-400 outline-none transition-all"
-                    min={new Date().toISOString().split('T')[0]}
+                    min={formData.departureDate || new Date().toISOString().split('T')[0]}
                     required
                   />
                 </div>
@@ -296,28 +310,7 @@ export default function CustomItineraryPage() {
                 />
               </div>
 
-              {/* Row 5: Tour Type */}
-              <div className="md:w-1/2">
-                <label className="block text-sm font-semibold text-gray-800 mb-2">Tour Type</label>
-                <div className="relative">
-                  <select
-                    name="tourType"
-                    value={formData.tourType}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-400 focus:border-secondary-400 outline-none transition-all appearance-none bg-white"
-                  >
-                    <option value="">Select tour type</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.name}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
-                </div>
-              </div>
-
-              {/* Row 6: Details */}
+              {/* Row 5: Details */}
               <div>
                 <label className="block text-sm font-semibold text-gray-800 mb-2">Details</label>
                 <textarea
