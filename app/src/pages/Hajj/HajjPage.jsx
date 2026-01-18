@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, ChevronDown, Upload, Check, Info, FileText, Trash2 } from 'lucide-react';
+import { X, CheckCircle2, ChevronDown, Upload, Check, Info, FileText, Trash2, Phone } from 'lucide-react';
 import Button from '../../components/UI/Button';
-import banner from '../../assets/WhatsApp Image 2026-01-17 at 12.49.23 AM.jpeg';
+import banner from '../../assets/umrahBanner.png';
+import bbqTonight1 from '../../assets/bbqTonight1.jpg';
+import bbqTonight2 from '../../assets/bbqTonight2.jpg';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Hajj Packages Data
@@ -773,28 +775,154 @@ export default function HajjPage() {
   return (
     <div className="min-h-screen pb-16 bg-gray-50">
       {/* Hero Section */}
-      <div className="relative pt-10 md:pt-20">
-        <div className="relative">
+      <div className="relative h-[80vh] min-h-[500px] flex flex-col overflow-hidden pt-20 md:pt-24">
+        <div className="absolute inset-0">
           <img
             src={banner}
             alt="Hajj Pilgrimage"
-            className="w-full h-auto"
+            className="w-full h-full object-cover"
           />
-          {/* Gradient overlay at bottom for text readability */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent" />
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="absolute bottom-6 left-0 right-0 text-3xl md:text-5xl font-bold text-white text-center z-10"
-          >
-            Hajj Packages - 2026
-          </motion.h1>
+          <div className="absolute inset-0 " />
+        </div>
+        
+        {/* Ayat & Heading - Top Center */}
+        <div className="relative z-10 flex-1 flex items-start justify-center pt-8 md:pt-12">
+          <div className="text-center text-white px-4 max-w-4xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <p className="text-4xl md:text-5xl font-arabic mb-3" style={{ fontFamily: "'Amiri', 'Traditional Arabic', serif" }}>
+                وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ
+              </p>
+              <p className="text-xl md:text-2xl text-gray-200 italic mb-2">
+                "And complete the Hajj and Umrah for Allah."
+              </p>
+              <p className="text-xl text-gray-300">
+                Al-Baqarah (The Cow) 2:196
+              </p>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl md:text-5xl font-display font-bold"
+            >
+              <span className="bg-clip-text text-white">Hajj</span>
+              <span className="ml-3 bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">Packages 2026</span>
+            </motion.h1>
+          </div>
         </div>
       </div>
 
       {/* Intro Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-12">
+       
+
+        {/* BBQ King Partnership Section */}
+        <div className="relative py-20 overflow-hidden rounded-2xl">
+                {/* Background with gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900" />
+                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+                
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center mb-12"
+                  >
+                    <span className="inline-block px-4 py-2 bg-secondary-500/20 backdrop-blur-sm rounded-full text-secondary-300 text-sm font-semibold mb-4">
+                      🤝 Exclusive Partnership
+                    </span>
+                    <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
+                      Trusted Halal Dining Partner
+                    </h2>
+                  </motion.div>
+        
+                  <div className="grid lg:grid-cols-2 gap-8 items-center">
+                    {/* Images */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: 0.2 }}
+                      className="flex flex-col gap-4"
+                    >
+                      <div className="relative group">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300" />
+                        <img
+                          src={bbqTonight1}
+                          alt="BBQ King Halal Food"
+                          className="relative rounded-xl w-full h-auto object-contain shadow-2xl transform group-hover:scale-[1.02] transition duration-300"
+                        />
+                      </div>
+                    
+        
+                      <div
+                      className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
+                    >
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-full flex items-center justify-center">
+                          <span className="text-2xl">🍖</span>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white">BBQ King Partnership</h3>
+                      </div>
+                      
+                      <p className="text-lg text-gray-200 leading-relaxed mb-6">
+                        JSB World-Travel provides tours, cruises, and Umrah & Hajj, supported by its partnership with <span className="text-secondary-300 font-semibold">BBQ King</span>—bringing trusted halal dining with dedicated hotel delivery for travelers in <span className="text-secondary-300 font-semibold">Madina</span> and <span className="text-secondary-300 font-semibold">DFW</span>.
+                      </p>
+        
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-white/10 rounded-xl p-4 text-center">
+                          <div className="text-3xl mb-2">🕌</div>
+                          <p className="text-white font-semibold">Madina Delivery</p>
+                          <p className="text-gray-300 text-sm">Hotel doorstep service</p>
+                        </div>
+                        <div className="bg-white/10 rounded-xl p-4 text-center">
+                          <div className="text-3xl mb-2">✈️</div>
+                          <p className="text-white font-semibold">DFW Service</p>
+                          <p className="text-gray-300 text-sm">Premium halal catering</p>
+                        </div>
+                      </div>
+
+                      {/* Phone Contact */}
+                      <a 
+                        href="tel:+966558182560" 
+                        className="mt-6 flex items-center justify-center gap-3 bg-gradient-to-r from-secondary-400 to-secondary-600 hover:from-secondary-500 hover:to-secondary-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
+                      >
+                        <Phone size={20} />
+                        <span>+966 55 818 2560</span>
+                      </a>
+                    </div>
+                    </motion.div>
+        
+                    {/* Content */}
+                    <motion.div
+                      initial={{ opacity: 0, x: 30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: 0.3 }}
+                      // className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
+                    >
+                       <div className="relative group">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-secondary-600 to-secondary-400 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300" />
+                        <img
+                          src={bbqTonight2}
+                          alt="BBQ King Restaurant"
+                          className="relative rounded-xl w-full h-auto object-contain shadow-2xl transform group-hover:scale-[1.02] transition duration-300"
+                        />
+                      </div>
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
+
+
+ <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-12">
           <h3 className="text-xl font-bold text-gray-900 mb-3">Specialist Hajj & Umrah Services</h3>
           <p className="text-gray-700 leading-relaxed mb-6">
             We understand that Hajj and Umrah are more than just trips—they are sacred milestones. We provide expert guidance on visa processing, logistics, and accommodations in Makkah and Madinah, ensuring you can focus entirely on your worship.
@@ -804,7 +932,6 @@ export default function HajjPage() {
             From US departures to international arrivals, we handle the complex details—international travel insurance, local transport, and 24/7 support. You'll always have a direct line to a real person if you need help while abroad.
           </p>
         </div>
-
         {/* Popular Hajj Packages */}
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Popular Hajj Packages</h2>
 

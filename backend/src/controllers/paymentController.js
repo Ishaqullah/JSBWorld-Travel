@@ -7,7 +7,7 @@ import { sendBookingConfirmation, sendBookingPendingEmail, sendBookingNotificati
 const stripe = new Stripe(config.stripe.secretKey);
 
 // Card processing fee percentage
-const CARD_FEE_PERCENTAGE = 0.04; // 4%
+const CARD_FEE_PERCENTAGE = 0.03; // 3%
 
 // @desc    Create payment intent (or return existing one)
 // @route   POST /api/payments/create-intent
@@ -66,7 +66,7 @@ export const createPaymentIntent = asyncHandler(async (req, res) => {
   let cardFee = 0;
   let totalAmount = baseAmount;
 
-  // Add 4% fee for card payments
+  // Add 3% fee for card payments
   if (paymentMethod === 'CARD') {
     cardFee = baseAmount * CARD_FEE_PERCENTAGE;
     totalAmount = baseAmount + cardFee;

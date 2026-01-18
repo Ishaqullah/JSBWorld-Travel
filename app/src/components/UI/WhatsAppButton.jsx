@@ -63,7 +63,7 @@ export default function WhatsAppButton() {
                 </a>
                 
                 <a
-                  href="https://wa.me/16828772835"
+                  href="https://wa.me/14697990834"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
@@ -73,7 +73,7 @@ export default function WhatsAppButton() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">WhatsApp</p>
-                    <p className="font-semibold text-gray-900">+1 (682) 877-2835</p>
+                    <p className="font-semibold text-gray-900">+1 (469) 799-0834</p>
                   </div>
                 </a>
                 

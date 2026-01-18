@@ -13,7 +13,7 @@ import Card from '../../components/UI/Card';
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const CARD_FEE_PERCENTAGE = 0.04; // 4%
+const CARD_FEE_PERCENTAGE = 0.03; // 3%
 
 // Bank Transfer Form Component
 const BankTransferForm = ({ bookingId, bookingNumber, total, onSuccess }) => {
@@ -557,7 +557,7 @@ export default function PaymentPage() {
                       </div>
                       <p className="text-sm text-gray-500">Visa, Mastercard, Amex</p>
                       <div className="mt-2 text-sm text-amber-600 font-medium">
-                        +4% processing fee
+                        +3% processing fee
                       </div>
                     </button>
 
@@ -656,7 +656,7 @@ export default function PaymentPage() {
                 </div>
                 {paymentDetails.cardFee > 0 && (
                   <div className="flex justify-between text-sm text-amber-600">
-                    <span>Card Processing Fee (4%)</span>
+                    <span>Card Processing Fee (3%)</span>
                     <span>${paymentDetails.cardFee.toFixed(2)}</span>
                   </div>
                 )}

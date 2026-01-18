@@ -61,14 +61,6 @@ export default function Navbar() {
                 <Mail size={16} />
                 <span>info@jsbworld-travel.com</span>
               </a>
-            </div>
-
-            {/* Right: Hours & Social */}
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <Clock size={16} />
-                <span>Mon-Fri: 10AM to 7PM , Sat: 12PM to 5PM</span>
-              </div>
               <div className="flex items-center space-x-3">
                 {socialLinks.map((social) => (
                   <a
@@ -83,6 +75,15 @@ export default function Navbar() {
                   </a>
                 ))}
               </div>
+            </div>
+
+            {/* Right: Hours & Social */}
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2">
+                <Clock size={16} />
+                <span>Mon-Fri: 10AM to 7PM , Sat: 12PM to 5PM</span>
+              </div>
+              
             </div>
           </div>
         </div>

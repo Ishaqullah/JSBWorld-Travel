@@ -223,7 +223,7 @@ export default function Home() {
                 </a>
                 
                 <a
-                  href="https://wa.me/16828772835"
+                  href="https://wa.me/14697990834"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
@@ -233,7 +233,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">WhatsApp</p>
-                    <p className="font-semibold text-gray-900">+1 (682) 877-2835</p>
+                    <p className="font-semibold text-gray-900">+1 (469) 799-0834</p>
                   </div>
                 </a>
                 
@@ -265,13 +265,12 @@ export default function Home() {
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
-            poster="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920"
           >
             <source src={HeroVideo} type="video/mp4" />
           </video>
         </div>
-        <div className="absolute inset-0 bg-black/40 -z-10"></div>
-        
+        <div className="absolute inset-0  -z-10"></div>
+
         {/* Floating Elements */}
         <motion.div
           animate={{ y: [0, -20, 0] }}
@@ -435,7 +434,7 @@ export default function Home() {
       {/* Partner Logos Marquee - FIXED */}
 <section ref={nextSectionRef} className="py-8 bg-white border-b overflow-hidden relative z-[-30]">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-    <h3 className="text-center text-gray-500 text-2xl font-medium uppercase tracking-wider">
+    <h3 className="text-center text-gray-500 text-4xl font-medium uppercase tracking-wider">
       Our Trusted Partners
     </h3>
   </div>

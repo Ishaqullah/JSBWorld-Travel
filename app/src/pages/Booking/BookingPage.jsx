@@ -150,7 +150,7 @@ export default function BookingPage() {
     return sum + (addOn ? parseFloat(addOn.price) * selected.quantity * numberOfTravelers : 0);
   }, 0);
   
-  // No taxes & fees - only 4% card fee will be added at payment if paying by card
+  // No taxes & fees - only 3% card fee will be added at payment if paying by card
   const total = basePrice + addOnsTotal;
 
   const handleAddOnToggle = (addOnId) => {
@@ -1094,7 +1094,7 @@ export default function BookingPage() {
                   )}
                   <div className="flex justify-between text-sm text-gray-500">
                     <span>Card payment fee (if applicable)</span>
-                    <span>+4%</span>
+                    <span>+3%</span>
                   </div>
                 </div>
 

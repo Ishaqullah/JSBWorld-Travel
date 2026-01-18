@@ -21,6 +21,7 @@ export default function CustomItineraryPage() {
     childrenCount: 0,
     infantsCount: 0,
     details: '',
+    returnTicket: false,
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -227,7 +228,7 @@ export default function CustomItineraryPage() {
                 />
               </div>
 
-              {/* Row 3: Departure and Arrival Dates */}
+              {/* Row 3: Departure Date and Return Ticket Checkbox */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-800 mb-2">Departure Date</label>
@@ -241,8 +242,24 @@ export default function CustomItineraryPage() {
                     required
                   />
                 </div>
+                <div className="flex items-center">
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="returnTicket"
+                      checked={formData.returnTicket}
+                      onChange={(e) => setFormData(prev => ({ ...prev, returnTicket: e.target.checked, arrivalDate: e.target.checked ? prev.arrivalDate : '' }))}
+                      className="w-5 h-5 text-secondary-500 border-gray-300 rounded focus:ring-secondary-400"
+                    />
+                    <span className="ml-3 text-sm font-semibold text-gray-800">Return Ticket</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Arrival Date - Only shown if Return Ticket is checked */}
+              {formData.returnTicket && (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-2">Arrival Date</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Arrival Date (Return)</label>
                   <input
                     type="date"
                     name="arrivalDate"
@@ -250,10 +267,10 @@ export default function CustomItineraryPage() {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-400 focus:border-secondary-400 outline-none transition-all"
                     min={formData.departureDate || new Date().toISOString().split('T')[0]}
-                    required
+                    required={formData.returnTicket}
                   />
                 </div>
-              </div>
+              )}
 
               {/* Row 3: Departure City and Destination */}
               <div className="grid md:grid-cols-2 gap-6">
@@ -328,6 +345,13 @@ export default function CustomItineraryPage() {
                   {error}
                 </div>
               )}
+
+              {/* Multiple Cities Note */}
+              <div className="p-4 bg-secondary-50 border border-secondary-200 rounded-lg">
+                <p className="text-sm text-secondary-700 text-center">
+                  📍 <span className="font-semibold">For multiple cities,</span> please <a href="/contact" className="text-secondary-600 underline hover:text-secondary-800">contact us</a> directly.
+                </p>
+              </div>
 
               {/* Submit Button */}
               <Button
