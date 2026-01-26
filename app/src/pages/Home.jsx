@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Users, Star, TrendingUp, Award, Globe, Clock, ChevronLeft, ChevronRight, Phone, MessageCircle, Mail, X } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, Star, TrendingUp, Award, Globe, Clock, ChevronLeft, ChevronRight, ChevronDown, Phone, MessageCircle, Mail, X } from 'lucide-react';
 import { tourService } from '../services/tourService';
 import { testimonials, stats } from '../data/testimonials';
 import Button from '../components/UI/Button';
@@ -422,12 +422,13 @@ export default function Home() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer z-50"
           onClick={scrollToNextSection}
         >
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center p-2 hover:border-white transition-colors">
-            <div className="w-1 h-3 bg-white/50 rounded-full"></div>
-          </div>
+          <ChevronDown 
+            size={32} 
+            className="text-white/80 hover:text-white transition-colors drop-shadow-lg" 
+          />
         </motion.div>
       </section>
 

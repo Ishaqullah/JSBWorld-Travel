@@ -23,6 +23,9 @@ export default function CustomItineraryPage() {
     details: '',
     returnTicket: false,
   });
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);

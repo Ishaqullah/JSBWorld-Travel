@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { MapPin, Star, Phone } from 'lucide-react';
+import { MapPin, Star, Phone, ChevronDown } from 'lucide-react';
 import { tourService } from '../../services/tourService';
 import Card from '../../components/UI/Card';
 import banner from '../../assets/umrahBanner.png';
@@ -10,6 +10,17 @@ import bbqTonight2 from '../../assets/bbqTonight2.jpg';
 export default function UmrahHajj() {
   const [umrahTours, setUmrahTours] = useState([]);
   const [loading, setLoading] = useState(true);
+  const packagesSectionRef = useRef(null);
+
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const scrollToPackages = () => {
+    if (packagesSectionRef.current) {
+      packagesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const fetchUmrahTours = async () => {
@@ -69,6 +80,19 @@ export default function UmrahHajj() {
                   </motion.h1>
                 </div>
               </div>
+
+              {/* Scroll Indicator - Clickable */}
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer z-50"
+                onClick={scrollToPackages}
+              >
+                <ChevronDown 
+                  size={32} 
+                  className="text-white/80 hover:text-white transition-colors drop-shadow-lg" 
+                />
+              </motion.div>
             </div>
 
 
@@ -183,6 +207,7 @@ export default function UmrahHajj() {
         </div>
 
         {/* Tours Grid */}
+        <div ref={packagesSectionRef}>
         {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
@@ -253,6 +278,7 @@ export default function UmrahHajj() {
             ))}
           </div>
         )}
+        </div>
       </div>
 
       {/* BBQ King Partnership Section */}

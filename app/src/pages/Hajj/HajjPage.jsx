@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, ChevronDown, Upload, Check, Info, FileText, Trash2, Phone } from 'lucide-react';
 import Button from '../../components/UI/Button';
@@ -602,6 +602,7 @@ export default function HajjPage() {
   const [validationErrors, setValidationErrors] = useState({});
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [detailsPackage, setDetailsPackage] = useState(null);
+  const packagesSectionRef = useRef(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -640,6 +641,12 @@ export default function HajjPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const scrollToPackages = () => {
+    if (packagesSectionRef.current) {
+      packagesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const openModal = (pkg) => {
     setSelectedPackage(pkg);
@@ -815,6 +822,19 @@ export default function HajjPage() {
             </motion.h1>
           </div>
         </div>
+
+        {/* Scroll Indicator - Clickable */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer z-50"
+          onClick={scrollToPackages}
+        >
+          <ChevronDown 
+            size={32} 
+            className="text-white/80 hover:text-white transition-colors drop-shadow-lg" 
+          />
+        </motion.div>
       </div>
 
       {/* Intro Section */}
@@ -933,7 +953,8 @@ export default function HajjPage() {
           </p>
         </div>
         {/* Popular Hajj Packages */}
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Popular Hajj Packages</h2>
+        <div ref={packagesSectionRef}>
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Popular Hajj Packages</h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {hajjPackages.map((pkg, index) => (
@@ -985,6 +1006,7 @@ export default function HajjPage() {
               </div>
             </motion.div>
           ))}
+        </div>
         </div>
       </div>
 

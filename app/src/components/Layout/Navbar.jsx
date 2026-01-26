@@ -16,6 +16,8 @@ const TikTokIcon = ({ size = 16 }) => (
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isSocialModalOpen, setIsSocialModalOpen] = useState(false);
+  const [selectedSocialType, setSelectedSocialType] = useState(null);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,10 +40,18 @@ export default function Navbar() {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: 'https://www.facebook.com/share/16ZmNMPGS5/', label: 'Facebook' },
+    { icon: Facebook, label: 'Facebook', type: 'facebook' },
     { icon: TikTokIcon, href: 'https://www.tiktok.com/@jsbworldtravel?_r=1&_t=ZS-92qsJnsrmCL', label: 'TikTok' },
-    { icon: Instagram, href: 'https://www.instagram.com/jsbworld_travel?igsh=MTAybW1odDFnajN1NA==', label: 'Instagram' },
+    { icon: Instagram, label: 'Instagram', type: 'instagram' },
   ];
+
+  const handleSocialClick = (e, social) => {
+    if (social.type === 'facebook' || social.type === 'instagram') {
+      e.preventDefault();
+      setSelectedSocialType(social.type);
+      setIsSocialModalOpen(true);
+    }
+  };
 
   const isActive = (path) => location.pathname === path;
 
@@ -65,11 +75,12 @@ export default function Navbar() {
                 {socialLinks.map((social) => (
                   <a
                     key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-secondary-400 transition-colors"
+                    href={social.href || '#'}
+                    target={social.href ? "_blank" : undefined}
+                    rel={social.href ? "noopener noreferrer" : undefined}
+                    className="hover:text-secondary-400 transition-colors cursor-pointer"
                     aria-label={social.label}
+                    onClick={(e) => handleSocialClick(e, social)}
                   >
                     {typeof social.icon === 'function' ? <social.icon size={16} /> : <social.icon size={16} />}
                   </a>
@@ -274,6 +285,119 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </nav>
+
+      {/* Social Links Modal */}
+      <AnimatePresence>
+        {isSocialModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4"
+            onClick={() => {
+              setIsSocialModalOpen(false);
+              setSelectedSocialType(null);
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {selectedSocialType === 'facebook' ? 'Facebook' : 'Instagram'}
+                </h2>
+                <button
+                  onClick={() => {
+                    setIsSocialModalOpen(false);
+                    setSelectedSocialType(null);
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X size={24} className="text-gray-500" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Facebook Section */}
+                {selectedSocialType === 'facebook' && (
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
+                        <Facebook className="text-white" size={20} />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900">Facebook</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <a
+                        href="https://www.facebook.com/share/18CRVFNRco/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900">Hajj/Umrah With JSB World-Travel</p>
+                          <p className="text-xs text-gray-500 mt-1">Click to visit</p>
+                        </div>
+                      </a>
+                      <a
+                        href="https://www.facebook.com/share/16ZmNMPGS5/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900">JSB World-Travel</p>
+                          <p className="text-xs text-gray-500 mt-1">Click to visit</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {/* Instagram Section */}
+                {selectedSocialType === 'instagram' && (
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 rounded-full flex items-center justify-center">
+                        <Instagram className="text-white" size={20} />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900">Instagram</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <a
+                        href="https://www.instagram.com/hajjumrahjsb?igsh=MXkyc2tkYW1uYnZk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900">Hajj/Umrah With JSB World-Travel</p>
+                          <p className="text-xs text-gray-500 mt-1">Click to visit</p>
+                        </div>
+                      </a>
+                      <a
+                        href="https://www.instagram.com/jsbworld_travel?igsh=MTAybW1odDFnajN1NA=="
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-gray-900">JSB World-Travel</p>
+                          <p className="text-xs text-gray-500 mt-1">Click to visit</p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

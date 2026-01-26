@@ -16,7 +16,9 @@ export default function ToursListing() {
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState('popular');
   const [visibleCount, setVisibleCount] = useState(TOURS_PER_PAGE);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     const fetchTours = async () => {
       setLoading(true);

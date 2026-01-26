@@ -180,7 +180,7 @@ export default function ContactPage() {
                 <div className="flex items-start gap-4">
                   <MapPin className="flex-shrink-0 mt-1" size={24} />
                   <div>
-                    <h3 className="font-bold text-lg mb-1">JSBWORLD TRAVEL</h3>
+                    <h3 className="font-bold text-lg mb-1">JSB WORLD-TRAVEL</h3>
                     <p className="text-white/90">13747 Montfort Dr, Suite 350</p>
                     <p className="text-white/90">Office 307</p>
                     <p className="text-white/90">Dallas, Texas 75240</p>
