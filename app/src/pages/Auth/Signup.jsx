@@ -29,6 +29,10 @@ export default function Signup() {
   // Check if redirected from booking page for payment
   const { returnToPayment, tourId } = location.state || {};
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Countdown timer effect
   useEffect(() => {
     if (expiryTime) {

@@ -20,6 +20,10 @@ export default function Login() {
   // Check if redirected from booking page for payment
   const { from, returnToPayment, tourId } = location.state || {};
 
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

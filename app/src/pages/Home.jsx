@@ -28,7 +28,7 @@ import PartnerLogo21 from '../assets/image21.png';
 import PartnerLogo22 from '../assets/image22.png';
 
 // Hero video import
-import HeroVideo from '../assets/AIEnhancer_overhead-aerial-view-shows-a-w.mp4';
+import HeroVideo from '../assets/hero-vid.mov';
 
 // Partner logos array for easy mapping
 const partnerLogos = [
