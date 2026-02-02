@@ -9,11 +9,18 @@ const stripe = new Stripe(config.stripe.secretKey);
 // Card processing fee percentage
 const CARD_FEE_PERCENTAGE = 0.03; // 3%
 
+// Convert Prisma Decimal or any value to number for Stripe (amounts in dollars)
+const toAmount = (v) => {
+  if (v == null || v === '') return 0;
+  const n = typeof v === 'number' && !Number.isNaN(v) ? v : Number(v);
+  return Number.isNaN(n) ? 0 : n;
+};
+
 // @desc    Create payment intent (or return existing one)
 // @route   POST /api/payments/create-intent
 // @access  Private
 export const createPaymentIntent = asyncHandler(async (req, res) => {
-  const { bookingId, paymentMethod = 'CARD' } = req.body;
+  const { bookingId, paymentMethod = 'CARD', amountInCents: requestedAmountInCents } = req.body;
 
   // Get booking
   const booking = await prisma.booking.findUnique({
@@ -59,10 +66,10 @@ export const createPaymentIntent = asyncHandler(async (req, res) => {
     });
   }
 
-  // Calculate amounts - use deposit amount if this is a deposit payment
-  const baseAmount = booking.isDepositPayment && booking.depositAmount 
-    ? parseFloat(booking.depositAmount) 
-    : parseFloat(booking.totalPrice);
+  // Calculate amounts - use deposit amount if this is a deposit payment (convert Prisma Decimal to number)
+  let baseAmount = booking.isDepositPayment && booking.depositAmount
+    ? toAmount(booking.depositAmount)
+    : toAmount(booking.totalPrice);
   let cardFee = 0;
   let totalAmount = baseAmount;
 
@@ -70,6 +77,19 @@ export const createPaymentIntent = asyncHandler(async (req, res) => {
   if (paymentMethod === 'CARD') {
     cardFee = baseAmount * CARD_FEE_PERCENTAGE;
     totalAmount = baseAmount + cardFee;
+  }
+
+  // Use frontend amount as source of truth when provided — user was shown this total; DB total can differ (rounding, different source).
+  let amountCents = Math.round(totalAmount * 100);
+  if (requestedAmountInCents != null && Number.isInteger(requestedAmountInCents) && requestedAmountInCents >= 50) {
+    const bookingTotalCents = Math.round(baseAmount * 100);
+    const maxAllowedCents = Math.max(bookingTotalCents * 3, 100000); // sanity: allow up to 3x booking or $1000 min
+    if (requestedAmountInCents <= maxAllowedCents) {
+      amountCents = requestedAmountInCents;
+      totalAmount = requestedAmountInCents / 100;
+      baseAmount = totalAmount / (1 + CARD_FEE_PERCENTAGE); // subtotal before 3% fee
+      cardFee = totalAmount - baseAmount;
+    }
   }
 
   // Create or reuse payment intent
@@ -92,10 +112,10 @@ export const createPaymentIntent = asyncHandler(async (req, res) => {
       // Reuse if method type matches and intent is still usable
       if (hasMatchingType && !['canceled', 'succeeded'].includes(existingIntent.status)) {
         // Update amount if needed
-        if (existingIntent.amount !== Math.round(totalAmount * 100)) {
+        if (existingIntent.amount !== amountCents) {
           paymentIntent = await stripe.paymentIntents.update(
             existingPayment.stripePaymentIntentId,
-            { amount: Math.round(totalAmount * 100) }
+            { amount: amountCents }
           );
           console.log('Updated existing PaymentIntent amount');
         } else {
@@ -118,9 +138,9 @@ export const createPaymentIntent = asyncHandler(async (req, res) => {
   }
   
   if (needNewIntent) {
-    // Create new payment intent
+    // Create new payment intent (amountCents = what user was shown, so Stripe UI matches)
     const paymentIntentData = {
-      amount: Math.round(totalAmount * 100),
+      amount: amountCents,
       currency: 'usd',
       metadata: {
         bookingId: booking.id,
@@ -435,10 +455,10 @@ export const createBankTransferInvoice = asyncHandler(async (req, res) => {
     });
   }
 
-  // Calculate amounts - use deposit amount if this is a deposit payment
-  const totalAmount = booking.isDepositPayment && booking.depositAmount 
-    ? parseFloat(booking.depositAmount) 
-    : parseFloat(booking.totalPrice);
+  // Calculate amounts - use deposit amount if this is a deposit payment (convert Prisma Decimal)
+  const totalAmount = booking.isDepositPayment && booking.depositAmount
+    ? toAmount(booking.depositAmount)
+    : toAmount(booking.totalPrice);
 
   try {
     // Step 1: Create or retrieve Stripe Customer
@@ -610,9 +630,9 @@ export const submitBankTransfer = asyncHandler(async (req, res) => {
       paymentNumber,
       bookingId,
       userId: booking.userId,
-      amount: booking.isDepositPayment && booking.depositAmount 
-        ? parseFloat(booking.depositAmount) 
-        : parseFloat(booking.totalPrice),
+      amount: booking.isDepositPayment && booking.depositAmount
+        ? toAmount(booking.depositAmount)
+        : toAmount(booking.totalPrice),
       currency: 'USD',
       paymentMethod: 'BANK_TRANSFER',
       paymentStatus: 'AWAITING_VERIFICATION',

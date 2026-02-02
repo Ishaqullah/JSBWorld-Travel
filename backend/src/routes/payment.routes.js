@@ -18,6 +18,7 @@ const router = express.Router();
 // Validation rules
 const createPaymentIntentValidation = [
   body('bookingId').trim().notEmpty().withMessage('Booking ID is required'),
+  body('amountInCents').optional().isInt({ min: 50 }).withMessage('amountInCents must be a positive integer (cents)'),
 ];
 
 const confirmPaymentValidation = [

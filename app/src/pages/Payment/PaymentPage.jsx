@@ -276,15 +276,16 @@ export default function PaymentPage() {
     totalAmount: initialTotal || 0,
   });
 
-  // Calculate fee when payment method changes
+  // Calculate fee when payment method changes (only for display before Stripe loads; card total comes from backend after createPaymentIntent)
   useEffect(() => {
-    if (initialTotal) {
-      const baseAmount = initialTotal;
-      const cardFee = selectedPaymentMethod === 'CARD' ? baseAmount * CARD_FEE_PERCENTAGE : 0;
-      const totalAmount = baseAmount + cardFee;
-      setPaymentDetails({ baseAmount, cardFee, totalAmount });
-    }
-  }, [selectedPaymentMethod, initialTotal]);
+    if (!initialTotal) return;
+    // For card: don't overwrite once we have clientSecret (backend amounts are source of truth for Stripe)
+    if (selectedPaymentMethod === 'CARD' && clientSecret) return;
+    const baseAmount = initialTotal;
+    const cardFee = selectedPaymentMethod === 'CARD' ? baseAmount * CARD_FEE_PERCENTAGE : 0;
+    const totalAmount = baseAmount + cardFee;
+    setPaymentDetails({ baseAmount, cardFee, totalAmount });
+  }, [selectedPaymentMethod, initialTotal, clientSecret]);
 
   useEffect(() => {
     if (!initialBooking) {
@@ -340,28 +341,38 @@ export default function PaymentPage() {
     }
   }, [saveBooking, user?.id]);
 
-  // Initialize Stripe payment intent (only for card payments)
+  // Initialize Stripe payment intent (only for card payments). Send exact amount user was shown so Stripe UI matches.
   const initializeStripePayment = useCallback(async (bookingId) => {
     if (!bookingId) return;
     
     setLoading(true);
     setError(null);
 
+    // Amount to charge = what we showed (initialTotal + 3% card fee), in cents
+    const amountInCents = initialTotal != null
+      ? Math.round((initialTotal * (1 + CARD_FEE_PERCENTAGE)) * 100)
+      : null;
+
     try {
-      const result = await paymentService.createPaymentIntent(bookingId, 'CARD');
-      setClientSecret(result.clientSecret);
-      setPaymentDetails({
-        baseAmount: result.baseAmount,
-        cardFee: result.cardFee,
-        totalAmount: result.totalAmount,
-      });
+      const result = await paymentService.createPaymentIntent(bookingId, 'CARD', amountInCents);
+      // API may return { data: { ... } } or direct { clientSecret, ... }; support both
+      const data = result?.data ?? result;
+      const baseAmount = Number(data.baseAmount);
+      const cardFee = Number(data.cardFee);
+      const totalAmount = Number(data.totalAmount);
+      setClientSecret(data.clientSecret);
+      setPaymentDetails((prev) => ({
+        baseAmount: Number.isNaN(baseAmount) ? prev.baseAmount : baseAmount,
+        cardFee: Number.isNaN(cardFee) ? prev.cardFee : cardFee,
+        totalAmount: Number.isNaN(totalAmount) ? prev.totalAmount : totalAmount,
+      }));
     } catch (err) {
       console.error('Error initializing Stripe payment:', err);
       setError(err.response?.data?.message || 'Failed to initialize payment. Please try again.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [initialTotal]);
 
   // On mount: Create booking once, then initialize card payment by default
   useEffect(() => {

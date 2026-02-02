@@ -2,9 +2,11 @@ import api from './api';
 
 // Note: api.js interceptor already returns response.data, so 'response' here is the parsed JSON body
 export const paymentService = {
-  // Create payment intent for card
-  createPaymentIntent: async (bookingId, paymentMethod = 'CARD') => {
-    const response = await api.post('/payments/create-intent', { bookingId, paymentMethod });
+  // Create payment intent for card. Pass amountInCents so Stripe charges exactly what the user was shown.
+  createPaymentIntent: async (bookingId, paymentMethod = 'CARD', amountInCents = null) => {
+    const body = { bookingId, paymentMethod };
+    if (amountInCents != null && amountInCents >= 50) body.amountInCents = amountInCents;
+    const response = await api.post('/payments/create-intent', body);
     // Response is already { success, data: { clientSecret, ... } }
     return response.data;
   },
