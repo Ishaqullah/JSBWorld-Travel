@@ -144,6 +144,20 @@ export const getTourById = asyncHandler(async (req, res) => {
         where: { isActive: true },
         orderBy: { displayOrder: 'asc' },
       },
+      tourCategories: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      roomTypes: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      accommodations: {
+        orderBy: { displayOrder: 'asc' },
+        include: {
+          images: {
+            orderBy: { displayOrder: 'asc' },
+          },
+        },
+      },
       reviews: {
         where: { status: 'APPROVED' },
         orderBy: { createdAt: 'desc' },
@@ -169,9 +183,40 @@ export const getTourById = asyncHandler(async (req, res) => {
     });
   }
 
+  // Fetch related tours (same category, exclude current, limit 6)
+  const relatedTours = await prisma.tour.findMany({
+    where: {
+      categoryId: tour.categoryId,
+      id: { not: tour.id },
+      status: 'PUBLISHED',
+      deletedAt: null,
+    },
+    take: 6,
+    orderBy: { createdAt: 'desc' },
+    include: {
+      category: { select: { name: true, slug: true } },
+      images: { orderBy: { displayOrder: 'asc' }, take: 1 },
+    },
+  });
+
+  const tourWithRelated = {
+    ...tour,
+    relatedTours: relatedTours.map((t) => ({
+      id: t.id,
+      slug: t.slug,
+      title: t.title,
+      location: t.location,
+      price: t.price,
+      duration: t.duration,
+      featuredImage: t.featuredImage,
+      category: t.category,
+      images: t.images,
+    })),
+  };
+
   res.status(200).json({
     success: true,
-    data: { tour },
+    data: { tour: tourWithRelated },
   });
 });
 

@@ -54,6 +54,7 @@ export default function Login() {
               userId: loggedInUser.id,
               ...pendingBooking.bookingData,
               flightOption: pendingBooking.flightOption,
+              roomTypeId: pendingBooking.selectedRoomTypeId || null,
               selectedAddOns: pendingBooking.selectedAddOns,
               addOnsTotal: pendingBooking.addOnsTotal,
               totalPrice: pendingBooking.total,

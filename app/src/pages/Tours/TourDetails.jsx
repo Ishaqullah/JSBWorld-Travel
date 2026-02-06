@@ -167,7 +167,10 @@ export default function TourDetails() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [saved, setSaved] = useState(false);
   const [expandedItineraryDays, setExpandedItineraryDays] = useState({ 1: true });
-  
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [accommodationCarouselIndex, setAccommodationCarouselIndex] = useState(0);
+  const [accommodationImageIndex, setAccommodationImageIndex] = useState({});
+
   // Wishlist states
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -175,11 +178,19 @@ export default function TourDetails() {
   const [emailError, setEmailError] = useState('');
   const [emailSuccess, setEmailSuccess] = useState('');
 
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const fetchTour = async () => {
       try {
         const data = await tourService.getTourById(id);
         setTour(data);
+        if (data.tourCategories?.length > 0) {
+          setSelectedCategoryId(data.tourCategories[0].id);
+        }
       } catch (error) {
         console.error('Error fetching tour:', error);
       } finally {
@@ -282,9 +293,15 @@ export default function TourDetails() {
   }
 
   const handleReserve = (selectedDate) => {
-    // Allow all users (logged in or not) to proceed to booking page
-    // Authentication will be checked when proceeding to payment
-    setCurrentBooking({ tour, selectedDateId: selectedDate.id });
+    const selectedCategory = tour.tourCategories?.find((c) => c.id === selectedCategoryId);
+    setCurrentBooking({
+      tour,
+      selectedDateId: selectedDate.id,
+      selectedCategoryId: selectedCategoryId || undefined,
+      selectedCategory: selectedCategory
+        ? { id: selectedCategory.id, name: selectedCategory.name, price: parseFloat(selectedCategory.price) }
+        : undefined,
+    });
     navigate(`/booking/${tour.id}`);
   };
 
@@ -444,6 +461,208 @@ export default function TourDetails() {
             </div>
           </Card>
 
+          {/* Categories Available - dynamic from API */}
+          {tour.tourCategories?.length > 0 && (
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-6">Categories Available:</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {tour.tourCategories.map((cat) => {
+                  const price = parseFloat(cat.price);
+                  const isSelected = selectedCategoryId === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setSelectedCategoryId(cat.id)}
+                      className={`relative text-left p-5 rounded-xl border-2 transition-all ${
+                        isSelected
+                          ? 'border-primary-600 bg-primary-50/50'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
+                      }`}
+                    >
+                      {isSelected && (
+                        <span className="absolute top-3 right-3 px-2 py-0.5 bg-gray-900 text-white text-xs font-medium rounded-md">
+                          Selected
+                        </span>
+                      )}
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{cat.name}</h3>
+                      <p className="text-primary-600 font-semibold mb-3">From ${price.toLocaleString()}</p>
+                      {cat.madinahDescription && (
+                        <p className="text-sm text-gray-600 mb-1">
+                          <span className="font-medium">Madinah</span> - {cat.madinahDescription}
+                        </p>
+                      )}
+                      {cat.makkahDescription && (
+                        <p className="text-sm text-gray-600">
+                          <span className="font-medium">Makkah</span> - {cat.makkahDescription}
+                        </p>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
+
+          {/* Accommodation - carousel, dynamic from API */}
+          {tour.accommodations?.length > 0 && (
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-6">Accommodation</h2>
+              <div className="relative">
+                {tour.accommodations.map((acc, accIndex) => {
+                  if (accIndex !== accommodationCarouselIndex) return null;
+                  const imgs = acc.images?.length
+                    ? acc.images.map((i) => i.imageUrl)
+                    : [];
+                  const currentImgIndex = accommodationImageIndex[acc.id] ?? 0;
+                  const currentImg = imgs[currentImgIndex] || null;
+                  return (
+                    <div key={acc.id} className="flex flex-col md:flex-row gap-6">
+                      <div className="md:w-1/2 relative rounded-xl overflow-hidden bg-gray-100 aspect-[4/3] min-h-[240px]">
+                        {currentImg ? (
+                          <>
+                            <img
+                              src={currentImg}
+                              alt={acc.name}
+                              className="w-full h-full object-cover"
+                            />
+                            {imgs.length > 1 && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setAccommodationImageIndex((prev) => ({
+                                      ...prev,
+                                      [acc.id]: ((prev[acc.id] ?? 0) - 1 + imgs.length) % imgs.length,
+                                    }))
+                                  }
+                                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow hover:bg-white"
+                                >
+                                  <ChevronLeft size={20} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setAccommodationImageIndex((prev) => ({
+                                      ...prev,
+                                      [acc.id]: ((prev[acc.id] ?? 0) + 1) % imgs.length,
+                                    }))
+                                  }
+                                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow hover:bg-white"
+                                >
+                                  <ChevronRight size={20} />
+                                </button>
+                                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                  {imgs.map((_, i) => (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() =>
+                                        setAccommodationImageIndex((prev) => ({ ...prev, [acc.id]: i }))
+                                      }
+                                      className={`w-2 h-2 rounded-full transition-all ${
+                                        i === (accommodationImageIndex[acc.id] ?? 0)
+                                          ? 'bg-white w-6'
+                                          : 'bg-white/50'
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            No image
+                          </div>
+                        )}
+                      </div>
+                      <div className="md:w-1/2 flex flex-col justify-center">
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">{acc.name}</h3>
+                        <div className="flex items-center gap-2 text-gray-600 mb-2">
+                          <MapPin size={18} />
+                          <span>{acc.location}</span>
+                        </div>
+                        {acc.categoryLabel && (
+                          <div className="flex items-center gap-2 text-gray-600 mb-1">
+                            <Heart size={18} className="text-primary-500" />
+                            <span>{acc.categoryLabel}</span>
+                          </div>
+                        )}
+                        {acc.ratingText && (
+                          <p className="text-sm text-gray-500">{acc.ratingText}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+                {tour.accommodations.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAccommodationCarouselIndex((prev) =>
+                          prev === 0 ? tour.accommodations.length - 1 : prev - 1
+                        )
+                      }
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-10 h-10 bg-white rounded-full shadow flex items-center justify-center hover:bg-gray-50 z-10"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAccommodationCarouselIndex((prev) =>
+                          prev === tour.accommodations.length - 1 ? 0 : prev + 1
+                        )
+                      }
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-10 h-10 bg-white rounded-full shadow flex items-center justify-center hover:bg-gray-50 z-10"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                    <div className="flex justify-center gap-2 mt-4">
+                      {tour.accommodations.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setAccommodationCarouselIndex(i)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            i === accommodationCarouselIndex ? 'bg-primary-600 w-6' : 'bg-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-4">
+                The hotels we select meet our high standards and category requirements. However, allocation
+                depends on availability and seasonality, meaning you may be assigned any of the options from
+                our curated list.
+              </p>
+            </Card>
+          )}
+
+          {/* About This Tour - Full Width */}
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold mb-4">About This Tour</h2>
+            <p className="text-gray-700 mb-6">{tour.description}</p>
+
+            {highlights.length > 0 && (
+              <>
+                <h3 className="text-xl font-bold mb-3">Highlights</h3>
+                <ul className="space-y-2 mb-6">
+                  {highlights.map((highlight, index) => (
+                    <li key={index} className="flex items-start">
+                      <Check className="text-green-500 mr-2 flex-shrink-0 mt-0.5" size={20} />
+                      <span className="text-gray-700">{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </Card>
+
           {/* Pricing Table */}
           {tourDates.length > 0 && (
             <Card className="p-6">
@@ -465,26 +684,6 @@ export default function TourDetails() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Column */}
             <div className="space-y-8">
-              {/* Description */}
-              <Card className="p-6">
-                <h2 className="text-2xl font-bold mb-4">About This Tour</h2>
-                <p className="text-gray-700 mb-6">{tour.description}</p>
-
-                {highlights.length > 0 && (
-                  <>
-                    <h3 className="text-xl font-bold mb-3">Highlights</h3>
-                    <ul className="space-y-2 mb-6">
-                      {highlights.map((highlight, index) => (
-                        <li key={index} className="flex items-start">
-                          <Check className="text-green-500 mr-2 flex-shrink-0 mt-0.5" size={20} />
-                          <span className="text-gray-700">{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </Card>
-
               {/* Included/Excluded */}
               <div className="grid md:grid-cols-2 gap-6">
                 {included.length > 0 && (
@@ -620,6 +819,47 @@ export default function TourDetails() {
               </Card>
             )}
           </div>
+
+          {/* More trips to discover - dynamic from API */}
+          {tour.relatedTours?.length > 0 && (
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-6">More trips to discover</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {tour.relatedTours.map((related) => {
+                  const img = related.images?.[0]?.imageUrl || related.featuredImage;
+                  const price = parseFloat(related.price);
+                  return (
+                    <button
+                      key={related.id}
+                      type="button"
+                      onClick={() => navigate(`/tours/${related.slug || related.id}`)}
+                      className="text-left bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md hover:border-primary-200 transition-all"
+                    >
+                      <div className="relative aspect-[4/3] bg-gray-100">
+                        <img
+                          src={img}
+                          alt={related.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <p className="text-xl font-bold text-primary-600 mb-1">
+                          ${price.toLocaleString()}
+                        </p>
+                        <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{related.title}</h3>
+                        {related.location && (
+                          <div className="flex items-center gap-1 text-sm text-gray-600">
+                            <Check size={14} />
+                            <span>{related.location}</span>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
         </div>
       </div>
 

@@ -159,8 +159,74 @@ model Tour {
   reviews         Review[]
   wishlists       Wishlist[]
   addOns          TourAddOn[]
+  tourCategories  TourCategory[]
+  accommodations  TourAccommodation[]
+  roomTypes       TourRoomType[]
 
   @@map("tours")
+}
+
+// Tour package categories (e.g. 5 Star Standard, 5 Star Deluxe) - price added to booking
+model TourCategory {
+  id                 String   @id @default(cuid())
+  tourId             String   @map("tour_id")
+  name               String
+  price              Decimal  @db.Decimal(10, 2)
+  madinahDescription String?  @db.Text @map("madinah_description")
+  makkahDescription  String?  @db.Text @map("makkah_description")
+  displayOrder       Int      @default(0) @map("display_order")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_categories")
+}
+
+// Room types for a tour (e.g. Quad, Triple, Double) - each has per-person prices
+model TourRoomType {
+  id                   String   @id @default(cuid())
+  tourId               String   @map("tour_id")
+  name                 String
+  priceWithoutFlight   Decimal  @db.Decimal(10, 2) @map("price_without_flight")
+  priceWithFlight      Decimal  @db.Decimal(10, 2) @map("price_with_flight")
+  childPriceWithout    Decimal  @db.Decimal(10, 2) @map("child_price_without")
+  childPriceWithFlight Decimal  @db.Decimal(10, 2) @map("child_price_with_flight")
+  displayOrder         Int      @default(0) @map("display_order")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  tour     Tour      @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@map("tour_room_types")
+}
+
+// Accommodation options for a tour (carousel on tour detail page)
+model TourAccommodation {
+  id           String   @id @default(cuid())
+  tourId       String   @map("tour_id")
+  name         String
+  location     String
+  categoryLabel String? @map("category_label")
+  ratingText   String?  @map("rating_text")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  tour   Tour                      @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  images TourAccommodationImage[]
+
+  @@map("tour_accommodations")
+}
+
+model TourAccommodationImage {
+  id              String   @id @default(cuid())
+  accommodationId String   @map("accommodation_id")
+  imageUrl        String   @map("image_url")
+  displayOrder    Int      @default(0) @map("display_order")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  accommodation TourAccommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+
+  @@map("tour_accommodation_images")
 }
 
 model TourImage {
@@ -257,6 +323,7 @@ model Booking {
   childrenCount      Int           @default(0) @map("children_count")
   infantsCount       Int           @default(0) @map("infants_count")
   flightOption       String        @default("without") @map("flight_option")
+  roomTypeId         String?       @map("room_type_id")
   totalPrice         Decimal       @db.Decimal(10, 2) @map("total_price")
   isDepositPayment   Boolean       @default(false) @map("is_deposit_payment")
   depositAmount      Decimal?      @db.Decimal(10, 2) @map("deposit_amount")
@@ -274,6 +341,7 @@ model Booking {
   user      User              @relation(fields: [userId], references: [id])
   tour      Tour              @relation(fields: [tourId], references: [id])
   tourDate  TourDate          @relation(fields: [tourDateId], references: [id])
+  roomType  TourRoomType?     @relation(fields: [roomTypeId], references: [id])
   travelers BookingTraveler[]
   payment   Payment?
   review    Review?

@@ -14,6 +14,7 @@ export const createBooking = asyncHandler(async (req, res) => {
     children,
     infants,
     flightOption = 'without',
+    roomTypeId,
     specialRequests,
     travelers,
     name,
@@ -23,6 +24,7 @@ export const createBooking = asyncHandler(async (req, res) => {
     isDepositPayment = false,
     depositAmount = null,
     remainingBalance = null,
+    totalPrice: clientTotalPrice, // Optional: frontend sends total (includes date pricing, room type, category, add-ons)
   } = req.body;
 
   // 1. Calculate Number of Travelers if missing
@@ -103,18 +105,34 @@ export const createBooking = asyncHandler(async (req, res) => {
     });
   }
 
+  // If roomTypeId provided, validate it belongs to this tour
+  let roomType = null;
+  if (roomTypeId) {
+    roomType = await prisma.tourRoomType.findFirst({
+      where: { id: roomTypeId, tourId },
+    });
+    if (!roomType) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid room type for this tour',
+      });
+    }
+  }
+
   // If there's an existing PENDING booking, update deposit settings and return it
   if (existingBooking && existingBooking.status === 'PENDING') {
     console.log('Found existing pending booking:', existingBooking.bookingNumber);
     
     // Update the booking with the new deposit settings (user may have changed their choice)
+    const updateData = {
+      isDepositPayment: isDepositPayment || false,
+      depositAmount: isDepositPayment && depositAmount ? parseFloat(depositAmount) : null,
+      remainingBalance: isDepositPayment && remainingBalance ? parseFloat(remainingBalance) : null,
+    };
+    if (roomTypeId !== undefined) updateData.roomTypeId = roomTypeId || null;
     const updatedBooking = await prisma.booking.update({
       where: { id: existingBooking.id },
-      data: {
-        isDepositPayment: isDepositPayment || false,
-        depositAmount: isDepositPayment && depositAmount ? parseFloat(depositAmount) : null,
-        remainingBalance: isDepositPayment && remainingBalance ? parseFloat(remainingBalance) : null,
-      },
+      data: updateData,
       include: {
         tour: {
           include: {
@@ -181,9 +199,22 @@ export const createBooking = asyncHandler(async (req, res) => {
     }
   }
 
-  // 5. Calculate total price (base + add-ons)
-  const basePrice = parseFloat(tour.price) * numberOfTravelers;
-  const totalPrice = basePrice + addOnsTotal;
+  // 5. Calculate total price (base + add-ons). Use client total when provided (includes date/room type/category/add-ons).
+  const adultsCount = parseInt(adults) || 1;
+  const childrenCount = parseInt(children) || 0;
+  let basePrice;
+  if (roomType) {
+    const adultPrice = flightOption === 'with' ? parseFloat(roomType.priceWithFlight) : parseFloat(roomType.priceWithoutFlight);
+    const childPrice = flightOption === 'with' ? parseFloat(roomType.childPriceWithFlight) : parseFloat(roomType.childPriceWithout);
+    basePrice = adultPrice * adultsCount + childPrice * childrenCount;
+  } else {
+    basePrice = parseFloat(tour.price) * numberOfTravelers;
+  }
+  const computedTotal = basePrice + addOnsTotal;
+  const totalPrice =
+    typeof clientTotalPrice === 'number' && clientTotalPrice >= 0
+      ? clientTotalPrice
+      : computedTotal;
 
   // 6. Build Travelers Array if missing
   if (!travelers || travelers.length === 0) {
@@ -206,10 +237,11 @@ export const createBooking = asyncHandler(async (req, res) => {
       tourId,
       tourDateId: tourDate.id,
       numberOfTravelers,
-      adultsCount: parseInt(adults) || 1,
-      childrenCount: parseInt(children) || 0,
+      adultsCount: adultsCount,
+      childrenCount: childrenCount,
       infantsCount: parseInt(infants) || 0,
       flightOption: flightOption || 'without',
+      roomTypeId: roomTypeId || null,
       totalPrice,
       isDepositPayment: isDepositPayment || false,
       depositAmount: isDepositPayment && depositAmount ? parseFloat(depositAmount) : null,
@@ -263,6 +295,7 @@ export const createBooking = asyncHandler(async (req, res) => {
         },
       },
       tourDate: true,
+      roomType: true,
       travelers: true,
       addOns: {
         include: {
@@ -295,6 +328,7 @@ export const getBookingById = asyncHandler(async (req, res) => {
         },
       },
       tourDate: true,
+      roomType: true,
       travelers: true,
       payment: true,
     },

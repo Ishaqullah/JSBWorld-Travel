@@ -18,6 +18,9 @@ import {
   updateTourHighlights,
   updateTourInclusions,
   updateTourAddOns,
+  updateTourCategories,
+  updateTourRoomTypes,
+  updateTourAccommodations,
   getAllBookings,
   getAdminDashboardStats,
   getPendingBankTransfers,
@@ -87,6 +90,11 @@ router.put('/tours/:tourId/inclusions', updateTourInclusions);
 
 // ========== Tour Add-ons Routes ==========
 router.put('/tours/:tourId/addons', updateTourAddOns);
+
+// ========== Tour Categories & Accommodations ==========
+router.put('/tours/:tourId/categories', updateTourCategories);
+router.put('/tours/:tourId/room-types', updateTourRoomTypes);
+router.put('/tours/:tourId/accommodations', updateTourAccommodations);
 
 // ========== Bank Transfer Payment Management ==========
 router.get('/payments/pending-transfers', getPendingBankTransfers);

@@ -19,6 +19,7 @@ export default function BookingPage() {
   const [step, setStep] = useState(1);
   const [selectedAddOns, setSelectedAddOns] = useState([]);
   const [flightOption, setFlightOption] = useState('without'); // 'without' or 'with'
+  const [selectedRoomTypeId, setSelectedRoomTypeId] = useState(null);
   const [expandedTravelers, setExpandedTravelers] = useState({});
   const [expandedItineraryDays, setExpandedItineraryDays] = useState({ 1: true }); // First day expanded by default
   const [rooms, setRooms] = useState([{ adults: 2, children: 0 }]);
@@ -56,6 +57,11 @@ export default function BookingPage() {
             tourDateId: initialDate.id,
             startDate: initialDate.startDate
           }));
+        }
+        if (data.roomTypes && data.roomTypes.length > 0) {
+          setSelectedRoomTypeId(data.roomTypes[0].id);
+        } else {
+          setSelectedRoomTypeId(null);
         }
       } catch (error) {
         console.error('Error fetching tour:', error);
@@ -111,47 +117,60 @@ export default function BookingPage() {
   const adults = bookingData.adults;
   const children = bookingData.children;
   
-  // Find selected date and calculate prices dynamically
+  // Find selected date and room type; calculate prices dynamically
   const selectedDate = tour.dates?.find(d => d.id === bookingData.tourDateId);
+  const selectedRoomType = tour.roomTypes?.length && selectedRoomTypeId
+    ? tour.roomTypes.find(rt => rt.id === selectedRoomTypeId)
+    : null;
   const isEarlyBird = selectedDate?.earlyBirdDeadline && new Date() < new Date(selectedDate.earlyBirdDeadline);
 
   const getAdultPrice = () => {
-    if (!selectedDate) return parseFloat(tour.price || 0);
-    
-    if (flightOption === 'without') {
-      return isEarlyBird && selectedDate.earlyBirdPriceWithout 
-        ? parseFloat(selectedDate.earlyBirdPriceWithout) 
-        : parseFloat(selectedDate.priceWithoutFlight);
-    } else { // flightOption === 'with'
-      return isEarlyBird && selectedDate.earlyBirdPriceWith 
-        ? parseFloat(selectedDate.earlyBirdPriceWith) 
-        : parseFloat(selectedDate.priceWithFlight);
+    if (selectedRoomType) {
+      return flightOption === 'without'
+        ? parseFloat(selectedRoomType.priceWithoutFlight)
+        : parseFloat(selectedRoomType.priceWithFlight);
     }
+    if (!selectedDate) return parseFloat(tour.price || 0);
+    if (flightOption === 'without') {
+      return isEarlyBird && selectedDate.earlyBirdPriceWithout
+        ? parseFloat(selectedDate.earlyBirdPriceWithout)
+        : parseFloat(selectedDate.priceWithoutFlight);
+    }
+    return isEarlyBird && selectedDate.earlyBirdPriceWith
+      ? parseFloat(selectedDate.earlyBirdPriceWith)
+      : parseFloat(selectedDate.priceWithFlight);
   };
 
   const getChildPrice = () => {
-    if (!selectedDate) return parseFloat(tour.price || 0) * 0.5;
-
-    if (flightOption === 'without') {
-      return parseFloat(selectedDate.childPriceWithout || 0);
-    } else {
-      return parseFloat(selectedDate.childPriceWithFlight || 0);
+    if (selectedRoomType) {
+      return flightOption === 'without'
+        ? parseFloat(selectedRoomType.childPriceWithout || 0)
+        : parseFloat(selectedRoomType.childPriceWithFlight || 0);
     }
+    if (!selectedDate) return parseFloat(tour.price || 0) * 0.5;
+    if (flightOption === 'without') return parseFloat(selectedDate.childPriceWithout || 0);
+    return parseFloat(selectedDate.childPriceWithFlight || 0);
   };
 
   const adultPrice = getAdultPrice();
   const childPrice = getChildPrice();
   const basePrice = (adultPrice * adults) + (childPrice * children);
   
-  // Calculate add-ons total (price is per person, multiply by number of travelers)
+  // Selected category upgrade (from Tour Details) - per person, added to total
   const numberOfTravelers = bookingData.adults + bookingData.children;
+  const selectedCategory = currentBooking?.selectedCategory;
+  const categoryTotal = selectedCategory?.price
+    ? Number(selectedCategory.price) * numberOfTravelers
+    : 0;
+
+  // Calculate add-ons total (price is per person, multiply by number of travelers)
   const addOnsTotal = selectedAddOns.reduce((sum, selected) => {
     const addOn = tour.addOns?.find(a => a.id === selected.addOnId);
     return sum + (addOn ? parseFloat(addOn.price) * selected.quantity * numberOfTravelers : 0);
   }, 0);
   
   // No taxes & fees - only 3% card fee will be added at payment if paying by card
-  const total = basePrice + addOnsTotal;
+  const total = basePrice + categoryTotal + addOnsTotal;
 
   const handleAddOnToggle = (addOnId) => {
     const exists = selectedAddOns.find(s => s.addOnId === addOnId);
@@ -267,6 +286,7 @@ export default function BookingPage() {
         startDate: bookingData.startDate,
         bookingData: bookingData,
         flightOption,
+        selectedRoomTypeId: tour.roomTypes?.length ? selectedRoomTypeId : null,
         selectedAddOns,
         travelers,
         termsAccepted,
@@ -298,9 +318,10 @@ export default function BookingPage() {
       userId: user.id,
       ...bookingData,
       flightOption,
+      roomTypeId: tour.roomTypes?.length ? selectedRoomTypeId : null,
       selectedAddOns: selectedAddOns,
       addOnsTotal: addOnsTotal,
-      totalPrice: total,
+      totalPrice: total, // Sent to API (includes date/room type pricing + category + add-ons)
       isDepositPayment,
       depositAmount: isDepositPayment ? totalDepositFee : null,
       remainingBalance: isDepositPayment ? (total - totalDepositFee) : null,
@@ -590,6 +611,59 @@ export default function BookingPage() {
                     </div>
                   </Card> */}
 
+                  {/* Solo traveler: show message instead of form */}
+                  {bookingData.adults === 1 ? (
+                    <div className="mt-6 space-y-6">
+                      <div className="p-6 rounded-xl bg-amber-50 border border-amber-200">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Traveling Solo?</h3>
+                        <p className="text-gray-700">
+                          Please note that our listed rates are based on double occupancy. A single supplement applies for individual travelers. To get a personalized quote or to book your private room, please{' '}
+                          <a href="/contact" className="text-primary-600 font-medium hover:underline" target="_blank" rel="noopener noreferrer">Message Us</a>
+                          {' '}(contact form),{' '}
+                          <a href="https://wa.me/14697990834" className="text-primary-600 font-medium hover:underline" target="_blank" rel="noopener noreferrer">chat on WhatsApp</a>
+                          , or call us directly at{' '}
+                          <a href="tel:+16828772835" className="text-primary-600 font-medium hover:underline">+1 (682) 877-2835</a>.
+                        </p>
+                      </div>
+
+                      <div className="p-6 rounded-xl bg-gray-50 border border-gray-200">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Solo Traveler FAQ</h3>
+                        <dl className="space-y-5">
+                          <div>
+                            <dt className="font-semibold text-gray-800 mb-1">Do you offer rooms for solo travelers?</dt>
+                            <dd className="text-gray-700 text-sm pl-0">
+                              Absolutely! While our curated experiences are often designed for couples, we welcome solo adventurers. Because our partner hotels charge per room rather than per person, a Single Supplement fee applies to cover the cost of the private accommodation.
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="font-semibold text-gray-800 mb-1">Why do I need to call or message for a solo quote?</dt>
+                            <dd className="text-gray-700 text-sm pl-0">
+                              We want to ensure you get the most competitive rate! Single supplement fees can fluctuate based on the season and specific hotel availability. By contacting us directly, we can check for any current &quot;solo specials&quot; or discounts that might not be listed on the main site.
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="font-semibold text-gray-800 mb-1">Can I be paired with another solo traveler to save money?</dt>
+                            <dd className="text-gray-700 text-sm pl-0">
+                              Currently, we only offer private rooms to ensure the comfort and privacy of all our guests. However, we are happy to discuss our most budget-friendly private options with you over the phone.
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="font-semibold text-gray-800 mb-1">How do I book a single room?</dt>
+                            <dd className="text-gray-700 text-sm pl-0">
+                              Since our online booking system defaults to double occupancy, please reach out to our team at{' '}
+                              <a href="tel:+16828772835" className="text-primary-600 font-medium hover:underline">+1 (682) 877-2835</a>
+                              {' '}or send us a message via our{' '}
+                              <a href="/contact" className="text-primary-600 font-medium hover:underline" target="_blank" rel="noopener noreferrer">Contact Form</a>
+                              {' / '}
+                              <a href="https://wa.me/14697990834" className="text-primary-600 font-medium hover:underline" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                              . We will provide a custom quote and handle the booking process for you manually.
+                            </dd>
+                          </div>
+                        </dl>
+                      </div>
+                    </div>
+                  ) : (
+                  <>
                   {/* Traveler Details Accordions */}
                   <div className="space-y-2" ref={travelersFormRef}>
                     {travelers.map((traveler, idx) => {
@@ -819,6 +893,8 @@ export default function BookingPage() {
                       </div>
                     </div>
                   )}
+                  </>
+                  )}
                 </div>
               )}
 
@@ -984,11 +1060,13 @@ export default function BookingPage() {
                   </div>
                 )}
                 {step < 3 ? (
-                  <div className="flex justify-end">
-                    <Button onClick={handleNext} icon={ArrowRight} iconPosition="right">
-                      Continue
-                    </Button>
-                  </div>
+                  !(step === 1 && bookingData.adults === 1) && (
+                    <div className="flex justify-end">
+                      <Button onClick={handleNext} icon={ArrowRight} iconPosition="right">
+                        Continue
+                      </Button>
+                    </div>
+                  )
                 ) : (
                   <div className="space-y-4">
                     {/* Deposit Fee Info */}
@@ -1059,7 +1137,7 @@ export default function BookingPage() {
                   <img src={tour.featuredImage || (tour.images && tour.images[0] ? tour.images[0].imageUrl : '')} alt={tour.title} className="w-full h-full object-cover" />
                 </div>
                 <h4 className="font-semibold mb-2">{tour.title}</h4>
-                <div className="space-y-2 text-sm text-gray-600 mb-6">
+                <div className="space-y-2 text-sm text-gray-600 mb-4">
                   <div className="flex items-center">
                     <Calendar size={16} className="mr-2" />
                     {bookingData.startDate &&
@@ -1070,6 +1148,29 @@ export default function BookingPage() {
                     {adults + children} Guest{adults + children > 1 ? 's' : ''}
                   </div>
                 </div>
+
+                {/* Room Type selector – only when tour has room types */}
+                {tour.roomTypes && tour.roomTypes.length > 0 && (
+                  <div className="mb-6">
+                    <p className="text-sm font-medium text-gray-700 mb-2">Room Type</p>
+                    <div className="flex flex-wrap gap-2">
+                      {tour.roomTypes.map((rt) => (
+                        <button
+                          key={rt.id}
+                          type="button"
+                          onClick={() => setSelectedRoomTypeId(rt.id)}
+                          className={`px-4 py-2 rounded-lg border-2 font-medium transition-all ${
+                            selectedRoomTypeId === rt.id
+                              ? 'border-amber-400 bg-amber-50 text-amber-800'
+                              : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                          }`}
+                        >
+                          {rt.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   <div className="flex justify-between text-sm">
@@ -1084,6 +1185,12 @@ export default function BookingPage() {
                         ${childPrice.toFixed(0)} x {children} child{children > 1 ? 'ren' : ''}
                       </span>
                       <span>${(childPrice * children).toFixed(2)}</span>
+                    </div>
+                  )}
+                  {categoryTotal > 0 && selectedCategory && (
+                    <div className="flex justify-between text-sm text-primary-600">
+                      <span>Category: {selectedCategory.name}</span>
+                      <span>${categoryTotal.toFixed(2)}</span>
                     </div>
                   )}
                   {addOnsTotal > 0 && (

@@ -201,6 +201,7 @@ export default function Signup() {
               userId: data.user.id,
               ...pendingBooking.bookingData,
               flightOption: pendingBooking.flightOption,
+              roomTypeId: pendingBooking.selectedRoomTypeId || null,
               selectedAddOns: pendingBooking.selectedAddOns,
               addOnsTotal: pendingBooking.addOnsTotal,
               totalPrice: pendingBooking.total,

@@ -89,6 +89,24 @@ export const adminService = {
     return response.data.data.addOns;
   },
 
+  // Tour Categories (package categories with price)
+  updateTourCategories: async (tourId, tourCategories) => {
+    const response = await api.put(`/admin/tours/${tourId}/categories`, { tourCategories });
+    return response.data.data.tourCategories;
+  },
+
+  // Tour Room Types (Quad, Triple, Double – per-person prices)
+  updateTourRoomTypes: async (tourId, roomTypes) => {
+    const response = await api.put(`/admin/tours/${tourId}/room-types`, { roomTypes });
+    return response.data.data.roomTypes;
+  },
+
+  // Tour Accommodations (carousel)
+  updateTourAccommodations: async (tourId, accommodations) => {
+    const response = await api.put(`/admin/tours/${tourId}/accommodations`, { accommodations });
+    return response.data.data.accommodations;
+  },
+
   // ========== Bookings ==========
   getAllBookings: async (params = {}) => {
     const response = await api.get('/admin/bookings', { params });

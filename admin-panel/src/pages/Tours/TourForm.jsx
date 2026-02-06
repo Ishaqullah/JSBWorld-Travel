@@ -8,6 +8,9 @@ import './Tours.css';
 const TABS = [
   { id: 'basic', label: 'Basic Info' },
   { id: 'dates', label: 'Pricing & Dates' },
+  { id: 'categories', label: 'Categories' },
+  { id: 'roomTypes', label: 'Room Types' },
+  { id: 'accommodations', label: 'Accommodations' },
   { id: 'itinerary', label: 'Itinerary' },
   { id: 'media', label: 'Media' },
   { id: 'details', label: 'Details' },
@@ -46,6 +49,9 @@ const TourForm = () => {
   const [inclusions, setInclusions] = useState([]);
   const [exclusions, setExclusions] = useState([]);
   const [addOns, setAddOns] = useState([]);
+  const [tourCategories, setTourCategories] = useState([]);
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [accommodations, setAccommodations] = useState([]);
 
   // Temp state for adding new items
   const [newHighlight, setNewHighlight] = useState('');
@@ -95,6 +101,9 @@ const TourForm = () => {
       setInclusions(included);
       setExclusions(excluded);
       setAddOns(tour.addOns || []);
+      setTourCategories(tour.tourCategories || []);
+      setRoomTypes(tour.roomTypes || []);
+      setAccommodations(tour.accommodations || []);
     } catch (error) {
       toast.error('Failed to load tour');
       navigate('/tours');
@@ -232,17 +241,50 @@ const TourForm = () => {
         }
 
         // Update add-ons
-        if (addOns.length > 0) {
-          await adminService.updateTourAddOns(id, addOns.map((addOn, idx) => ({
-            id: addOn.id && !addOn.isNew ? addOn.id : undefined,
-            name: addOn.name,
-            description: addOn.description || null,
-            price: parseFloat(addOn.price) || 0,
-            imageUrl: addOn.imageUrl || null,
-            displayOrder: idx,
-            isActive: addOn.isActive !== false,
-          })));
-        }
+        await adminService.updateTourAddOns(id, addOns.map((addOn, idx) => ({
+          id: addOn.id && !addOn.isNew ? addOn.id : undefined,
+          name: addOn.name,
+          description: addOn.description || null,
+          price: parseFloat(addOn.price) || 0,
+          imageUrl: addOn.imageUrl || null,
+          displayOrder: idx,
+          isActive: addOn.isActive !== false,
+        })));
+
+        // Update tour categories (package categories with price)
+        await adminService.updateTourCategories(id, tourCategories.map((c, idx) => ({
+          id: c.id || undefined,
+          name: c.name,
+          price: parseFloat(c.price) ?? 0,
+          madinahDescription: c.madinahDescription || null,
+          makkahDescription: c.makkahDescription || null,
+          displayOrder: idx,
+        })));
+
+        await adminService.updateTourRoomTypes(id, roomTypes.map((r, idx) => ({
+          id: r.id || undefined,
+          name: r.name,
+          priceWithoutFlight: parseFloat(r.priceWithoutFlight) ?? 0,
+          priceWithFlight: parseFloat(r.priceWithFlight) ?? 0,
+          childPriceWithout: parseFloat(r.childPriceWithout) ?? 0,
+          childPriceWithFlight: parseFloat(r.childPriceWithFlight) ?? 0,
+          displayOrder: idx,
+        })));
+
+        // Update accommodations (carousel)
+        await adminService.updateTourAccommodations(id, accommodations.map((a, idx) => ({
+          id: a.id || undefined,
+          name: a.name,
+          location: a.location,
+          categoryLabel: a.categoryLabel || null,
+          ratingText: a.ratingText || null,
+          displayOrder: idx,
+          images: (a.images || []).map((img, i) => ({
+            id: img.id,
+            imageUrl: img.imageUrl || img.url,
+            displayOrder: i,
+          })),
+        })));
 
         toast.success('Tour updated successfully');
       } else {
@@ -674,6 +716,179 @@ const TourForm = () => {
                           value={date.earlyBirdDeadline?.split('T')[0] || ''}
                           onChange={(e) => updateDate(index, 'earlyBirdDeadline', e.target.value)}
                         />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Categories Tab (package categories – price added to booking) */}
+        {activeTab === 'categories' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="font-semibold">Categories Available</h3>
+                <p className="text-sm text-gray-500">e.g. 5 Star Standard, 5 Star Deluxe. Selected category price is added per person at booking.</p>
+              </div>
+              <button
+                onClick={() => setTourCategories([...tourCategories, { name: '', price: 0, madinahDescription: '', makkahDescription: '' }])}
+                className="btn btn-primary"
+              >
+                <Plus size={16} />
+                Add Category
+              </button>
+            </div>
+            {tourCategories.length === 0 ? (
+              <div className="empty-state">
+                <p className="text-muted">No categories. Add one to show the &quot;Categories Available&quot; section on the tour page.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {tourCategories.map((cat, index) => (
+                  <div key={cat.id || `cat-${index}`} className="border border-gray-200 rounded-lg p-4 bg-white">
+                    <div className="flex justify-between items-start mb-3">
+                      <h4 className="font-medium text-gray-700">Category #{index + 1}</h4>
+                      <button type="button" onClick={() => setTourCategories(tourCategories.filter((_, i) => i !== index))} className="text-red-500 hover:text-red-700 p-1">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="input-group">
+                        <label className="input-label required">Name</label>
+                        <input type="text" className="input" placeholder="e.g. 5 Star Standard" value={cat.name || ''} onChange={(e) => { const u = [...tourCategories]; u[index].name = e.target.value; setTourCategories(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label required">Price ($) per person</label>
+                        <input type="number" className="input" min="0" step="0.01" value={cat.price ?? ''} onChange={(e) => { const u = [...tourCategories]; u[index].price = e.target.value; setTourCategories(u); }} />
+                      </div>
+                      <div className="input-group md:col-span-2">
+                        <label className="input-label">Madinah – hotels/description</label>
+                        <input type="text" className="input" placeholder="e.g. Dar Al Hijra Intercontinental" value={cat.madinahDescription || ''} onChange={(e) => { const u = [...tourCategories]; u[index].madinahDescription = e.target.value; setTourCategories(u); }} />
+                      </div>
+                      <div className="input-group md:col-span-2">
+                        <label className="input-label">Makkah – hotels/description</label>
+                        <input type="text" className="input" placeholder="e.g. Swissotel" value={cat.makkahDescription || ''} onChange={(e) => { const u = [...tourCategories]; u[index].makkahDescription = e.target.value; setTourCategories(u); }} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Room Types Tab (Quad, Triple, Double – per-person prices at booking) */}
+        {activeTab === 'roomTypes' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="font-semibold">Room Types</h3>
+                <p className="text-sm text-gray-500">e.g. Quad, Triple, Double. Customer selects one at booking; price per person (with/without flight) is used for the total.</p>
+              </div>
+              <button
+                onClick={() => setRoomTypes([...roomTypes, { name: '', priceWithoutFlight: '', priceWithFlight: '', childPriceWithout: '', childPriceWithFlight: '' }])}
+                className="btn btn-primary"
+              >
+                <Plus size={16} />
+                Add Room Type
+              </button>
+            </div>
+            {roomTypes.length === 0 ? (
+              <div className="empty-state">
+                <p className="text-muted">No room types. Add one to show the Room Type selector on the booking page and use these prices instead of date-level pricing.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {roomTypes.map((rt, index) => (
+                  <div key={rt.id || `rt-${index}`} className="border border-gray-200 rounded-lg p-4 bg-white">
+                    <div className="flex justify-between items-start mb-3">
+                      <h4 className="font-medium text-gray-700">Room Type #{index + 1}</h4>
+                      <button type="button" onClick={() => setRoomTypes(roomTypes.filter((_, i) => i !== index))} className="text-red-500 hover:text-red-700 p-1">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="input-group">
+                        <label className="input-label required">Name</label>
+                        <input type="text" className="input" placeholder="e.g. Quad, Triple, Double" value={rt.name || ''} onChange={(e) => { const u = [...roomTypes]; u[index].name = e.target.value; setRoomTypes(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label required">Price without flight ($) per person</label>
+                        <input type="number" className="input" min="0" step="0.01" value={rt.priceWithoutFlight ?? ''} onChange={(e) => { const u = [...roomTypes]; u[index].priceWithoutFlight = e.target.value; setRoomTypes(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label required">Price with flight ($) per person</label>
+                        <input type="number" className="input" min="0" step="0.01" value={rt.priceWithFlight ?? ''} onChange={(e) => { const u = [...roomTypes]; u[index].priceWithFlight = e.target.value; setRoomTypes(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label required">Child price without flight ($)</label>
+                        <input type="number" className="input" min="0" step="0.01" value={rt.childPriceWithout ?? ''} onChange={(e) => { const u = [...roomTypes]; u[index].childPriceWithout = e.target.value; setRoomTypes(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label required">Child price with flight ($)</label>
+                        <input type="number" className="input" min="0" step="0.01" value={rt.childPriceWithFlight ?? ''} onChange={(e) => { const u = [...roomTypes]; u[index].childPriceWithFlight = e.target.value; setRoomTypes(u); }} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Accommodations Tab (carousel on tour page) */}
+        {activeTab === 'accommodations' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="font-semibold">Accommodations</h3>
+                <p className="text-sm text-gray-500">Hotels/options shown in the accommodation carousel on the tour detail page.</p>
+              </div>
+              <button
+                onClick={() => setAccommodations([...accommodations, { name: '', location: '', categoryLabel: '', ratingText: '', images: [] }])}
+                className="btn btn-primary"
+              >
+                <Plus size={16} />
+                Add Accommodation
+              </button>
+            </div>
+            {accommodations.length === 0 ? (
+              <div className="empty-state">
+                <p className="text-muted">No accommodations. Add one to show the Accommodation section.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {accommodations.map((acc, index) => (
+                  <div key={acc.id || `acc-${index}`} className="border border-gray-200 rounded-lg p-4 bg-white">
+                    <div className="flex justify-between items-start mb-3">
+                      <h4 className="font-medium text-gray-700">Accommodation #{index + 1}</h4>
+                      <button type="button" onClick={() => setAccommodations(accommodations.filter((_, i) => i !== index))} className="text-red-500 hover:text-red-700 p-1">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="input-group">
+                        <label className="input-label required">Name</label>
+                        <input type="text" className="input" placeholder="e.g. Dar Al Hijra Intercontinental" value={acc.name || ''} onChange={(e) => { const u = [...accommodations]; u[index].name = e.target.value; setAccommodations(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label required">Location</label>
+                        <input type="text" className="input" placeholder="e.g. Madinah" value={acc.location || ''} onChange={(e) => { const u = [...accommodations]; u[index].location = e.target.value; setAccommodations(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label">Category label</label>
+                        <input type="text" className="input" placeholder="e.g. 5 star" value={acc.categoryLabel || ''} onChange={(e) => { const u = [...accommodations]; u[index].categoryLabel = e.target.value; setAccommodations(u); }} />
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label">Rating text</label>
+                        <input type="text" className="input" placeholder="e.g. Rating TripAdvisor travelers" value={acc.ratingText || ''} onChange={(e) => { const u = [...accommodations]; u[index].ratingText = e.target.value; setAccommodations(u); }} />
+                      </div>
+                      <div className="input-group md:col-span-2">
+                        <label className="input-label">Image URLs (one per line)</label>
+                        <textarea className="input" rows="3" placeholder="https://..." value={(acc.images || []).map(i => i.imageUrl || i.url || '').join('\n')} onChange={(e) => { const urls = e.target.value.split('\n').filter(Boolean); const u = [...accommodations]; u[index].images = urls.map((url, i) => ({ id: (acc.images || [])[i]?.id, imageUrl: url, url })); setAccommodations(u); }} />
                       </div>
                     </div>
                   </div>

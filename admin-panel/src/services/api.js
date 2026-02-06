@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://crucial-charmane-jsbworld786-acf8c548.koyeb.app/api';
+const API_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_URL,

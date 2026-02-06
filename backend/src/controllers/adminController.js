@@ -205,6 +205,18 @@ export const getAdminTourById = asyncHandler(async (req, res) => {
       addOns: {
         orderBy: { displayOrder: 'asc' },
       },
+      tourCategories: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      roomTypes: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      accommodations: {
+        orderBy: { displayOrder: 'asc' },
+        include: {
+          images: { orderBy: { displayOrder: 'asc' } },
+        },
+      },
       _count: {
         select: {
           reviews: true,
@@ -865,6 +877,179 @@ export const updateTourAddOns = asyncHandler(async (req, res) => {
     success: true,
     message: 'Add-ons updated successfully',
     data: { addOns: updatedAddOns },
+  });
+});
+
+// ========== Tour Categories (package categories with price) ==========
+export const updateTourCategories = asyncHandler(async (req, res) => {
+  const { tourId } = req.params;
+  const { tourCategories } = req.body;
+
+  const tour = await prisma.tour.findUnique({ where: { id: tourId } });
+  if (!tour) {
+    return res.status(404).json({ success: false, message: 'Tour not found' });
+  }
+
+  const existing = await prisma.tourCategory.findMany({ where: { tourId } });
+  const existingIds = existing.map((c) => c.id);
+  const incomingIds = (tourCategories || []).filter((c) => c.id).map((c) => c.id);
+  const toDelete = existingIds.filter((id) => !incomingIds.includes(id));
+  if (toDelete.length > 0) {
+    await prisma.tourCategory.deleteMany({ where: { id: { in: toDelete } } });
+  }
+
+  const list = tourCategories || [];
+  for (let i = 0; i < list.length; i++) {
+    const cat = list[i];
+    const data = {
+      name: cat.name,
+      price: parseFloat(cat.price) ?? 0,
+      madinahDescription: cat.madinahDescription ?? null,
+      makkahDescription: cat.makkahDescription ?? null,
+      displayOrder: i,
+    };
+    if (cat.id && existingIds.includes(cat.id)) {
+      await prisma.tourCategory.update({ where: { id: cat.id }, data });
+    } else {
+      await prisma.tourCategory.create({ data: { tourId, ...data } });
+    }
+  }
+
+  const updated = await prisma.tourCategory.findMany({
+    where: { tourId },
+    orderBy: { displayOrder: 'asc' },
+  });
+  res.status(200).json({
+    success: true,
+    message: 'Tour categories updated successfully',
+    data: { tourCategories: updated },
+  });
+});
+
+// ========== Tour Room Types (Quad, Triple, Double – per-person prices) ==========
+export const updateTourRoomTypes = asyncHandler(async (req, res) => {
+  const { tourId } = req.params;
+  const { roomTypes: roomTypesPayload } = req.body;
+
+  const tour = await prisma.tour.findUnique({ where: { id: tourId } });
+  if (!tour) {
+    return res.status(404).json({ success: false, message: 'Tour not found' });
+  }
+
+  const existing = await prisma.tourRoomType.findMany({ where: { tourId } });
+  const existingIds = existing.map((r) => r.id);
+  const incomingIds = (roomTypesPayload || []).filter((r) => r.id).map((r) => r.id);
+  const toDelete = existingIds.filter((id) => !incomingIds.includes(id));
+  if (toDelete.length > 0) {
+    await prisma.tourRoomType.deleteMany({ where: { id: { in: toDelete } } });
+  }
+
+  const list = roomTypesPayload || [];
+  for (let i = 0; i < list.length; i++) {
+    const rt = list[i];
+    const data = {
+      name: rt.name,
+      priceWithoutFlight: parseFloat(rt.priceWithoutFlight) ?? 0,
+      priceWithFlight: parseFloat(rt.priceWithFlight) ?? 0,
+      childPriceWithout: parseFloat(rt.childPriceWithout) ?? 0,
+      childPriceWithFlight: parseFloat(rt.childPriceWithFlight) ?? 0,
+      displayOrder: i,
+    };
+    if (rt.id && existingIds.includes(rt.id)) {
+      await prisma.tourRoomType.update({ where: { id: rt.id }, data });
+    } else {
+      await prisma.tourRoomType.create({ data: { tourId, ...data } });
+    }
+  }
+
+  const updated = await prisma.tourRoomType.findMany({
+    where: { tourId },
+    orderBy: { displayOrder: 'asc' },
+  });
+  res.status(200).json({
+    success: true,
+    message: 'Room types updated successfully',
+    data: { roomTypes: updated },
+  });
+});
+
+// ========== Tour Accommodations (carousel) ==========
+export const updateTourAccommodations = asyncHandler(async (req, res) => {
+  const { tourId } = req.params;
+  const { accommodations } = req.body;
+
+  const tour = await prisma.tour.findUnique({ where: { id: tourId } });
+  if (!tour) {
+    return res.status(404).json({ success: false, message: 'Tour not found' });
+  }
+
+  const existing = await prisma.tourAccommodation.findMany({
+    where: { tourId },
+    include: { images: true },
+  });
+  const existingIds = existing.map((a) => a.id);
+  const incomingIds = (accommodations || []).filter((a) => a.id).map((a) => a.id);
+  const toDelete = existingIds.filter((id) => !incomingIds.includes(id));
+  for (const id of toDelete) {
+    await prisma.tourAccommodationImage.deleteMany({ where: { accommodationId: id } });
+    await prisma.tourAccommodation.delete({ where: { id } });
+  }
+
+  const list = accommodations || [];
+  for (let i = 0; i < list.length; i++) {
+    const acc = list[i];
+    const accData = {
+      name: acc.name,
+      location: acc.location,
+      categoryLabel: acc.categoryLabel ?? null,
+      ratingText: acc.ratingText ?? null,
+      displayOrder: i,
+    };
+    let accId;
+    if (acc.id && existingIds.includes(acc.id)) {
+      await prisma.tourAccommodation.update({
+        where: { id: acc.id },
+        data: accData,
+      });
+      accId = acc.id;
+      await prisma.tourAccommodationImage.deleteMany({ where: { accommodationId: accId } });
+      const imgs = acc.images || [];
+      for (let j = 0; j < imgs.length; j++) {
+        await prisma.tourAccommodationImage.create({
+          data: {
+            accommodationId: accId,
+            imageUrl: imgs[j].imageUrl || imgs[j].url,
+            displayOrder: j,
+          },
+        });
+      }
+    } else {
+      const created = await prisma.tourAccommodation.create({
+        data: { tourId, ...accData },
+      });
+      accId = created.id;
+      const imgs = acc.images || [];
+      for (let j = 0; j < imgs.length; j++) {
+        await prisma.tourAccommodationImage.create({
+          data: {
+            accommodationId: accId,
+            imageUrl: imgs[j].imageUrl || imgs[j].url,
+            displayOrder: j,
+          },
+        });
+      }
+    }
+  }
+
+  const updated = await prisma.tourAccommodation.findMany({
+    where: { tourId },
+    orderBy: { displayOrder: 'asc' },
+    include: { images: { orderBy: { displayOrder: 'asc' } } },
+  });
+  res.status(200).json({
+    success: true,
+    message: 'Tour accommodations updated successfully',
+    data: { accommodations: updated },
   });
 });
 
