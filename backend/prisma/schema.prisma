@@ -138,6 +138,7 @@ model Tour {
   reviewCount     Int            @default(0) @map("review_count")
   maxGroupSize    Int            @map("max_group_size")
   difficulty      TourDifficulty
+  tags            String?        @db.Text
   featuredImage   String         @map("featured_image")
   description     String         @db.Text
   depositFee      Decimal?       @db.Decimal(10, 2) @map("deposit_fee")
@@ -162,6 +163,9 @@ model Tour {
   tourCategories  TourCategory[]
   accommodations  TourAccommodation[]
   roomTypes       TourRoomType[]
+  notes           TourNote[]
+  priceIncludes   TourPriceInclude[]
+  activities      TourActivity[]
 
   @@map("tours")
 }
@@ -274,8 +278,15 @@ model TourItinerary {
   dayNumber    Int     @map("day_number")
   title        String
   description  String  @db.Text
-  imageUrl     String? @map("image_url")
-  displayOrder Int     @default(0) @map("display_order")
+  imageUrl                String? @map("image_url")
+  accommodationTitle      String?
+  accommodationDescription String? @db.Text
+  accommodationImage      String?
+  activityTitle           String?
+  activityDescription     String? @db.Text
+  activityImage           String?
+  activityPrice           String?
+  displayOrder            Int     @default(0) @map("display_order")
 
   // Relations
   tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
@@ -626,5 +637,48 @@ model HajjTraveler {
   registration HajjRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
 
   @@map("hajj_travelers")
+}
+
+// Tour Notes — collapsible accordion sections (e.g. Important notes, Useful information, Offer conditions)
+model TourNote {
+  id           String   @id @default(cuid())
+  tourId       String   @map("tour_id")
+  title        String
+  content      String   @db.Text
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_notes")
+}
+
+// Tour Price Includes — bullet list of what's included in the price
+model TourPriceInclude {
+  id           String   @id @default(cuid())
+  tourId       String   @map("tour_id")
+  item         String
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_price_includes")
+}
+
+// Tour Activities — included activities shown as cards with images
+model TourActivity {
+  id           String   @id @default(cuid())
+  tourId       String   @map("tour_id")
+  title        String
+  description  String   @db.Text
+  imageUrl     String   @map("image_url")
+  badge        String?  @default("Included")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_activities")
 }
 

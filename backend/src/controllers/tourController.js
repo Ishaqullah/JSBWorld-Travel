@@ -158,6 +158,15 @@ export const getTourById = asyncHandler(async (req, res) => {
           },
         },
       },
+      notes: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      priceIncludes: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      activities: {
+        orderBy: { displayOrder: 'asc' },
+      },
       reviews: {
         where: { status: 'APPROVED' },
         orderBy: { createdAt: 'desc' },

@@ -57,7 +57,7 @@ export const getAdminDashboardStats = asyncHandler(async (req, res) => {
 // ========== Bookings ==========
 export const getAllBookings = asyncHandler(async (req, res) => {
   const { status, page = 1, limit = 50 } = req.query;
-  
+
   const where = {};
   if (status && status !== 'all') {
     where.status = status.toUpperCase();
@@ -151,7 +151,7 @@ export const getAdminTours = asyncHandler(async (req, res) => {
           take: 1,
         },
         _count: {
-          select: { 
+          select: {
             reviews: true,
             bookings: true,
             dates: true,
@@ -217,6 +217,15 @@ export const getAdminTourById = asyncHandler(async (req, res) => {
           images: { orderBy: { displayOrder: 'asc' } },
         },
       },
+      notes: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      priceIncludes: {
+        orderBy: { displayOrder: 'asc' },
+      },
+      activities: {
+        orderBy: { displayOrder: 'asc' },
+      },
       _count: {
         select: {
           reviews: true,
@@ -259,6 +268,7 @@ export const createAdminTour = asyncHandler(async (req, res) => {
     exclusions,
     itinerary,
     dates,
+    tags,
   } = req.body;
 
   // Generate slug from title
@@ -288,6 +298,7 @@ export const createAdminTour = asyncHandler(async (req, res) => {
       featuredImage: featuredImage || '',
       description,
       depositFee: depositFee ? parseFloat(depositFee) : null,
+      tags: tags || null,
       status: status.toUpperCase(),
       createdById: req.user.id,
       images: {
@@ -375,6 +386,7 @@ export const updateAdminTour = asyncHandler(async (req, res) => {
     featuredImage,
     description,
     status,
+    tags,
   } = req.body;
 
   const existingTour = await prisma.tour.findUnique({
@@ -390,7 +402,7 @@ export const updateAdminTour = asyncHandler(async (req, res) => {
 
   // Build update data
   const updateData = {};
-  
+
   if (title !== undefined) {
     updateData.title = title;
     // Update slug if title changed
@@ -398,17 +410,17 @@ export const updateAdminTour = asyncHandler(async (req, res) => {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
-    
+
     // Check if new slug already exists (excluding current tour)
     const existingSlug = await prisma.tour.findFirst({
       where: { slug: baseSlug, id: { not: id } },
     });
-    
+
     if (!existingSlug) {
       updateData.slug = baseSlug;
     }
   }
-  
+
   if (categoryId !== undefined) updateData.categoryId = categoryId;
   if (location !== undefined) updateData.location = location;
   if (price !== undefined) updateData.price = parseFloat(price);
@@ -419,6 +431,7 @@ export const updateAdminTour = asyncHandler(async (req, res) => {
   if (description !== undefined) updateData.description = description;
   if (depositFee !== undefined) updateData.depositFee = depositFee ? parseFloat(depositFee) : null;
   if (status !== undefined) updateData.status = status.toUpperCase();
+  if (tags !== undefined) updateData.tags = tags;
 
   const tour = await prisma.tour.update({
     where: { id },
@@ -634,6 +647,13 @@ export const updateTourItinerary = asyncHandler(async (req, res) => {
       title: day.title,
       description: day.description,
       imageUrl: day.imageUrl || null,
+      accommodationTitle: day.accommodationTitle || null,
+      accommodationDescription: day.accommodationDescription || null,
+      accommodationImage: day.accommodationImage || null,
+      activityTitle: day.activityTitle || null,
+      activityDescription: day.activityDescription || null,
+      activityImage: day.activityImage || null,
+      activityPrice: day.activityPrice || null,
       displayOrder: index,
     })),
   });
@@ -828,7 +848,7 @@ export const updateTourAddOns = asyncHandler(async (req, res) => {
 
   const existingIds = existingAddOns.map(a => a.id);
   const incomingIds = addOns.filter(a => a.id).map(a => a.id);
-  
+
   // Delete add-ons that are no longer in the list
   const toDelete = existingIds.filter(id => !incomingIds.includes(id));
   if (toDelete.length > 0) {
@@ -1050,6 +1070,124 @@ export const updateTourAccommodations = asyncHandler(async (req, res) => {
     success: true,
     message: 'Tour accommodations updated successfully',
     data: { accommodations: updated },
+  });
+});
+
+// ========== Tour Notes (accordion) ==========
+export const updateTourNotes = asyncHandler(async (req, res) => {
+  const { tourId } = req.params;
+  const { notes } = req.body;
+
+  const tour = await prisma.tour.findUnique({ where: { id: tourId } });
+  if (!tour) {
+    return res.status(404).json({ success: false, message: 'Tour not found' });
+  }
+
+  // Delete existing and recreate
+  await prisma.tourNote.deleteMany({ where: { tourId } });
+
+  if (notes && notes.length > 0) {
+    await prisma.tourNote.createMany({
+      data: notes.map((note, index) => ({
+        tourId,
+        title: note.title,
+        content: note.content,
+        displayOrder: index,
+      })),
+    });
+  }
+
+  const updated = await prisma.tourNote.findMany({
+    where: { tourId },
+    orderBy: { displayOrder: 'asc' },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Tour notes updated successfully',
+    data: { notes: updated },
+  });
+});
+
+// ========== Tour Price Includes ==========
+export const updateTourPriceIncludes = asyncHandler(async (req, res) => {
+  const { tourId } = req.params;
+  const { priceIncludes } = req.body;
+
+  const tour = await prisma.tour.findUnique({ where: { id: tourId } });
+  if (!tour) {
+    return res.status(404).json({ success: false, message: 'Tour not found' });
+  }
+
+  // Delete existing and recreate
+  await prisma.tourPriceInclude.deleteMany({ where: { tourId } });
+
+  if (priceIncludes && priceIncludes.length > 0) {
+    await prisma.tourPriceInclude.createMany({
+      data: priceIncludes.map((item, index) => ({
+        tourId,
+        item: typeof item === 'string' ? item : item.item,
+        displayOrder: index,
+      })),
+    });
+  }
+
+  const updated = await prisma.tourPriceInclude.findMany({
+    where: { tourId },
+    orderBy: { displayOrder: 'asc' },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Price includes updated successfully',
+    data: { priceIncludes: updated },
+  });
+});
+
+// ========== Tour Activities (included activities) ==========
+export const updateTourActivities = asyncHandler(async (req, res) => {
+  const { tourId } = req.params;
+  const { activities } = req.body;
+
+  const tour = await prisma.tour.findUnique({ where: { id: tourId } });
+  if (!tour) {
+    return res.status(404).json({ success: false, message: 'Tour not found' });
+  }
+
+  const existing = await prisma.tourActivity.findMany({ where: { tourId } });
+  const existingIds = existing.map((a) => a.id);
+  const incomingIds = (activities || []).filter((a) => a.id).map((a) => a.id);
+  const toDelete = existingIds.filter((id) => !incomingIds.includes(id));
+  if (toDelete.length > 0) {
+    await prisma.tourActivity.deleteMany({ where: { id: { in: toDelete } } });
+  }
+
+  const list = activities || [];
+  for (let i = 0; i < list.length; i++) {
+    const act = list[i];
+    const data = {
+      title: act.title,
+      description: act.description || '',
+      imageUrl: act.imageUrl || '',
+      badge: act.badge || 'Included',
+      displayOrder: i,
+    };
+    if (act.id && existingIds.includes(act.id)) {
+      await prisma.tourActivity.update({ where: { id: act.id }, data });
+    } else {
+      await prisma.tourActivity.create({ data: { tourId, ...data } });
+    }
+  }
+
+  const updated = await prisma.tourActivity.findMany({
+    where: { tourId },
+    orderBy: { displayOrder: 'asc' },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Tour activities updated successfully',
+    data: { activities: updated },
   });
 });
 

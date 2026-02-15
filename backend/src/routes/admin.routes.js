@@ -21,6 +21,9 @@ import {
   updateTourCategories,
   updateTourRoomTypes,
   updateTourAccommodations,
+  updateTourNotes,
+  updateTourPriceIncludes,
+  updateTourActivities,
   getAllBookings,
   getAdminDashboardStats,
   getPendingBankTransfers,
@@ -90,6 +93,11 @@ router.put('/tours/:tourId/inclusions', updateTourInclusions);
 
 // ========== Tour Add-ons Routes ==========
 router.put('/tours/:tourId/addons', updateTourAddOns);
+
+// ========== Tour Notes, Price Includes & Activities ==========
+router.put('/tours/:tourId/notes', updateTourNotes);
+router.put('/tours/:tourId/price-includes', updateTourPriceIncludes);
+router.put('/tours/:tourId/activities', updateTourActivities);
 
 // ========== Tour Categories & Accommodations ==========
 router.put('/tours/:tourId/categories', updateTourCategories);
