@@ -31,8 +31,8 @@ const Sidebar = ({ collapsed, onToggle }) => {
       <div className="sidebar-header">
         {!collapsed && (
           <div className="sidebar-logo">
-            <span className="logo-icon">T</span>
-            <span className="logo-text">Travecations</span>
+            <span className="logo-icon">J</span>
+            <span className="logo-text">JSB World Travel</span>
           </div>
         )}
         <button className="sidebar-toggle" onClick={onToggle}>

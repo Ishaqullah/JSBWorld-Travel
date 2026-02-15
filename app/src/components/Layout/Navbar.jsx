@@ -9,7 +9,7 @@ import Logo from '../../assets/cropped_circle_image.png';
 // Custom TikTok icon since lucide doesn't have one
 const TikTokIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
   </svg>
 );
 
@@ -94,7 +94,7 @@ export default function Navbar() {
                 <Clock size={16} />
                 <span>Mon-Fri: 10AM to 7PM , Sat: 12PM to 5PM</span>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -111,13 +111,13 @@ export default function Navbar() {
                 transition={{ duration: 0.3 }}
                 className="py-2"
               >
-                <img 
-                  src={Logo} 
-                  alt="JSBWORLD TRAVEL Logo" 
+                <img
+                  src={Logo}
+                  alt="JSBWORLD TRAVEL Logo"
                   className="h-16 w-16 object-contain rounded-full"
                 />
               </motion.div>
-             
+
             </Link>
 
             {/* Desktop Navigation */}
@@ -130,7 +130,7 @@ export default function Navbar() {
                     isActive(link.to)
                       ? 'text-primary-600'
                       : 'text-gray-700 hover:text-primary-500'
-                  }`}
+                    }`}
                 >
                   {link.label}
                   {isActive(link.to) && (
@@ -188,15 +188,15 @@ export default function Navbar() {
                 </div>
               ) : (
                 <>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     onClick={() => navigate('/login')}
                     className="text-lg px-6 py-3" /* Added className for size */
                   >
                     Login
                   </Button>
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="primary"
                     onClick={() => navigate('/signup')}
                     className="text-lg px-6 py-3" /* Added className for size */
                   >
@@ -234,7 +234,7 @@ export default function Navbar() {
                       isActive(link.to)
                         ? 'bg-primary-50 text-primary-600'
                         : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {link.label}
@@ -320,7 +320,7 @@ export default function Navbar() {
                   <X size={24} className="text-gray-500" />
                 </button>
               </div>
-              
+
               <div className="space-y-4">
                 {/* Facebook Section */}
                 {selectedSocialType === 'facebook' && (
@@ -339,7 +339,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-900">Hajj/Umrah With JSB World-Travel</p>
+                          <p className="text-sm font-semibold text-gray-900">Hajj/Umrah With JSB World Travel</p>
                           <p className="text-xs text-gray-500 mt-1">Click to visit</p>
                         </div>
                       </a>
@@ -350,7 +350,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-900">JSB World-Travel</p>
+                          <p className="text-sm font-semibold text-gray-900">JSB World Travel</p>
                           <p className="text-xs text-gray-500 mt-1">Click to visit</p>
                         </div>
                       </a>
@@ -375,7 +375,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-900">Hajj/Umrah With JSB World-Travel</p>
+                          <p className="text-sm font-semibold text-gray-900">Hajj/Umrah With JSB World Travel</p>
                           <p className="text-xs text-gray-500 mt-1">Click to visit</p>
                         </div>
                       </a>
@@ -386,7 +386,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                       >
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-900">JSB World-Travel</p>
+                          <p className="text-sm font-semibold text-gray-900">JSB World Travel</p>
                           <p className="text-xs text-gray-500 mt-1">Click to visit</p>
                         </div>
                       </a>

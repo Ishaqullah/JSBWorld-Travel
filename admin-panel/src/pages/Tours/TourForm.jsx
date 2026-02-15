@@ -14,6 +14,7 @@ const TABS = [
   { id: 'itinerary', label: 'Itinerary' },
   { id: 'media', label: 'Media' },
   { id: 'details', label: 'Details' },
+  { id: 'extraInfo', label: 'Extra Info' },
   { id: 'addons', label: 'Add-ons' },
 ];
 
@@ -40,6 +41,7 @@ const TourForm = () => {
     featuredImage: '',
     description: '',
     status: 'DRAFT',
+    tags: '',
   });
 
   const [dates, setDates] = useState([]);
@@ -53,10 +55,16 @@ const TourForm = () => {
   const [roomTypes, setRoomTypes] = useState([]);
   const [accommodations, setAccommodations] = useState([]);
 
+  // New sections state
+  const [notes, setNotes] = useState([]);
+  const [priceIncludes, setPriceIncludes] = useState([]);
+  const [activities, setActivities] = useState([]);
+
   // Temp state for adding new items
   const [newHighlight, setNewHighlight] = useState('');
   const [newInclusion, setNewInclusion] = useState('');
   const [newExclusion, setNewExclusion] = useState('');
+  const [newPriceInclude, setNewPriceInclude] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
 
   useEffect(() => {
@@ -90,12 +98,13 @@ const TourForm = () => {
         featuredImage: tour.featuredImage || '',
         description: tour.description || '',
         status: tour.status || 'DRAFT',
+        tags: tour.tags || '',
       });
       setDates(tour.dates || []);
       setItinerary(tour.itinerary || []);
       setImages(tour.images || []);
       setHighlights(tour.highlights?.map(h => h.highlight) || []);
-      
+
       const included = tour.inclusions?.filter(i => i.type === 'INCLUDED').map(i => i.item) || [];
       const excluded = tour.inclusions?.filter(i => i.type === 'EXCLUDED').map(i => i.item) || [];
       setInclusions(included);
@@ -103,7 +112,12 @@ const TourForm = () => {
       setAddOns(tour.addOns || []);
       setTourCategories(tour.tourCategories || []);
       setRoomTypes(tour.roomTypes || []);
+      setTourCategories(tour.tourCategories || []);
+      setRoomTypes(tour.roomTypes || []);
       setAccommodations(tour.accommodations || []);
+      setNotes(tour.notes || []);
+      setPriceIncludes(tour.priceIncludes?.map(p => p.item) || []);
+      setActivities(tour.activities || []);
     } catch (error) {
       toast.error('Failed to load tour');
       navigate('/tours');
@@ -167,6 +181,13 @@ const TourForm = () => {
           title: item.title,
           description: item.description,
           imageUrl: item.imageUrl || null,
+          accommodationTitle: item.accommodationTitle || null,
+          accommodationDescription: item.accommodationDescription || null,
+          accommodationImage: item.accommodationImage || null,
+          activityTitle: item.activityTitle || null,
+          activityDescription: item.activityDescription || null,
+          activityImage: item.activityImage || null,
+          activityPrice: item.activityPrice || null,
         })),
         dates: dates.map(d => ({
           startDate: d.startDate,
@@ -196,6 +217,7 @@ const TourForm = () => {
           featuredImage: formData.featuredImage,
           description: formData.description,
           status: formData.status,
+          tags: formData.tags,
         });
 
         // Update related entities
@@ -208,11 +230,11 @@ const TourForm = () => {
             alt: img.altText || img.alt || formData.title,
           })));
         }
-        
+
         // Always update highlights and inclusions (even if empty, to allow deletion)
         await adminService.updateTourHighlights(id, highlights);
         await adminService.updateTourInclusions(id, inclusions, exclusions);
-        
+
         // Update tour dates - handle each date individually
         if (dates.length > 0) {
           for (const date of dates) {
@@ -229,7 +251,7 @@ const TourForm = () => {
               childPriceWithFlight: parseFloat(date.childPriceWithFlight) || parseFloat(formData.price) * 0.7,
               singleSupplement: parseFloat(date.singleSupplement) || 0,
             };
-            
+
             // If it's a new date (id starts with 'new-'), create it
             if (String(date.id).startsWith('new-')) {
               await adminService.createTourDate(id, dateData);
@@ -286,6 +308,14 @@ const TourForm = () => {
           })),
         })));
 
+        // Update new sections
+        await adminService.updateTourNotes(id, notes);
+        await adminService.updateTourPriceIncludes(id, priceIncludes);
+        await adminService.updateTourActivities(id, activities.map((a, idx) => ({
+          ...a,
+          displayOrder: idx
+        })));
+
         toast.success('Tour updated successfully');
       } else {
         await adminService.createTour(tourData);
@@ -340,6 +370,13 @@ const TourForm = () => {
         title: '',
         description: '',
         imageUrl: '',
+        accommodationTitle: '',
+        accommodationDescription: '',
+        accommodationImage: '',
+        activityTitle: '',
+        activityDescription: '',
+        activityImage: '',
+        activityPrice: '',
       },
     ]);
   };
@@ -380,6 +417,13 @@ const TourForm = () => {
     if (newImageUrl.trim()) {
       setImages([...images, { imageUrl: newImageUrl.trim(), altText: formData.title }]);
       setNewImageUrl('');
+    }
+  };
+
+  const addPriceInclude = () => {
+    if (newPriceInclude.trim()) {
+      setPriceIncludes([...priceIncludes, newPriceInclude.trim()]);
+      setNewPriceInclude('');
     }
   };
 
@@ -557,6 +601,19 @@ const TourForm = () => {
                 value={formData.featuredImage}
                 onChange={handleInputChange}
               />
+            </div>
+
+            <div className="input-group full-width">
+              <label className="input-label">Tags (comma separated)</label>
+              <input
+                type="text"
+                name="tags"
+                className="input"
+                placeholder="e.g. Summer Special, Best Seller, Family Friendly"
+                value={formData.tags}
+                onChange={handleInputChange}
+              />
+              <p className="text-xs text-gray-500 mt-1">These tags will be displayed as highlights on the tour details page.</p>
             </div>
 
             <div className="input-group full-width">
@@ -934,6 +991,89 @@ const TourForm = () => {
                           onChange={(e) => updateItinerary(index, 'title', e.target.value)}
                         />
                       </div>
+                      {/* Accommodation Details */}
+                      <div className="bg-gray-50 p-4 rounded-lg mt-4 border border-gray-200">
+                        <h4 className="font-semibold mb-3 text-gray-700">Accommodation Details</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="input-group">
+                            <label className="input-label">Title</label>
+                            <input
+                              type="text"
+                              className="input"
+                              placeholder="e.g. Hotel Central"
+                              value={day.accommodationTitle || ''}
+                              onChange={(e) => updateItinerary(index, 'accommodationTitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="input-group">
+                            <label className="input-label">Image URL</label>
+                            <input
+                              type="text"
+                              className="input"
+                              placeholder="https://..."
+                              value={day.accommodationImage || ''}
+                              onChange={(e) => updateItinerary(index, 'accommodationImage', e.target.value)}
+                            />
+                          </div>
+                          <div className="input-group md:col-span-2">
+                            <label className="input-label">Description</label>
+                            <textarea
+                              className="input"
+                              rows="2"
+                              placeholder="Brief description of the accommodation..."
+                              value={day.accommodationDescription || ''}
+                              onChange={(e) => updateItinerary(index, 'accommodationDescription', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Activity Details */}
+                      <div className="bg-gray-50 p-4 rounded-lg mt-4 border border-gray-200">
+                        <h4 className="font-semibold mb-3 text-gray-700">Activity Details</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="input-group">
+                            <label className="input-label">Title</label>
+                            <input
+                              type="text"
+                              className="input"
+                              placeholder="e.g. City Tour"
+                              value={day.activityTitle || ''}
+                              onChange={(e) => updateItinerary(index, 'activityTitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="input-group">
+                            <label className="input-label">Image URL</label>
+                            <input
+                              type="text"
+                              className="input"
+                              placeholder="https://..."
+                              value={day.activityImage || ''}
+                              onChange={(e) => updateItinerary(index, 'activityImage', e.target.value)}
+                            />
+                          </div>
+                          <div className="input-group md:col-span-2">
+                            <label className="input-label">Description</label>
+                            <textarea
+                              className="input"
+                              rows="2"
+                              placeholder="Brief description of the activity..."
+                              value={day.activityDescription || ''}
+                              onChange={(e) => updateItinerary(index, 'activityDescription', e.target.value)}
+                            />
+                          </div>
+                          <div className="input-group">
+                            <label className="input-label">Price (Optional)</label>
+                            <input
+                              type="number"
+                              className="input"
+                              placeholder="e.g. 50"
+                              value={day.activityPrice || ''}
+                              onChange={(e) => updateItinerary(index, 'activityPrice', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
                       <div className="input-group full-width">
                         <label className="input-label">Description</label>
                         <textarea
@@ -954,8 +1094,8 @@ const TourForm = () => {
                           onChange={(e) => updateItinerary(index, 'imageUrl', e.target.value)}
                         />
                         {day.imageUrl && (
-                          <img 
-                            src={day.imageUrl} 
+                          <img
+                            src={day.imageUrl}
                             alt={`Day ${day.dayNumber || index + 1}`}
                             className="mt-2 max-h-32 rounded-lg object-cover"
                           />
@@ -973,7 +1113,7 @@ const TourForm = () => {
         {activeTab === 'media' && (
           <div>
             <h3 className="font-semibold mb-4">Tour Images</h3>
-            
+
             <div className="add-item-row mb-6">
               <input
                 type="url"
@@ -1111,6 +1251,225 @@ const TourForm = () => {
           </div>
         )}
 
+        {/* Extra Info Tab (Notes, Price Includes, Activities) */}
+        {activeTab === 'extraInfo' && (
+          <div className="flex flex-col gap-8">
+            {/* 1. Accordion Notes */}
+            <div className="bg-white p-6 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Accordion Notes</h3>
+                  <p className="text-sm text-gray-500">
+                    Collapsible sections like "Important notes", "Useful information", "Offer conditions".
+                  </p>
+                </div>
+                <button
+                  onClick={() => setNotes([...notes, { title: '', content: '' }])}
+                  className="btn btn-primary btn-sm"
+                >
+                  <Plus size={16} /> Add Note
+                </button>
+              </div>
+
+              {notes.length === 0 ? (
+                <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                  No notes added yet.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {notes.map((note, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50 relative group">
+                      <button
+                        onClick={() => setNotes(notes.filter((_, i) => i !== index))}
+                        className="absolute top-2 right-2 text-gray-400 hover:text-red-500 p-1"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+
+                      <div className="grid gap-3">
+                        <div>
+                          <label className="text-xs font-semibold uppercase text-gray-500 mb-1 block">Title</label>
+                          <input
+                            type="text"
+                            className="input bg-white"
+                            placeholder="e.g. Important notes"
+                            value={note.title}
+                            onChange={(e) => {
+                              const updated = [...notes];
+                              updated[index].title = e.target.value;
+                              setNotes(updated);
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-semibold uppercase text-gray-500 mb-1 block">Content</label>
+                          <textarea
+                            className="input bg-white"
+                            rows="3"
+                            placeholder="Enter the content here..."
+                            value={note.content}
+                            onChange={(e) => {
+                              const updated = [...notes];
+                              updated[index].content = e.target.value;
+                              setNotes(updated);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 2. Price Includes List */}
+            {/* <div className="bg-white p-6 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-semibold mb-2">"The Price Includes" List</h3>
+              <p className="text-sm text-gray-500 mb-4">Bullet points shown under "The price includes" section.</p>
+
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  className="input"
+                  placeholder="Add an item included in the price..."
+                  value={newPriceInclude}
+                  onChange={(e) => setNewPriceInclude(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addPriceInclude()}
+                />
+                <button onClick={addPriceInclude} className="btn btn-primary">
+                  <Plus size={16} /> Add
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {priceIncludes.map((item, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded border border-gray-200 group">
+                    <span className="flex-1 text-gray-700">{item}</span>
+                    <button
+                      onClick={() => setPriceIncludes(priceIncludes.filter((_, i) => i !== index))}
+                      className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+                {priceIncludes.length === 0 && (
+                  <p className="text-sm text-gray-400 italic">No items added yet.</p>
+                )}
+              </div>
+            </div> */}
+
+            {/* 3. Included Activities */}
+            <div className="bg-white p-6 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold">Included Activities</h3>
+                  <p className="text-sm text-gray-500">
+                    Cards with images, titles, and descriptions.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActivities([...activities, { title: '', description: '', imageUrl: '', badge: 'Included' }])}
+                  className="btn btn-primary btn-sm"
+                >
+                  <Plus size={16} /> Add Activity
+                </button>
+              </div>
+
+              {activities.length === 0 ? (
+                <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                  No activities added yet.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {activities.map((activity, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50 relative">
+                      <button
+                        onClick={() => setActivities(activities.filter((_, i) => i !== index))}
+                        className="absolute top-2 right-2 text-gray-400 hover:text-red-500 p-1 z-10"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+
+                      <div className="space-y-3">
+                        <div className="flex gap-4">
+                          <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
+                            {activity.imageUrl ? (
+                              <img src={activity.imageUrl} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs text-center p-1">No Image</div>
+                            )}
+                          </div>
+                          <div className="flex-1 space-y-2">
+                            <div>
+                              <label className="text-[10px] font-bold uppercase text-gray-500 block">Image URL</label>
+                              <input
+                                type="text"
+                                className="input text-xs py-1"
+                                placeholder="https://..."
+                                value={activity.imageUrl || ''}
+                                onChange={(e) => {
+                                  const updated = [...activities];
+                                  updated[index].imageUrl = e.target.value;
+                                  setActivities(updated);
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] font-bold uppercase text-gray-500 block">Badge Text</label>
+                              <input
+                                type="text"
+                                className="input text-xs py-1"
+                                placeholder="Included"
+                                value={activity.badge || ''}
+                                onChange={(e) => {
+                                  const updated = [...activities];
+                                  updated[index].badge = e.target.value;
+                                  setActivities(updated);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] font-bold uppercase text-gray-500 block">Title</label>
+                          <input
+                            type="text"
+                            className="input"
+                            placeholder="Activity Title"
+                            value={activity.title || ''}
+                            onChange={(e) => {
+                              const updated = [...activities];
+                              updated[index].title = e.target.value;
+                              setActivities(updated);
+                            }}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] font-bold uppercase text-gray-500 block">Description</label>
+                          <textarea
+                            className="input"
+                            rows="2"
+                            placeholder="Brief description..."
+                            value={activity.description || ''}
+                            onChange={(e) => {
+                              const updated = [...activities];
+                              updated[index].description = e.target.value;
+                              setActivities(updated);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Add-ons Tab */}
         {activeTab === 'addons' && (
           <div className="flex flex-col gap-6">
@@ -1119,15 +1478,15 @@ const TourForm = () => {
                 <h3 className="font-semibold">Tour Add-ons</h3>
                 <p className="text-sm text-gray-500">Optional extras users can add to their booking</p>
               </div>
-              <button 
-                onClick={() => setAddOns([...addOns, { 
-                  name: '', 
-                  description: '', 
-                  price: '', 
-                  imageUrl: '', 
+              <button
+                onClick={() => setAddOns([...addOns, {
+                  name: '',
+                  description: '',
+                  price: '',
+                  imageUrl: '',
                   isActive: true,
                   displayOrder: addOns.length,
-                  isNew: true 
+                  isNew: true
                 }])}
                 className="btn btn-primary"
               >
@@ -1153,7 +1512,7 @@ const TourForm = () => {
                         <Trash2 size={18} />
                       </button>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="input-group">
                         <label className="input-label required">Name</label>
@@ -1169,7 +1528,7 @@ const TourForm = () => {
                           }}
                         />
                       </div>
-                      
+
                       <div className="input-group">
                         <label className="input-label required">Price ($)</label>
                         <input
@@ -1186,7 +1545,7 @@ const TourForm = () => {
                           }}
                         />
                       </div>
-                      
+
                       <div className="input-group md:col-span-2">
                         <label className="input-label">Description</label>
                         <textarea
@@ -1201,7 +1560,7 @@ const TourForm = () => {
                           }}
                         />
                       </div>
-                      
+
                       <div className="input-group">
                         <label className="input-label">Image URL</label>
                         <input
@@ -1216,7 +1575,7 @@ const TourForm = () => {
                           }}
                         />
                       </div>
-                      
+
                       <div className="input-group flex items-center">
                         <label className="flex items-center gap-2 cursor-pointer">
                           <input

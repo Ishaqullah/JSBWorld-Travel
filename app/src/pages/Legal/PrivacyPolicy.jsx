@@ -12,11 +12,11 @@ export default function PrivacyPolicy() {
           <span className="text-gradient">Privacy Policy</span>
         </h1>
         <p className="text-lg text-gray-600 text-center mb-12">
-          JSB World-Travel respects your privacy and protects your personal information.
+          JSB World Travel respects your privacy and protects your personal information.
         </p>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 space-y-8">
-          
+
           {/* Information We Collect */}
           <section>
             <h2 className="text-2xl font-semibold text-primary-600 mb-4">Information We Collect</h2>
@@ -44,7 +44,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold text-primary-600 mb-4">Information Sharing</h2>
             <p className="text-gray-700 mb-4">We may share information with:</p>
             <ul className="list-disc list-inside space-y-2 text-gray-700 mb-4">
-              <li>Travecations (booking partner)</li>
+              <li>JSB World Travel (fulfillment partners)</li>
               <li>Airlines, hotels, tour operators</li>
               <li>Payment processors</li>
               <li>Authorities when legally required</li>

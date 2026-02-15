@@ -12,18 +12,17 @@ export default function TermsOfService() {
           <span className="text-gradient">Terms & Conditions</span>
         </h1>
         <p className="text-lg text-gray-600 text-center mb-12">
-          By using this website or booking services through JSB World-Travel, you agree to the following terms.
+          By using this website or booking services through JSB World Travel, you agree to the following terms.
         </p>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 space-y-8">
-          
-          {/* Role of JSB World-Travel */}
+
+          {/* Role of JSB World Travel */}
           <section>
-            <h2 className="text-2xl font-semibold text-primary-600 mb-4">Role of JSB World-Travel</h2>
+            <h2 className="text-2xl font-semibold text-primary-600 mb-4">Role of JSB World Travel</h2>
             <p className="text-gray-700 mb-4">
-              JSB World-Travel acts solely as a <strong>marketing and sales agent</strong>. All airline tickets, 
-              hotel reservations, tours, and packages are <strong>booked and fulfilled by Travecations or 
-              third-party travel suppliers</strong>.
+              hotel reservations, tours, and packages are <strong>booked and fulfilled by JSB World Travel or
+                third-party travel suppliers</strong>.
             </p>
             <p className="text-gray-700">
               We do not own or operate airlines, hotels, or tour services.
@@ -62,7 +61,7 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-2xl font-semibold text-primary-600 mb-4">Liability</h2>
             <p className="text-gray-700">
-              JSB World-Travel is not responsible for delays, cancellations, weather issues, airline schedule 
+              JSB World Travel is not responsible for delays, cancellations, weather issues, airline schedule
               changes, lost baggage, or acts beyond our control.
             </p>
           </section>
@@ -71,16 +70,16 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-2xl font-semibold text-primary-600 mb-4">Disclaimer</h2>
             <p className="text-gray-700 mb-4">
-              JSB World-Travel is a travel marketing and sales company based in Dallas, Texas. We do not own, 
+              JSB World Travel is a travel marketing and sales company based in Dallas, Texas. We do not own,
               operate, or control airlines, hotels, transportation providers, or tour operators.
             </p>
             <p className="text-gray-700 mb-4">
-              All travel services are provided by independent third-party suppliers, including our booking 
-              partner Travecations. JSB World-Travel is not responsible for supplier actions, schedule changes, 
+              All travel services are provided by independent third-party suppliers, including JSB World Travel's
+              authorized fulfillment partners. JSB World Travel is not responsible for supplier actions, schedule changes,
               delays, cancellations, or service failures.
             </p>
             <p className="text-gray-700">
-              Travel involves inherent risks. Customers assume full responsibility for travel decisions, 
+              Travel involves inherent risks. Customers assume full responsibility for travel decisions,
               documentation, and compliance with entry requirements.
             </p>
           </section>

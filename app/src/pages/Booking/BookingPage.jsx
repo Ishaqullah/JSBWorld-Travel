@@ -42,14 +42,15 @@ export default function BookingPage() {
   useEffect(() => {
     const fetchTour = async () => {
       try {
+        window.scrollTo(0, 0);
         const data = await tourService.getTourById(id);
         setTour(data);
         if (data.dates && data.dates.length > 0) {
           // Use pre-selected date from context if available
-          const preSelectedDate = currentBooking?.selectedDateId 
+          const preSelectedDate = currentBooking?.selectedDateId
             ? data.dates.find(d => d.id === currentBooking.selectedDateId)
             : null;
-            
+
           const initialDate = preSelectedDate || data.dates[0];
 
           setBookingData(prev => ({
@@ -116,7 +117,7 @@ export default function BookingPage() {
 
   const adults = bookingData.adults;
   const children = bookingData.children;
-  
+
   // Find selected date and room type; calculate prices dynamically
   const selectedDate = tour.dates?.find(d => d.id === bookingData.tourDateId);
   const selectedRoomType = tour.roomTypes?.length && selectedRoomTypeId
@@ -155,7 +156,7 @@ export default function BookingPage() {
   const adultPrice = getAdultPrice();
   const childPrice = getChildPrice();
   const basePrice = (adultPrice * adults) + (childPrice * children);
-  
+
   // Selected category upgrade (from Tour Details) - per person, added to total
   const numberOfTravelers = bookingData.adults + bookingData.children;
   const selectedCategory = currentBooking?.selectedCategory;
@@ -168,7 +169,7 @@ export default function BookingPage() {
     const addOn = tour.addOns?.find(a => a.id === selected.addOnId);
     return sum + (addOn ? parseFloat(addOn.price) * selected.quantity * numberOfTravelers : 0);
   }, 0);
-  
+
   // No taxes & fees - only 3% card fee will be added at payment if paying by card
   const total = basePrice + categoryTotal + addOnsTotal;
 
@@ -189,11 +190,11 @@ export default function BookingPage() {
   const validateTravelers = () => {
     const errors = {};
     let hasErrors = false;
-    
+
     travelers.forEach((traveler, idx) => {
       const key = `${traveler.type}-${traveler.index}`;
       const travelerErrors = {};
-      
+
       // Required fields for all travelers
       if (!traveler.fullName?.trim()) {
         travelerErrors.fullName = 'Full name is required';
@@ -219,7 +220,7 @@ export default function BookingPage() {
         travelerErrors.passportExpiry = 'Passport expiry is required';
         hasErrors = true;
       }
-      
+
       // Additional required fields for adults
       if (traveler.type === 'adult') {
         if (!traveler.email?.trim()) {
@@ -231,12 +232,12 @@ export default function BookingPage() {
           hasErrors = true;
         }
       }
-      
+
       if (Object.keys(travelerErrors).length > 0) {
         errors[key] = travelerErrors;
       }
     });
-    
+
     setTravelerErrors(errors);
     return !hasErrors;
   };
@@ -253,15 +254,15 @@ export default function BookingPage() {
         // Also expand any travelers that have newly detected errors
         travelers.forEach((traveler) => {
           const key = `${traveler.type}-${traveler.index}`;
-          const hasError = !traveler.fullName?.trim() || !traveler.dateOfBirth || !traveler.gender || 
-                           !traveler.nationality?.trim() || !traveler.passportNumber?.trim() || !traveler.passportExpiry ||
-                           (traveler.type === 'adult' && (!traveler.email?.trim() || !traveler.phone?.trim()));
+          const hasError = !traveler.fullName?.trim() || !traveler.dateOfBirth || !traveler.gender ||
+            !traveler.nationality?.trim() || !traveler.passportNumber?.trim() || !traveler.passportExpiry ||
+            (traveler.type === 'adult' && (!traveler.email?.trim() || !traveler.phone?.trim()));
           if (hasError) {
             newExpanded[key] = true;
           }
         });
         setExpandedTravelers(newExpanded);
-        
+
         // Scroll to travelers form
         if (travelersFormRef.current) {
           travelersFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -295,14 +296,14 @@ export default function BookingPage() {
         total,
       };
       sessionStorage.setItem('pendingBooking', JSON.stringify(pendingBookingData));
-      
+
       // Redirect to login with return information
-      navigate('/login', { 
-        state: { 
+      navigate('/login', {
+        state: {
           from: `/booking/${tour.id}`,
           returnToPayment: true,
           tourId: tour.id
-        } 
+        }
       });
       return;
     }
@@ -310,7 +311,7 @@ export default function BookingPage() {
     const depositFeePerPerson = tour.depositFee ? parseFloat(tour.depositFee) : 0;
     const numberOfTravelers = bookingData.adults + bookingData.children;
     const totalDepositFee = depositFeePerPerson * numberOfTravelers;
-    
+
     const booking = {
       tourId: tour.id,
       tourDateId: bookingData.tourDateId,
@@ -340,7 +341,7 @@ export default function BookingPage() {
         dietaryRequirements: t.dietaryRequirements || ''
       }))
     };
-    
+
     const paymentAmount = isDepositPayment ? totalDepositFee : total;
     navigate(`/payment/${tour.id}`, { state: { booking, total: paymentAmount, addOnsTotal, isDepositPayment, fullTotal: total, depositAmount: totalDepositFee, remainingBalance: total - totalDepositFee } });
   };
@@ -367,19 +368,17 @@ export default function BookingPage() {
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-                    s <= step
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${s <= step
                       ? 'bg-gradient-to-br from-secondary-300 to-secondary-500 text-white'
                       : 'bg-gray-300 text-gray-600'
-                  }`}
+                    }`}
                 >
                   {s}
                 </div>
                 {s < 3 && (
                   <div
-                    className={`w-20 h-1 mx-2 transition-all ${
-                      s < step ? 'bg-primary-500' : 'bg-gray-300'
-                    }`}
+                    className={`w-20 h-1 mx-2 transition-all ${s < step ? 'bg-primary-500' : 'bg-gray-300'
+                      }`}
                   />
                 )}
               </div>
@@ -412,22 +411,20 @@ export default function BookingPage() {
                     <button
                       type="button"
                       onClick={() => setFlightOption('without')}
-                      className={`px-8 py-3 font-semibold transition-all ${
-                        flightOption === 'without'
+                      className={`px-8 py-3 font-semibold transition-all ${flightOption === 'without'
                           ? 'bg-primary-600 text-white'
                           : 'bg-white text-gray-700 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       Without Flight
                     </button>
                     <button
                       type="button"
                       onClick={() => setFlightOption('with')}
-                      className={`px-8 py-3 font-semibold transition-all ${
-                        flightOption === 'with'
+                      className={`px-8 py-3 font-semibold transition-all ${flightOption === 'with'
                           ? 'bg-primary-600 text-white'
                           : 'bg-white text-gray-700 hover:bg-gray-50'
-                      }`}
+                        }`}
                     >
                       Land and Flight
                     </button>
@@ -504,7 +501,7 @@ export default function BookingPage() {
                     </div>
                   </Card>
 
-                  
+
                   {/* <Card className="p-6">
                     <h3 className="text-lg font-semibold mb-4">Room Allocation & Single Supplement</h3>
                     
@@ -663,237 +660,235 @@ export default function BookingPage() {
                       </div>
                     </div>
                   ) : (
-                  <>
-                  {/* Traveler Details Accordions */}
-                  <div className="space-y-2" ref={travelersFormRef}>
-                    {travelers.map((traveler, idx) => {
-                      const key = `${traveler.type}-${traveler.index}`;
-                      const isExpanded = expandedTravelers[key];
-                      const label = traveler.type === 'adult' ? `Adult ${traveler.index}` : `Child ${traveler.index}`;
-                      const errors = travelerErrors[key] || {};
-                      const hasErrors = Object.keys(errors).length > 0;
-                      
-                      return (
-                        <Card key={key} className={`overflow-hidden ${hasErrors ? 'border-red-300 border-2' : ''}`}>
-                          <button
-                            type="button"
-                            onClick={() => setExpandedTravelers({ ...expandedTravelers, [key]: !isExpanded })}
-                            className={`w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${hasErrors ? 'bg-red-50' : ''}`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-gray-800">{label}</span>
-                              {hasErrors && <span className="text-xs text-red-600 font-medium">• Missing required fields</span>}
-                            </div>
-                            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                          </button>
-                          
-                          {isExpanded && (
-                            <div className="px-6 pb-6 space-y-4 border-t border-gray-100">
-                              <div className="grid md:grid-cols-2 gap-4 pt-4">
-                                <div>
-                                  <Input
-                                    label="Full Name"
-                                    value={traveler.fullName}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].fullName = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                    required
-                                    className={errors.fullName ? 'border-red-500' : ''}
-                                  />
-                                  {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
-                                </div>
-                                <div>
-                                  <Input
-                                    label="Date of Birth"
-                                    type="date"
-                                    value={traveler.dateOfBirth}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].dateOfBirth = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                    required
-                                    className={errors.dateOfBirth ? 'border-red-500' : ''}
-                                  />
-                                  {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
-                                </div>
-                              </div>
-                              <div className="grid md:grid-cols-2 gap-4">
-                                <div>
-                                  <label className="block text-sm font-medium mb-2">Gender <span className="text-red-500">*</span></label>
-                                  <select
-                                    className={`input ${errors.gender ? 'border-red-500' : ''}`}
-                                    value={traveler.gender}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].gender = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                    required
-                                  >
-                                    <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                  </select>
-                                  {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
-                                </div>
-                                <div>
-                                  <Input
-                                    label="Nationality"
-                                    value={traveler.nationality}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].nationality = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                    required
-                                    className={errors.nationality ? 'border-red-500' : ''}
-                                  />
-                                  {errors.nationality && <p className="text-red-500 text-xs mt-1">{errors.nationality}</p>}
-                                </div>
-                              </div>
-                              <div className="grid md:grid-cols-2 gap-4">
-                                <div>
-                                  <Input
-                                    label="Passport Number"
-                                    value={traveler.passportNumber}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].passportNumber = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                    required
-                                    className={errors.passportNumber ? 'border-red-500' : ''}
-                                  />
-                                  {errors.passportNumber && <p className="text-red-500 text-xs mt-1">{errors.passportNumber}</p>}
-                                </div>
-                                <div>
-                                  <Input
-                                    label="Passport Expiry"
-                                    type="date"
-                                    value={traveler.passportExpiry}
-                                    onChange={(e) => {
-                                      const newTravelers = [...travelers];
-                                      newTravelers[idx].passportExpiry = e.target.value;
-                                      setTravelers(newTravelers);
-                                    }}
-                                    required
-                                    className={errors.passportExpiry ? 'border-red-500' : ''}
-                                  />
-                                  {errors.passportExpiry && <p className="text-red-500 text-xs mt-1">{errors.passportExpiry}</p>}
-                                </div>
-                              </div>
-                              {traveler.type === 'adult' && (
-                                <div className="grid md:grid-cols-2 gap-4">
-                                  <div>
-                                    <Input
-                                      label="Email"
-                                      type="email"
-                                      value={traveler.email}
-                                      onChange={(e) => {
-                                        const newTravelers = [...travelers];
-                                        newTravelers[idx].email = e.target.value;
-                                        setTravelers(newTravelers);
-                                      }}
-                                      required
-                                      className={errors.email ? 'border-red-500' : ''}
-                                    />
-                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-                                  </div>
-                                  <div>
-                                    <Input
-                                      label="Phone"
-                                      type="tel"
-                                      value={traveler.phone}
-                                      onChange={(e) => {
-                                        const newTravelers = [...travelers];
-                                        newTravelers[idx].phone = e.target.value;
-                                        setTravelers(newTravelers);
-                                      }}
-                                      required
-                                      className={errors.phone ? 'border-red-500' : ''}
-                                    />
-                                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-                                  </div>
-                                </div>
-                              )}
-                              <Input
-                                label="Dietary Requirements / Special Requests (Optional)"
-                                value={traveler.dietaryRequirements}
-                                onChange={(e) => {
-                                  const newTravelers = [...travelers];
-                                  newTravelers[idx].dietaryRequirements = e.target.value;
-                                  setTravelers(newTravelers);
-                                }}
-                              />
-                            </div>
-                          )}
-                        </Card>
-                      );
-                    })}
-                  </div>
+                    <>
+                      {/* Traveler Details Accordions */}
+                      <div className="space-y-2" ref={travelersFormRef}>
+                        {travelers.map((traveler, idx) => {
+                          const key = `${traveler.type}-${traveler.index}`;
+                          const isExpanded = expandedTravelers[key];
+                          const label = traveler.type === 'adult' ? `Adult ${traveler.index}` : `Child ${traveler.index}`;
+                          const errors = travelerErrors[key] || {};
+                          const hasErrors = Object.keys(errors).length > 0;
 
-                  {/* Add-ons Section */}
-                  {tour.addOns && tour.addOns.length > 0 && (
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                      <h3 className="text-xl font-bold mb-4">Other options to personalize your trip</h3>
-                      <p className="text-gray-600 text-sm mb-6">
-                        Customize your trip by adding the following extras. Please note that all add-ons must be added at least 30 days before departure.
-                      </p>
-                      <div className="space-y-4">
-                        {tour.addOns.map((addOn) => (
-                          <div
-                            key={addOn.id}
-                            className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
-                              isAddOnSelected(addOn.id)
-                                ? 'border-primary-500 bg-primary-50'
-                                : 'border-gray-200 hover:border-gray-300'
-                            }`}
-                          >
-                            {addOn.imageUrl && (
-                              <img
-                                src={addOn.imageUrl}
-                                alt={addOn.name}
-                                className="w-20 h-20 object-cover rounded-lg"
-                              />
-                            )}
-                            <div className="flex-1">
-                              <h4 className="font-semibold">{addOn.name}</h4>
-                              {addOn.description && (
-                                <p className="text-sm text-gray-600 mt-1">{addOn.description}</p>
-                              )}
-                            </div>
-                            <div className="text-right">
-                              <div className="font-bold text-gray-800">${parseFloat(addOn.price).toFixed(0)}/person</div>
+                          return (
+                            <Card key={key} className={`overflow-hidden ${hasErrors ? 'border-red-300 border-2' : ''}`}>
                               <button
                                 type="button"
-                                onClick={() => handleAddOnToggle(addOn.id)}
-                                className={`mt-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                                  isAddOnSelected(addOn.id)
-                                    ? 'bg-primary-600 text-white'
-                                    : 'bg-primary-500 text-white hover:bg-primary-600'
-                                }`}
+                                onClick={() => setExpandedTravelers({ ...expandedTravelers, [key]: !isExpanded })}
+                                className={`w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${hasErrors ? 'bg-red-50' : ''}`}
                               >
-                                {isAddOnSelected(addOn.id) ? (
-                                  <span className="flex items-center gap-1">
-                                    <Check size={16} /> Added
-                                  </span>
-                                ) : (
-                                  <span className="flex items-center gap-1">
-                                    <Plus size={16} /> Add
-                                  </span>
-                                )}
+                                <div className="flex items-center gap-2">
+                                  <span className="font-semibold text-gray-800">{label}</span>
+                                  {hasErrors && <span className="text-xs text-red-600 font-medium">• Missing required fields</span>}
+                                </div>
+                                {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                               </button>
-                            </div>
-                          </div>
-                        ))}
+
+                              {isExpanded && (
+                                <div className="px-6 pb-6 space-y-4 border-t border-gray-100">
+                                  <div className="grid md:grid-cols-2 gap-4 pt-4">
+                                    <div>
+                                      <Input
+                                        label="Full Name"
+                                        value={traveler.fullName}
+                                        onChange={(e) => {
+                                          const newTravelers = [...travelers];
+                                          newTravelers[idx].fullName = e.target.value;
+                                          setTravelers(newTravelers);
+                                        }}
+                                        required
+                                        className={errors.fullName ? 'border-red-500' : ''}
+                                      />
+                                      {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
+                                    </div>
+                                    <div>
+                                      <Input
+                                        label="Date of Birth"
+                                        type="date"
+                                        value={traveler.dateOfBirth}
+                                        onChange={(e) => {
+                                          const newTravelers = [...travelers];
+                                          newTravelers[idx].dateOfBirth = e.target.value;
+                                          setTravelers(newTravelers);
+                                        }}
+                                        required
+                                        className={errors.dateOfBirth ? 'border-red-500' : ''}
+                                      />
+                                      {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
+                                    </div>
+                                  </div>
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                      <label className="block text-sm font-medium mb-2">Gender <span className="text-red-500">*</span></label>
+                                      <select
+                                        className={`input ${errors.gender ? 'border-red-500' : ''}`}
+                                        value={traveler.gender}
+                                        onChange={(e) => {
+                                          const newTravelers = [...travelers];
+                                          newTravelers[idx].gender = e.target.value;
+                                          setTravelers(newTravelers);
+                                        }}
+                                        required
+                                      >
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                      </select>
+                                      {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
+                                    </div>
+                                    <div>
+                                      <Input
+                                        label="Nationality"
+                                        value={traveler.nationality}
+                                        onChange={(e) => {
+                                          const newTravelers = [...travelers];
+                                          newTravelers[idx].nationality = e.target.value;
+                                          setTravelers(newTravelers);
+                                        }}
+                                        required
+                                        className={errors.nationality ? 'border-red-500' : ''}
+                                      />
+                                      {errors.nationality && <p className="text-red-500 text-xs mt-1">{errors.nationality}</p>}
+                                    </div>
+                                  </div>
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Input
+                                        label="Passport Number"
+                                        value={traveler.passportNumber}
+                                        onChange={(e) => {
+                                          const newTravelers = [...travelers];
+                                          newTravelers[idx].passportNumber = e.target.value;
+                                          setTravelers(newTravelers);
+                                        }}
+                                        required
+                                        className={errors.passportNumber ? 'border-red-500' : ''}
+                                      />
+                                      {errors.passportNumber && <p className="text-red-500 text-xs mt-1">{errors.passportNumber}</p>}
+                                    </div>
+                                    <div>
+                                      <Input
+                                        label="Passport Expiry"
+                                        type="date"
+                                        value={traveler.passportExpiry}
+                                        onChange={(e) => {
+                                          const newTravelers = [...travelers];
+                                          newTravelers[idx].passportExpiry = e.target.value;
+                                          setTravelers(newTravelers);
+                                        }}
+                                        required
+                                        className={errors.passportExpiry ? 'border-red-500' : ''}
+                                      />
+                                      {errors.passportExpiry && <p className="text-red-500 text-xs mt-1">{errors.passportExpiry}</p>}
+                                    </div>
+                                  </div>
+                                  {traveler.type === 'adult' && (
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                      <div>
+                                        <Input
+                                          label="Email"
+                                          type="email"
+                                          value={traveler.email}
+                                          onChange={(e) => {
+                                            const newTravelers = [...travelers];
+                                            newTravelers[idx].email = e.target.value;
+                                            setTravelers(newTravelers);
+                                          }}
+                                          required
+                                          className={errors.email ? 'border-red-500' : ''}
+                                        />
+                                        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                                      </div>
+                                      <div>
+                                        <Input
+                                          label="Phone"
+                                          type="tel"
+                                          value={traveler.phone}
+                                          onChange={(e) => {
+                                            const newTravelers = [...travelers];
+                                            newTravelers[idx].phone = e.target.value;
+                                            setTravelers(newTravelers);
+                                          }}
+                                          required
+                                          className={errors.phone ? 'border-red-500' : ''}
+                                        />
+                                        {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                                      </div>
+                                    </div>
+                                  )}
+                                  <Input
+                                    label="Dietary Requirements / Special Requests (Optional)"
+                                    value={traveler.dietaryRequirements}
+                                    onChange={(e) => {
+                                      const newTravelers = [...travelers];
+                                      newTravelers[idx].dietaryRequirements = e.target.value;
+                                      setTravelers(newTravelers);
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </Card>
+                          );
+                        })}
                       </div>
-                    </div>
-                  )}
-                  </>
+
+                      {/* Add-ons Section */}
+                      {tour.addOns && tour.addOns.length > 0 && (
+                        <div className="mt-8 pt-6 border-t border-gray-200">
+                          <h3 className="text-xl font-bold mb-4">Other options to personalize your trip</h3>
+                          <p className="text-gray-600 text-sm mb-6">
+                            Customize your trip by adding the following extras. Please note that all add-ons must be added at least 30 days before departure.
+                          </p>
+                          <div className="space-y-4">
+                            {tour.addOns.map((addOn) => (
+                              <div
+                                key={addOn.id}
+                                className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${isAddOnSelected(addOn.id)
+                                    ? 'border-primary-500 bg-primary-50'
+                                    : 'border-gray-200 hover:border-gray-300'
+                                  }`}
+                              >
+                                {addOn.imageUrl && (
+                                  <img
+                                    src={addOn.imageUrl}
+                                    alt={addOn.name}
+                                    className="w-20 h-20 object-cover rounded-lg"
+                                  />
+                                )}
+                                <div className="flex-1">
+                                  <h4 className="font-semibold">{addOn.name}</h4>
+                                  {addOn.description && (
+                                    <p className="text-sm text-gray-600 mt-1">{addOn.description}</p>
+                                  )}
+                                </div>
+                                <div className="text-right">
+                                  <div className="font-bold text-gray-800">${parseFloat(addOn.price).toFixed(0)}/person</div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleAddOnToggle(addOn.id)}
+                                    className={`mt-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${isAddOnSelected(addOn.id)
+                                        ? 'bg-primary-600 text-white'
+                                        : 'bg-primary-500 text-white hover:bg-primary-600'
+                                      }`}
+                                  >
+                                    {isAddOnSelected(addOn.id) ? (
+                                      <span className="flex items-center gap-1">
+                                        <Check size={16} /> Added
+                                      </span>
+                                    ) : (
+                                      <span className="flex items-center gap-1">
+                                        <Plus size={16} /> Add
+                                      </span>
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               )}
@@ -988,19 +983,19 @@ export default function BookingPage() {
                       <div className="relative">
                         {/* Timeline vertical line */}
                         <div className="absolute left-3 top-6 bottom-6 w-0.5 bg-gray-200"></div>
-                        
+
                         <div className="space-y-2">
                           {tour.itinerary.map((day, index) => {
                             const dayNumber = day.dayNumber || index + 1;
                             const isExpanded = expandedItineraryDays[dayNumber];
-                            
+
                             return (
                               <div key={day.id || dayNumber} className="relative">
                                 {/* Timeline marker */}
                                 <div className="absolute left-0 top-4 w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center z-10">
                                   <div className="w-2 h-2 bg-white rounded-full"></div>
                                 </div>
-                                
+
                                 {/* Day content */}
                                 <div className="ml-10">
                                   <button
@@ -1020,7 +1015,7 @@ export default function BookingPage() {
                                       <ChevronDown size={20} className="text-gray-500" />
                                     )}
                                   </button>
-                                  
+
                                   {isExpanded && (
                                     <div className="py-4 space-y-4">
                                       {/* Day image */}
@@ -1082,7 +1077,7 @@ export default function BookingPage() {
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Terms and Conditions */}
                     <div className="flex items-center gap-3">
                       <input
@@ -1096,12 +1091,12 @@ export default function BookingPage() {
                         I accept the <a href="/terms-of-service" target="_blank" className="text-primary-600 hover:underline font-medium">Terms and Conditions</a>
                       </label>
                     </div>
-                    
+
                     {/* Payment Buttons */}
                     <div className="flex flex-col sm:flex-row gap-3">
                       {tour.depositFee && parseFloat(tour.depositFee) > 0 && (
-                        <Button 
-                          onClick={() => handleSubmit(true)} 
+                        <Button
+                          onClick={() => handleSubmit(true)}
                           variant="outline"
                           className="flex-1"
                           disabled={!termsAccepted}
@@ -1109,8 +1104,8 @@ export default function BookingPage() {
                           Proceed with Deposit
                         </Button>
                       )}
-                      <Button 
-                        onClick={() => handleSubmit(false)} 
+                      <Button
+                        onClick={() => handleSubmit(false)}
                         icon={CreditCard}
                         className="flex-1"
                         disabled={!termsAccepted}
@@ -1118,7 +1113,7 @@ export default function BookingPage() {
                         Proceed with Full Payment
                       </Button>
                     </div>
-                    
+
                     {!termsAccepted && (
                       <p className="text-sm text-amber-600 text-center">Please accept the Terms and Conditions to proceed</p>
                     )}
@@ -1159,11 +1154,10 @@ export default function BookingPage() {
                           key={rt.id}
                           type="button"
                           onClick={() => setSelectedRoomTypeId(rt.id)}
-                          className={`px-4 py-2 rounded-lg border-2 font-medium transition-all ${
-                            selectedRoomTypeId === rt.id
+                          className={`px-4 py-2 rounded-lg border-2 font-medium transition-all ${selectedRoomTypeId === rt.id
                               ? 'border-amber-400 bg-amber-50 text-amber-800'
                               : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                          }`}
+                            }`}
                         >
                           {rt.name}
                         </button>

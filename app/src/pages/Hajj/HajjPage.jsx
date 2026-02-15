@@ -17,17 +17,17 @@ const hajjPackages = [
     includes: ['Meet and assist with JSBWORLD-TRAVEL staff',
       '5 Star Dar Al Hijra Intercontinental (21 May - 23 May) 4-6 Zill Hujja',
       'Aziziya Hotel from 23 May - 31 May (6-14 zill Hujja) ',
-    'VIP MAKTAB A - Mina & Arafah (Step Away from Jamarat)',
-  'Private washrooms for our tents in Mina',
-  'Sleeping Quilled and box meal in Muzdalfa',
-  'Breakfast, Lunch, Dinner and refreshments available in Mina and Arafat',
-  'VIP Group Transportation (Add-on: Private transportation available)',
-  'Sleeping Quilled and box meal in Muzdalfa',
-  'Visa & Qurbani Included ',
-  'Meals in Madina, Makkah Mina & Arafah',
-  'Train Transfer from Madina to Makkah ',
-  '24/7 JSBWORLD-TRAVEL Staff Assistance'
-  ],
+      'VIP MAKTAB A - Mina & Arafah (Step Away from Jamarat)',
+      'Private washrooms for our tents in Mina',
+      'Sleeping Quilled and box meal in Muzdalfa',
+      'Breakfast, Lunch, Dinner and refreshments available in Mina and Arafat',
+      'VIP Group Transportation (Add-on: Private transportation available)',
+      'Sleeping Quilled and box meal in Muzdalfa',
+      'Visa & Qurbani Included ',
+      'Meals in Madina, Makkah Mina & Arafah',
+      'Train Transfer from Madina to Makkah ',
+      '24/7 JSBWORLD-TRAVEL Staff Assistance'
+    ],
     fullDetails: {
       description: `Our package has been meticulously curated to combine affordability and quality offering a worry free Hajj experience. We've partnered with experienced professionals who specialize in group Hajj journeys from Karachi. With Travecation, we have carefully chosen multiple tiers to ensure flexibility, comfort, and well-being during your blessed journey. Your well-being and journey in worship are our top priorities, and our team will be with you every step of the way throughout the pilgrimage journey, resolved. We're in this together to ensure that your Hajj is nothing short of extraordinary.`,
       hotels: [
@@ -62,302 +62,302 @@ const hajjPackages = [
     }
   },
   {
-  id: 'premium-vip',
-  name: 'PREMIUM VIP HAJJ PACKAGE - 2025',
-  price: 8399,
-  roomType: 'Quad',
-  includes: [
-    '5 Star Dar Al Hijra Intercontinental (18 - 21 May) - Madinah',
-    '5 Star Swissotel Clocktower (21 - 23 May) - 0 min walk',
-    'Aziziyah Hotel (23 - 31 May)',
-    'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
-    'Train Transfer from Madinah to Makkah',
-    'Meals in Madinah, Makkah, Mina & Arafah',
-    'Visa & Qurbani Included',
-    'Sleeping Quilt & Box Meal in Muzdalifah',
-    'VIP Group Transportation',
-    '24/7 JSBWORLD-TRAVEL Staff Assistance'
-  ],
-  fullDetails: {
-    description: `Elevate your pilgrimage experience with our thoughtfully curated Premium VIP Hajj Package, designed for comfort, convenience, and spiritual focus. This package includes premium five-star accommodations near Masjid al-Haram and Al-Masjid an-Nabawi, upgraded VIP tents in Mina and Arafah, full-board meals, religious guidance, and 24/7 on-ground support. With modern transportation, quality services, and strategic locations, this package ensures a smooth, spiritually enriching, and stress-free Hajj journey.`,
-    hotels: [
-      {
-        name: 'Madinah',
-        dates: '18 May - 21 May (1 - 4 Zill Hijjah)',
-        description: 'Dar Al Hijra Intercontinental is a luxurious 5-star hotel located just moments from Al-Masjid an-Nabawi. It offers elegant rooms, modern comforts, exceptional dining, and close proximity to major Ziyarat sites and shopping centers.'
-      },
-      {
-        name: 'Makkah (Clocktower)',
-        dates: '21 May - 23 May (4 - 6 Zill Hijjah)',
-        description: 'Swissôtel Makkah Clocktower, located within the iconic Abraj Al-Bait complex, offers direct views of the Kaaba, unparalleled proximity to Masjid al-Haram, international dining options, and world-class five-star hospitality.'
-      },
-      {
-        name: 'Makkah (Aziziyah)',
-        dates: '23 May - 31 May (6 - 14 Zill Hijjah)',
-        description: 'The Aziziyah Hotel provides a comfortable and affordable stay with modern rooms, essential amenities, and easy access to holy sites. It is ideal for pilgrims seeking quality accommodation during the core Hajj days.'
-      },
-      {
-        name: 'Mina, Arafat & Muzdalifah',
-        dates: '25 May - 29 May (8 - 12 Zill Hijjah)',
-        description: 'Private upgraded VIP MAKTAB A tents, fully air-conditioned and located steps away from Jamarat. Includes private washrooms, buffet meals, sofa beds with bedding, 24/7 refreshments, and sleeping arrangements with boxed meals in Muzdalifah.'
-      }
+    id: 'premium-vip',
+    name: 'PREMIUM VIP HAJJ PACKAGE - 2025',
+    price: 8399,
+    roomType: 'Quad',
+    includes: [
+      '5 Star Dar Al Hijra Intercontinental (18 - 21 May) - Madinah',
+      '5 Star Swissotel Clocktower (21 - 23 May) - 0 min walk',
+      'Aziziyah Hotel (23 - 31 May)',
+      'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
+      'Train Transfer from Madinah to Makkah',
+      'Meals in Madinah, Makkah, Mina & Arafah',
+      'Visa & Qurbani Included',
+      'Sleeping Quilt & Box Meal in Muzdalifah',
+      'VIP Group Transportation',
+      '24/7 JSBWORLD-TRAVEL Staff Assistance'
     ],
-    roomPrices: [
-      { type: 'Quad Room (4 People in one room)', price: 'USD 8,399.00' },
-      { type: 'Triple Room (3 People in one room)', price: 'USD 9,499.00' },
-      { type: 'Double Room (2 People in one room)', price: 'USD 10,999.00' }
-    ],
-    excludes: [
-      'Airline Tickets (Can be arranged at additional cost)',
-      'Private transportation (SUV, Cars, H1)',
-      'Room upgrades with additional cost',
-      'Any individually arranged services requiring private transfers',
-      'Personal expenses'
-    ],
-    terms: [
-      '25% payment required at the time of confirmation.',
-      'All itineraries are tentative and subject to Saudi Government approvals.',
-      'Departure and return dates may vary by 1-2 days due to flight availability and moon sighting.',
-      'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
-      'Once rooms are booked, they cannot be cancelled.',
-      'Hotels in Clocktower offer double rooms only; extra beds will be provided for triple and quad occupancy.',
-      'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).'
-    ]
-  }
-},
- {
-  id: 'premium-clocktower',
-  name: 'PREMIUM HAJJ PACKAGE – CLOCKTOWER (2025)',
-  price: 11999,
-  roomType: 'Quad',
-  includes: [
-    '5 Star Dar Al Hijra Intercontinental (21 May - 23 May) - Madinah',
-    '5 Star Swissotel Makkah Clocktower (23 May - 31 May) - 0 min walk',
-    'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
-    'Meals in Madinah, Makkah, Mina & Arafah',
-    'Train Transfer from Madinah to Makkah',
-    'Visa & Qurbani Included',
-    'Sleeping Quilt & Box Meal in Muzdalifah',
-    'VIP Group Transportation',
-    '24/7 JSBWORLD-TRAVEL Staff Assistance'
-  ],
-  fullDetails: {
-    description: `This thoughtfully curated Premium Hajj Package is designed for pilgrims seeking superior comfort, convenience, and spiritual focus. The package includes five-star accommodations near Al-Masjid an-Nabawi and Masjid al-Haram, upgraded VIP tents in Mina and Arafat, full-board meals, guided support, and 24/7 on-ground assistance. With seamless transportation and premium services, this package ensures a smooth, spiritually enriching, and memorable Hajj experience.`,
-    hotels: [
-      {
-        name: 'Madinah',
-        dates: '21 May - 23 May (4 - 6 Zill Hijjah)',
-        description: 'InterContinental Dar Al Hijra is a luxurious 5-star hotel located moments from Al-Masjid an-Nabawi. Offering elegant rooms, modern amenities, exceptional dining, and easy access to Ziyarat sites, it provides a serene and comfortable stay for pilgrims.'
-      },
-      {
-        name: 'Makkah (Clocktower)',
-        dates: '23 May - 31 May (6 - 14 Zill Hijjah)',
-        description: 'Swissôtel Makkah Clocktower, situated within the iconic Abraj Al-Bait complex, offers unmatched proximity to Masjid al-Haram with Kaaba-view rooms, international dining options, dedicated prayer areas, and premium Swiss hospitality.'
-      },
-      {
-        name: 'Mina, Arafat & Muzdalifah',
-        dates: '25 May - 29 May (8 - 12 Zill Hijjah)',
-        description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents with private washrooms, buffet meals, comfortable sofa beds with bedding, 24/7 refreshments, and sleeping arrangements with boxed meals in Muzdalifah.'
-      }
-    ],
-    roomPrices: [
-      { type: 'Quad Room (4 People in one room)', price: 'USD 11,999.00' },
-      { type: 'Triple Room (3 People in one room)', price: 'USD 12,999.00' },
-      { type: 'Double Room (2 People in one room)', price: 'USD 14,799.00' }
-    ],
-    excludes: [
-      'Airline Tickets (Group arrangement available at additional cost)',
-      'Room upgrades with additional cost',
-      'Private transportation (SUV, Cars, H1)',
-      'Individually arranged services requiring private transfers',
-      'All personal expenses'
-    ],
-    terms: [
-      '25% payment required at the time of confirmation.',
-      'All itineraries are tentative and subject to Saudi Government approvals.',
-      'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
-      'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
-      'Once rooms are booked, they cannot be cancelled.',
-      'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
-      'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
-    ]
-  }
-},
+    fullDetails: {
+      description: `Elevate your pilgrimage experience with our thoughtfully curated Premium VIP Hajj Package, designed for comfort, convenience, and spiritual focus. This package includes premium five-star accommodations near Masjid al-Haram and Al-Masjid an-Nabawi, upgraded VIP tents in Mina and Arafah, full-board meals, religious guidance, and 24/7 on-ground support. With modern transportation, quality services, and strategic locations, this package ensures a smooth, spiritually enriching, and stress-free Hajj journey.`,
+      hotels: [
+        {
+          name: 'Madinah',
+          dates: '18 May - 21 May (1 - 4 Zill Hijjah)',
+          description: 'Dar Al Hijra Intercontinental is a luxurious 5-star hotel located just moments from Al-Masjid an-Nabawi. It offers elegant rooms, modern comforts, exceptional dining, and close proximity to major Ziyarat sites and shopping centers.'
+        },
+        {
+          name: 'Makkah (Clocktower)',
+          dates: '21 May - 23 May (4 - 6 Zill Hijjah)',
+          description: 'Swissôtel Makkah Clocktower, located within the iconic Abraj Al-Bait complex, offers direct views of the Kaaba, unparalleled proximity to Masjid al-Haram, international dining options, and world-class five-star hospitality.'
+        },
+        {
+          name: 'Makkah (Aziziyah)',
+          dates: '23 May - 31 May (6 - 14 Zill Hijjah)',
+          description: 'The Aziziyah Hotel provides a comfortable and affordable stay with modern rooms, essential amenities, and easy access to holy sites. It is ideal for pilgrims seeking quality accommodation during the core Hajj days.'
+        },
+        {
+          name: 'Mina, Arafat & Muzdalifah',
+          dates: '25 May - 29 May (8 - 12 Zill Hijjah)',
+          description: 'Private upgraded VIP MAKTAB A tents, fully air-conditioned and located steps away from Jamarat. Includes private washrooms, buffet meals, sofa beds with bedding, 24/7 refreshments, and sleeping arrangements with boxed meals in Muzdalifah.'
+        }
+      ],
+      roomPrices: [
+        { type: 'Quad Room (4 People in one room)', price: 'USD 8,399.00' },
+        { type: 'Triple Room (3 People in one room)', price: 'USD 9,499.00' },
+        { type: 'Double Room (2 People in one room)', price: 'USD 10,999.00' }
+      ],
+      excludes: [
+        'Airline Tickets (Can be arranged at additional cost)',
+        'Private transportation (SUV, Cars, H1)',
+        'Room upgrades with additional cost',
+        'Any individually arranged services requiring private transfers',
+        'Personal expenses'
+      ],
+      terms: [
+        '25% payment required at the time of confirmation.',
+        'All itineraries are tentative and subject to Saudi Government approvals.',
+        'Departure and return dates may vary by 1-2 days due to flight availability and moon sighting.',
+        'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
+        'Once rooms are booked, they cannot be cancelled.',
+        'Hotels in Clocktower offer double rooms only; extra beds will be provided for triple and quad occupancy.',
+        'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).'
+      ]
+    }
+  },
   {
-  id: 'premium-clocktower-18may',
-  name: 'PREMIUM HAJJ PACKAGE – CLOCKTOWER (18–31 MAY)',
-  price: 12499,
-  roomType: 'Quad',
-  includes: [
-    '5 Star Dar Al Hijra Intercontinental (18 May - 21 May) - Madinah',
-    '5 Star Swissotel Makkah Clocktower (21 May - 31 May) - 0 min walk',
-    'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
-    'Meals in Madinah, Makkah, Mina & Arafah',
-    'Train Transfer from Madinah to Makkah',
-    'Visa & Qurbani Included',
-    'Sleeping Quilt & Box Meal in Muzdalifah',
-    'VIP Group Transportation',
-    '24/7 JSBWORLD-TRAVEL Staff Assistance'
-  ],
-  fullDetails: {
-    description: `Our Premium Hajj Package is thoughtfully curated for pilgrims seeking exceptional comfort, convenience, and spiritual focus. The package includes five-star accommodations near Al-Masjid an-Nabawi and Masjid al-Haram, VIP upgraded tents in Mina and Arafat, full-board meals, guided religious assistance, and 24/7 on-ground support. With modern transportation and premium services throughout the journey, this package offers a smooth, spiritually enriching, and stress-free Hajj experience.`,
-    hotels: [
-      {
-        name: 'Madinah',
-        dates: '18 May - 21 May (1 - 4 Zill Hijjah)',
-        description: 'InterContinental Dar Al Hijra is a luxurious five-star hotel located just moments from Al-Masjid an-Nabawi. It offers elegant rooms, modern comforts, diverse dining options, and easy access to Ziyarat sites, providing a serene and comfortable stay.'
-      },
-      {
-        name: 'Makkah (Clocktower)',
-        dates: '21 May - 31 May (4 - 14 Zill Hijjah)',
-        description: 'Swissôtel Makkah Clocktower, located in the iconic Abraj Al-Bait complex, offers unmatched proximity to Masjid al-Haram with Kaaba-view rooms, international and local cuisine options, dedicated prayer areas, and premium Swiss hospitality.'
-      },
-      {
-        name: 'Mina, Arafat & Muzdalifah',
-        dates: '23 May - 29 May (8 - 12 Zill Hijjah)',
-        description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents with private washrooms, buffet meals for breakfast, lunch, and dinner, comfortable sofa beds with bedding, 24/7 refreshments, and sleeping arrangements with boxed meals in Muzdalifah.'
-      }
+    id: 'premium-clocktower',
+    name: 'PREMIUM HAJJ PACKAGE – CLOCKTOWER (2025)',
+    price: 11999,
+    roomType: 'Quad',
+    includes: [
+      '5 Star Dar Al Hijra Intercontinental (21 May - 23 May) - Madinah',
+      '5 Star Swissotel Makkah Clocktower (23 May - 31 May) - 0 min walk',
+      'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
+      'Meals in Madinah, Makkah, Mina & Arafah',
+      'Train Transfer from Madinah to Makkah',
+      'Visa & Qurbani Included',
+      'Sleeping Quilt & Box Meal in Muzdalifah',
+      'VIP Group Transportation',
+      '24/7 JSBWORLD-TRAVEL Staff Assistance'
     ],
-    roomPrices: [
-      { type: 'Quad Room (4 People in one room)', price: 'USD 12,499.00' },
-      { type: 'Triple Room (3 People in one room)', price: 'USD 13,499.00' },
-      { type: 'Double Room (2 People in one room)', price: 'USD 15,499.00' }
+    fullDetails: {
+      description: `This thoughtfully curated Premium Hajj Package is designed for pilgrims seeking superior comfort, convenience, and spiritual focus. The package includes five-star accommodations near Al-Masjid an-Nabawi and Masjid al-Haram, upgraded VIP tents in Mina and Arafat, full-board meals, guided support, and 24/7 on-ground assistance. With seamless transportation and premium services, this package ensures a smooth, spiritually enriching, and memorable Hajj experience.`,
+      hotels: [
+        {
+          name: 'Madinah',
+          dates: '21 May - 23 May (4 - 6 Zill Hijjah)',
+          description: 'InterContinental Dar Al Hijra is a luxurious 5-star hotel located moments from Al-Masjid an-Nabawi. Offering elegant rooms, modern amenities, exceptional dining, and easy access to Ziyarat sites, it provides a serene and comfortable stay for pilgrims.'
+        },
+        {
+          name: 'Makkah (Clocktower)',
+          dates: '23 May - 31 May (6 - 14 Zill Hijjah)',
+          description: 'Swissôtel Makkah Clocktower, situated within the iconic Abraj Al-Bait complex, offers unmatched proximity to Masjid al-Haram with Kaaba-view rooms, international dining options, dedicated prayer areas, and premium Swiss hospitality.'
+        },
+        {
+          name: 'Mina, Arafat & Muzdalifah',
+          dates: '25 May - 29 May (8 - 12 Zill Hijjah)',
+          description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents with private washrooms, buffet meals, comfortable sofa beds with bedding, 24/7 refreshments, and sleeping arrangements with boxed meals in Muzdalifah.'
+        }
+      ],
+      roomPrices: [
+        { type: 'Quad Room (4 People in one room)', price: 'USD 11,999.00' },
+        { type: 'Triple Room (3 People in one room)', price: 'USD 12,999.00' },
+        { type: 'Double Room (2 People in one room)', price: 'USD 14,799.00' }
+      ],
+      excludes: [
+        'Airline Tickets (Group arrangement available at additional cost)',
+        'Room upgrades with additional cost',
+        'Private transportation (SUV, Cars, H1)',
+        'Individually arranged services requiring private transfers',
+        'All personal expenses'
+      ],
+      terms: [
+        '25% payment required at the time of confirmation.',
+        'All itineraries are tentative and subject to Saudi Government approvals.',
+        'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
+        'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
+        'Once rooms are booked, they cannot be cancelled.',
+        'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
+        'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
+      ]
+    }
+  },
+  {
+    id: 'premium-clocktower-18may',
+    name: 'PREMIUM HAJJ PACKAGE – CLOCKTOWER (18–31 MAY)',
+    price: 12499,
+    roomType: 'Quad',
+    includes: [
+      '5 Star Dar Al Hijra Intercontinental (18 May - 21 May) - Madinah',
+      '5 Star Swissotel Makkah Clocktower (21 May - 31 May) - 0 min walk',
+      'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
+      'Meals in Madinah, Makkah, Mina & Arafah',
+      'Train Transfer from Madinah to Makkah',
+      'Visa & Qurbani Included',
+      'Sleeping Quilt & Box Meal in Muzdalifah',
+      'VIP Group Transportation',
+      '24/7 JSBWORLD-TRAVEL Staff Assistance'
     ],
-    excludes: [
-      'Airline Tickets (Group arrangement available at additional cost)',
-      'Room upgrades with additional cost',
-      'Private transportation (SUV, Cars, H1)',
-      'Individually arranged services requiring private transfers',
-      'All personal expenses'
+    fullDetails: {
+      description: `Our Premium Hajj Package is thoughtfully curated for pilgrims seeking exceptional comfort, convenience, and spiritual focus. The package includes five-star accommodations near Al-Masjid an-Nabawi and Masjid al-Haram, VIP upgraded tents in Mina and Arafat, full-board meals, guided religious assistance, and 24/7 on-ground support. With modern transportation and premium services throughout the journey, this package offers a smooth, spiritually enriching, and stress-free Hajj experience.`,
+      hotels: [
+        {
+          name: 'Madinah',
+          dates: '18 May - 21 May (1 - 4 Zill Hijjah)',
+          description: 'InterContinental Dar Al Hijra is a luxurious five-star hotel located just moments from Al-Masjid an-Nabawi. It offers elegant rooms, modern comforts, diverse dining options, and easy access to Ziyarat sites, providing a serene and comfortable stay.'
+        },
+        {
+          name: 'Makkah (Clocktower)',
+          dates: '21 May - 31 May (4 - 14 Zill Hijjah)',
+          description: 'Swissôtel Makkah Clocktower, located in the iconic Abraj Al-Bait complex, offers unmatched proximity to Masjid al-Haram with Kaaba-view rooms, international and local cuisine options, dedicated prayer areas, and premium Swiss hospitality.'
+        },
+        {
+          name: 'Mina, Arafat & Muzdalifah',
+          dates: '23 May - 29 May (8 - 12 Zill Hijjah)',
+          description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents with private washrooms, buffet meals for breakfast, lunch, and dinner, comfortable sofa beds with bedding, 24/7 refreshments, and sleeping arrangements with boxed meals in Muzdalifah.'
+        }
+      ],
+      roomPrices: [
+        { type: 'Quad Room (4 People in one room)', price: 'USD 12,499.00' },
+        { type: 'Triple Room (3 People in one room)', price: 'USD 13,499.00' },
+        { type: 'Double Room (2 People in one room)', price: 'USD 15,499.00' }
+      ],
+      excludes: [
+        'Airline Tickets (Group arrangement available at additional cost)',
+        'Room upgrades with additional cost',
+        'Private transportation (SUV, Cars, H1)',
+        'Individually arranged services requiring private transfers',
+        'All personal expenses'
+      ],
+      terms: [
+        '25% payment required at the time of confirmation.',
+        'All itineraries are tentative and subject to Saudi Government approvals.',
+        'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
+        'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
+        'Once rooms are booked, they cannot be cancelled.',
+        'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
+        'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
+      ]
+    }
+  },
+  {
+    id: 'elite-luxury',
+    name: 'ELITE LUXURY PACKAGE – 10 DAYS (PAKISTANI PASSPORT HOLDER)',
+    price: 13899,
+    roomType: 'Quad',
+    includes: [
+      '5 Star Dar Al Iman Intercontinental (21 May - 23 May) - Madinah',
+      '5 Star Fairmont Makkah Clocktower (23 May - 31 May) - 0 min walk',
+      'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
+      'Meals in Madinah, Makkah, Mina & Arafah',
+      'Train Transfer from Madinah to Makkah',
+      'Visa & Qurbani Included',
+      'Sleeping Quilt & Box Meal in Muzdalifah',
+      'VIP Group Transportation',
+      '24/7 JSBWORLD-TRAVEL Staff Assistance'
     ],
-    terms: [
-      '25% payment required at the time of confirmation.',
-      'All itineraries are tentative and subject to Saudi Government approvals.',
-      'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
-      'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
-      'Once rooms are booked, they cannot be cancelled.',
-      'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
-      'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
-    ]
-  }
-},
-{
-  id: 'elite-luxury',
-  name: 'ELITE LUXURY PACKAGE – 10 DAYS (PAKISTANI PASSPORT HOLDER)',
-  price: 13899,
-  roomType: 'Quad',
-  includes: [
-    '5 Star Dar Al Iman Intercontinental (21 May - 23 May) - Madinah',
-    '5 Star Fairmont Makkah Clocktower (23 May - 31 May) - 0 min walk',
-    'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
-    'Meals in Madinah, Makkah, Mina & Arafah',
-    'Train Transfer from Madinah to Makkah',
-    'Visa & Qurbani Included',
-    'Sleeping Quilt & Box Meal in Muzdalifah',
-    'VIP Group Transportation',
-    '24/7 JSBWORLD-TRAVEL Staff Assistance'
-  ],
-  fullDetails: {
-    description: `Embark on a spiritually fulfilling journey with our exclusive Elite Luxury Hajj Package, meticulously designed for pilgrims seeking unparalleled comfort, convenience, and serenity. This package offers premium five-star accommodations steps away from Masjid al-Haram and Al-Masjid an-Nabawi, VIP transportation, gourmet meals, guided religious services, and 24/7 on-ground support. With upgraded VIP MAKTAB A tents located near Jamarat, this package ensures that your focus remains fully on worship while every logistical detail is handled with care and precision.`,
-    hotels: [
-      {
-        name: 'Madinah',
-        dates: '21 May - 23 May (4 - 6 Zill Hijjah)',
-        description: 'Dar Al Iman InterContinental is a distinguished luxury hotel ideally located steps away from Al-Masjid an-Nabawi. The hotel offers spacious rooms with breathtaking views, elegant interiors, modern amenities, exceptional dining options, and a serene ambiance for spiritual reflection.'
-      },
-      {
-        name: 'Makkah (Clocktower)',
-        dates: '23 May - 31 May (6 - 14 Zill Hijjah)',
-        description: 'Fairmont Makkah Clocktower, situated within the iconic Abraj Al-Bait complex, offers direct access to Masjid al-Haram and breathtaking views of the Kaaba. The hotel features opulent rooms, world-class dining, premium services, and an unmatched luxury experience.'
-      },
-      {
-        name: 'Mina, Arafat & Muzdalifah',
-        dates: '25 May - 29 May (8 - 12 Zill Hijjah)',
-        description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents equipped with private washrooms, buffet meals for breakfast, lunch, and dinner, comfortable sofa beds with pillows and sheets, and 24/7 refreshments. Sleeping arrangements with boxed meals are provided in Muzdalifah.'
-      }
-    ],
-    roomPrices: [
-      { type: 'Quad Room (4 People in one room)', price: 'USD 13,899.00' },
-      { type: 'Triple Room (3 People in one room)', price: 'USD 14,999.00' },
-      { type: 'Double Room (2 People in one room)', price: 'USD 16,999.00' }
-    ],
-    excludes: [
-      'Airline Tickets (Group arrangement available at additional cost)',
-      'Room upgrades with additional cost',
-      'Private transportation (SUV, Cars, H1)',
-      'Individually arranged services requiring private transfers',
-      'All personal expenses'
-    ],
-    terms: [
-      '25% payment required at the time of confirmation.',
-      'All itineraries are tentative and subject to Saudi Government approvals.',
-      'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
-      'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
-      'Once rooms are booked, they cannot be cancelled.',
-      'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
-      'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
-    ]
-  }
-},
+    fullDetails: {
+      description: `Embark on a spiritually fulfilling journey with our exclusive Elite Luxury Hajj Package, meticulously designed for pilgrims seeking unparalleled comfort, convenience, and serenity. This package offers premium five-star accommodations steps away from Masjid al-Haram and Al-Masjid an-Nabawi, VIP transportation, gourmet meals, guided religious services, and 24/7 on-ground support. With upgraded VIP MAKTAB A tents located near Jamarat, this package ensures that your focus remains fully on worship while every logistical detail is handled with care and precision.`,
+      hotels: [
+        {
+          name: 'Madinah',
+          dates: '21 May - 23 May (4 - 6 Zill Hijjah)',
+          description: 'Dar Al Iman InterContinental is a distinguished luxury hotel ideally located steps away from Al-Masjid an-Nabawi. The hotel offers spacious rooms with breathtaking views, elegant interiors, modern amenities, exceptional dining options, and a serene ambiance for spiritual reflection.'
+        },
+        {
+          name: 'Makkah (Clocktower)',
+          dates: '23 May - 31 May (6 - 14 Zill Hijjah)',
+          description: 'Fairmont Makkah Clocktower, situated within the iconic Abraj Al-Bait complex, offers direct access to Masjid al-Haram and breathtaking views of the Kaaba. The hotel features opulent rooms, world-class dining, premium services, and an unmatched luxury experience.'
+        },
+        {
+          name: 'Mina, Arafat & Muzdalifah',
+          dates: '25 May - 29 May (8 - 12 Zill Hijjah)',
+          description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents equipped with private washrooms, buffet meals for breakfast, lunch, and dinner, comfortable sofa beds with pillows and sheets, and 24/7 refreshments. Sleeping arrangements with boxed meals are provided in Muzdalifah.'
+        }
+      ],
+      roomPrices: [
+        { type: 'Quad Room (4 People in one room)', price: 'USD 13,899.00' },
+        { type: 'Triple Room (3 People in one room)', price: 'USD 14,999.00' },
+        { type: 'Double Room (2 People in one room)', price: 'USD 16,999.00' }
+      ],
+      excludes: [
+        'Airline Tickets (Group arrangement available at additional cost)',
+        'Room upgrades with additional cost',
+        'Private transportation (SUV, Cars, H1)',
+        'Individually arranged services requiring private transfers',
+        'All personal expenses'
+      ],
+      terms: [
+        '25% payment required at the time of confirmation.',
+        'All itineraries are tentative and subject to Saudi Government approvals.',
+        'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
+        'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
+        'Once rooms are booked, they cannot be cancelled.',
+        'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
+        'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
+      ]
+    }
+  },
 
   {
-  id: 'elite-luxury-plus',
-  name: 'ELITE LUXURY PLUS PACKAGE – 14 DAYS (PAKISTANI PASSPORT HOLDER)',
-  price: 14299,
-  roomType: 'Quad',
-  includes: [
-    '5 Star Dar Al Iman Intercontinental (18 May - 21 May) - Madinah',
-    '5 Star Fairmont Makkah Clocktower (21 May - 31 May) - 0 min walk',
-    'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
-    'Meals in Madinah, Makkah, Mina & Arafah',
-    'Train Transfer from Madinah to Makkah',
-    'Visa & Qurbani Included',
-    'Sleeping Quilt & Box Meal in Muzdalifah',
-    'VIP Group Transportation',
-    '24/7 JSBWORLD-TRAVEL Staff Assistance'
-  ],
-  fullDetails: {
-    description: `The Elite Luxury Plus Hajj Package is meticulously curated for pilgrims who seek an extended, serene, and luxurious Hajj experience. Spanning 14 days, this package offers premium five-star accommodations near Al-Masjid an-Nabawi and Masjid al-Haram, VIP transportation, gourmet meals, guided religious support, and continuous on-ground assistance. With exclusive access to VIP MAKTAB A tents near Jamarat, this package allows you to focus fully on worship while enjoying unmatched comfort, convenience, and peace of mind throughout your sacred journey.`,
-    hotels: [
-      {
-        name: 'Madinah',
-        dates: '18 May - 21 May (1 - 4 Zill Hijjah)',
-        description: 'Dar Al Iman InterContinental is a distinguished five-star hotel located steps away from Al-Masjid an-Nabawi. Known for its elegant design, spacious rooms, exceptional hospitality, and breathtaking views of the mosque, it offers a peaceful and spiritually uplifting stay.'
-      },
-      {
-        name: 'Makkah (Clocktower)',
-        dates: '21 May - 31 May (4 - 14 Zill Hijjah)',
-        description: 'Fairmont Makkah Clocktower, part of the iconic Abraj Al-Bait complex, provides direct access to Masjid al-Haram and stunning views of the Kaaba. Featuring luxurious rooms, world-class dining, premium amenities, and impeccable service, it represents the pinnacle of comfort and convenience.'
-      },
-      {
-        name: 'Mina, Arafat & Muzdalifah',
-        dates: '23 May - 29 May (8 - 12 Zill Hijjah)',
-        description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents with private washrooms, buffet meals for breakfast, lunch, and dinner, comfortable sofa beds with pillows and sheets, and 24/7 refreshments. Sleeping arrangements with boxed meals are provided in Muzdalifah.'
-      }
+    id: 'elite-luxury-plus',
+    name: 'ELITE LUXURY PLUS PACKAGE – 14 DAYS (PAKISTANI PASSPORT HOLDER)',
+    price: 14299,
+    roomType: 'Quad',
+    includes: [
+      '5 Star Dar Al Iman Intercontinental (18 May - 21 May) - Madinah',
+      '5 Star Fairmont Makkah Clocktower (21 May - 31 May) - 0 min walk',
+      'VIP MAKTAB A - Mina & Arafah (Steps away from Jamarat)',
+      'Meals in Madinah, Makkah, Mina & Arafah',
+      'Train Transfer from Madinah to Makkah',
+      'Visa & Qurbani Included',
+      'Sleeping Quilt & Box Meal in Muzdalifah',
+      'VIP Group Transportation',
+      '24/7 JSBWORLD-TRAVEL Staff Assistance'
     ],
-    roomPrices: [
-      { type: 'Quad Room (4 People in one room)', price: 'USD 14,299.00' },
-      { type: 'Triple Room (3 People in one room)', price: 'USD 15,399.00' },
-      { type: 'Double Room (2 People in one room)', price: 'USD 17,499.00' }
-    ],
-    excludes: [
-      'Airline Tickets (Group arrangement available at additional cost)',
-      'Room upgrades with additional cost',
-      'Private transportation (SUV, Cars, H1)',
-      'Individually arranged services requiring private transfers',
-      'All personal expenses'
-    ],
-    terms: [
-      '25% payment required at the time of confirmation.',
-      'All itineraries are tentative and subject to Saudi Government approvals.',
-      'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
-      'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
-      'Once rooms are booked, they cannot be cancelled.',
-      'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
-      'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
-    ]
+    fullDetails: {
+      description: `The Elite Luxury Plus Hajj Package is meticulously curated for pilgrims who seek an extended, serene, and luxurious Hajj experience. Spanning 14 days, this package offers premium five-star accommodations near Al-Masjid an-Nabawi and Masjid al-Haram, VIP transportation, gourmet meals, guided religious support, and continuous on-ground assistance. With exclusive access to VIP MAKTAB A tents near Jamarat, this package allows you to focus fully on worship while enjoying unmatched comfort, convenience, and peace of mind throughout your sacred journey.`,
+      hotels: [
+        {
+          name: 'Madinah',
+          dates: '18 May - 21 May (1 - 4 Zill Hijjah)',
+          description: 'Dar Al Iman InterContinental is a distinguished five-star hotel located steps away from Al-Masjid an-Nabawi. Known for its elegant design, spacious rooms, exceptional hospitality, and breathtaking views of the mosque, it offers a peaceful and spiritually uplifting stay.'
+        },
+        {
+          name: 'Makkah (Clocktower)',
+          dates: '21 May - 31 May (4 - 14 Zill Hijjah)',
+          description: 'Fairmont Makkah Clocktower, part of the iconic Abraj Al-Bait complex, provides direct access to Masjid al-Haram and stunning views of the Kaaba. Featuring luxurious rooms, world-class dining, premium amenities, and impeccable service, it represents the pinnacle of comfort and convenience.'
+        },
+        {
+          name: 'Mina, Arafat & Muzdalifah',
+          dates: '23 May - 29 May (8 - 12 Zill Hijjah)',
+          description: 'Private upgraded VIP MAKTAB A tents located steps away from the Jamarat. Fully air-conditioned tents with private washrooms, buffet meals for breakfast, lunch, and dinner, comfortable sofa beds with pillows and sheets, and 24/7 refreshments. Sleeping arrangements with boxed meals are provided in Muzdalifah.'
+        }
+      ],
+      roomPrices: [
+        { type: 'Quad Room (4 People in one room)', price: 'USD 14,299.00' },
+        { type: 'Triple Room (3 People in one room)', price: 'USD 15,399.00' },
+        { type: 'Double Room (2 People in one room)', price: 'USD 17,499.00' }
+      ],
+      excludes: [
+        'Airline Tickets (Group arrangement available at additional cost)',
+        'Room upgrades with additional cost',
+        'Private transportation (SUV, Cars, H1)',
+        'Individually arranged services requiring private transfers',
+        'All personal expenses'
+      ],
+      terms: [
+        '25% payment required at the time of confirmation.',
+        'All itineraries are tentative and subject to Saudi Government approvals.',
+        'Departure and return dates may vary by 1–2 days due to flight availability and moon sighting.',
+        'Hajj visa issuance is subject to Ministry of Religious Affairs and Saudi Consulate approvals.',
+        'Once rooms are booked, they cannot be cancelled.',
+        'Full board buffet meals in Mina with 24-hour hot and cold drinks (subject to government approval).',
+        'Clocktower hotels offer double rooms only; extra beds (smaller than twin) will be provided for triple and quad occupancy.'
+      ]
+    }
   }
-}
 
 ];
 
@@ -455,9 +455,9 @@ const TravelerInput = ({ label, type = 'text', value, onChange, placeholder }) =
 );
 
 // Package Details Modal Component
-const PackageDetailsModal = ({ pkg, isOpen, onClose,openModal }) => {
+const PackageDetailsModal = ({ pkg, isOpen, onClose, openModal }) => {
   if (!isOpen || !pkg) return null;
-  
+
   const details = pkg.fullDetails || {
     description: `Our package has been meticulously curated to combine affordability and quality offering a worry free Hajj experience.`,
     hotels: [],
@@ -492,8 +492,8 @@ const PackageDetailsModal = ({ pkg, isOpen, onClose,openModal }) => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
-            <button 
-              onClick={onClose} 
+            <button
+              onClick={onClose}
               className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
             >
               <X size={20} />
@@ -707,7 +707,7 @@ export default function HajjPage() {
   // Validation function for each step
   const validateStep = useCallback((step) => {
     const errors = {};
-    
+
     if (step === 0) {
       if (!formData.package) errors.package = 'Package is required';
       if (!formData.name) errors.name = 'Name is required';
@@ -715,12 +715,12 @@ export default function HajjPage() {
       if (!formData.email) errors.email = 'Email is required';
       if (!formData.country) errors.country = 'Country is required';
     }
-    
+
     if (step === 1) {
       if (!formData.roomType) errors.roomType = 'Room type is required';
       if (!formData.preferredGateway) errors.preferredGateway = 'Preferred gateway is required';
     }
-    
+
     if (step === 2) {
       formData.travelers.forEach((traveler, index) => {
         if (!traveler.firstName) errors[`traveler_${index}_firstName`] = 'First name is required';
@@ -730,7 +730,7 @@ export default function HajjPage() {
         if (!traveler.passportNumber) errors[`traveler_${index}_passportNumber`] = 'Passport number is required';
       });
     }
-    
+
     return errors;
   }, [formData]);
 
@@ -791,7 +791,7 @@ export default function HajjPage() {
           />
           <div className="absolute inset-0 " />
         </div>
-        
+
         {/* Ayat & Heading - Top Center */}
         <div className="relative z-10 flex-1 flex items-start justify-center pt-8 md:pt-12">
           <div className="text-center text-white px-4 max-w-4xl">
@@ -830,119 +830,119 @@ export default function HajjPage() {
           className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer z-50"
           onClick={scrollToPackages}
         >
-          <ChevronDown 
-            size={32} 
-            className="text-white/80 hover:text-white transition-colors drop-shadow-lg" 
+          <ChevronDown
+            size={32}
+            className="text-white/80 hover:text-white transition-colors drop-shadow-lg"
           />
         </motion.div>
       </div>
 
       {/* Intro Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-       
+
 
         {/* BBQ King Partnership Section */}
         <div className="relative py-20 overflow-hidden rounded-2xl">
-                {/* Background with gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900" />
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-                
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-12"
-                  >
-                    <span className="inline-block px-4 py-2 bg-secondary-500/20 backdrop-blur-sm rounded-full text-secondary-300 text-sm font-semibold mb-4">
-                      🤝 Exclusive Partnership
-                    </span>
-                    <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
-                      Trusted Halal Dining Partner
-                    </h2>
-                  </motion.div>
-        
-                  <div className="grid lg:grid-cols-2 gap-8 items-center">
-                    {/* Images */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: 0.2 }}
-                      className="flex flex-col gap-4"
-                    >
-                      <div className="relative group">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300" />
-                        <img
-                          src={bbqTonight1}
-                          alt="BBQ King Halal Food"
-                          className="relative rounded-xl w-full h-auto object-contain shadow-2xl transform group-hover:scale-[1.02] transition duration-300"
-                        />
-                      </div>
-                    
-        
-                      <div
-                      className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
-                    >
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-full flex items-center justify-center">
-                          <span className="text-2xl">🍖</span>
-                        </div>
-                        <h3 className="text-2xl font-bold text-white">BBQ King Partnership</h3>
-                      </div>
-                      
-                      <p className="text-lg text-gray-200 leading-relaxed mb-6">
-                        JSB World-Travel provides tours, cruises, and Umrah & Hajj, supported by its partnership with <span className="text-secondary-300 font-semibold">BBQ King</span>—bringing trusted halal dining with dedicated hotel delivery for travelers in <span className="text-secondary-300 font-semibold">Madina</span> and <span className="text-secondary-300 font-semibold">DFW</span>.
-                      </p>
-        
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-white/10 rounded-xl p-4 text-center">
-                          <div className="text-3xl mb-2">🕌</div>
-                          <p className="text-white font-semibold">Madina Delivery</p>
-                          <p className="text-gray-300 text-sm">Hotel doorstep service</p>
-                        </div>
-                        <div className="bg-white/10 rounded-xl p-4 text-center">
-                          <div className="text-3xl mb-2">✈️</div>
-                          <p className="text-white font-semibold">DFW Service</p>
-                          <p className="text-gray-300 text-sm">Premium halal catering</p>
-                        </div>
-                      </div>
+          {/* Background with gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900" />
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
 
-                      {/* Phone Contact */}
-                      <a 
-                        href="tel:+966558182560" 
-                        className="mt-6 flex items-center justify-center gap-3 bg-gradient-to-r from-secondary-400 to-secondary-600 hover:from-secondary-500 hover:to-secondary-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
-                      >
-                        <Phone size={20} />
-                        <span>+966 55 818 2560</span>
-                      </a>
-                    </div>
-                    </motion.div>
-        
-                    {/* Content */}
-                    <motion.div
-                      initial={{ opacity: 0, x: 30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: 0.3 }}
-                      // className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
-                    >
-                       <div className="relative group">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-secondary-600 to-secondary-400 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300" />
-                        <img
-                          src={bbqTonight2}
-                          alt="BBQ King Restaurant"
-                          className="relative rounded-xl w-full h-auto object-contain shadow-2xl transform group-hover:scale-[1.02] transition duration-300"
-                        />
-                      </div>
-                    </motion.div>
-                  </div>
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-12"
+            >
+              <span className="inline-block px-4 py-2 bg-secondary-500/20 backdrop-blur-sm rounded-full text-secondary-300 text-sm font-semibold mb-4">
+                🤝 Exclusive Partnership
+              </span>
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">
+                Trusted Halal Dining Partner
+              </h2>
+            </motion.div>
+
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              {/* Images */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="flex flex-col gap-4"
+              >
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300" />
+                  <img
+                    src={bbqTonight1}
+                    alt="BBQ King Halal Food"
+                    className="relative rounded-xl w-full h-auto object-contain shadow-2xl transform group-hover:scale-[1.02] transition duration-300"
+                  />
                 </div>
-              </div>
 
 
- <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-12">
+                <div
+                  className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
+                >
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-secondary-400 to-secondary-600 rounded-full flex items-center justify-center">
+                      <span className="text-2xl">🍖</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-white">BBQ King Partnership</h3>
+                  </div>
+
+                  <p className="text-lg text-gray-200 leading-relaxed mb-6">
+                    JSB World Travel provides tours, cruises, and Umrah & Hajj, supported by its partnership with <span className="text-secondary-300 font-semibold">BBQ King</span>—bringing trusted halal dining with dedicated hotel delivery for travelers in <span className="text-secondary-300 font-semibold">Madina</span> and <span className="text-secondary-300 font-semibold">DFW</span>.
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/10 rounded-xl p-4 text-center">
+                      <div className="text-3xl mb-2">🕌</div>
+                      <p className="text-white font-semibold">Madina Delivery</p>
+                      <p className="text-gray-300 text-sm">Hotel doorstep service</p>
+                    </div>
+                    <div className="bg-white/10 rounded-xl p-4 text-center">
+                      <div className="text-3xl mb-2">✈️</div>
+                      <p className="text-white font-semibold">DFW Service</p>
+                      <p className="text-gray-300 text-sm">Premium halal catering</p>
+                    </div>
+                  </div>
+
+                  {/* Phone Contact */}
+                  <a
+                    href="tel:+966558182560"
+                    className="mt-6 flex items-center justify-center gap-3 bg-gradient-to-r from-secondary-400 to-secondary-600 hover:from-secondary-500 hover:to-secondary-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
+                  >
+                    <Phone size={20} />
+                    <span>+966 55 818 2560</span>
+                  </a>
+                </div>
+              </motion.div>
+
+              {/* Content */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              // className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
+              >
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-secondary-600 to-secondary-400 rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300" />
+                  <img
+                    src={bbqTonight2}
+                    alt="BBQ King Restaurant"
+                    className="relative rounded-xl w-full h-auto object-contain shadow-2xl transform group-hover:scale-[1.02] transition duration-300"
+                  />
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+
+        <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 mb-12">
           <h3 className="text-xl font-bold text-gray-900 mb-3">Specialist Hajj & Umrah Services</h3>
           <p className="text-gray-700 leading-relaxed mb-6">
             We understand that Hajj and Umrah are more than just trips—they are sacred milestones. We provide expert guidance on visa processing, logistics, and accommodations in Makkah and Madinah, ensuring you can focus entirely on your worship.
@@ -956,65 +956,65 @@ export default function HajjPage() {
         <div ref={packagesSectionRef}>
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Popular Hajj Packages</h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {hajjPackages.map((pkg, index) => (
-            <motion.div
-              key={pkg.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-xl shadow-lg overflow-hidden"
-            >
-              <div className="p-6 flex flex-col h-[420px]">
-                <h3 className="text-sm font-bold text-gray-800 mb-4 min-h-[48px]">{pkg.name}</h3>
-                <div className="text-center mb-4">
-                  <span className="text-4xl font-bold text-gray-900">${pkg.price.toLocaleString()}</span>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {hajjPackages.map((pkg, index) => (
+              <motion.div
+                key={pkg.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-xl shadow-lg overflow-hidden"
+              >
+                <div className="p-6 flex flex-col h-[420px]">
+                  <h3 className="text-sm font-bold text-gray-800 mb-4 min-h-[48px]">{pkg.name}</h3>
+                  <div className="text-center mb-4">
+                    <span className="text-4xl font-bold text-gray-900">${pkg.price.toLocaleString()}</span>
+                  </div>
+                  <p className="text-sm text-gray-500 mb-2">{pkg.roomType}</p>
+                  <h4 className="font-semibold text-gray-800 mb-2">Package Includes:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1 mb-4 flex-1 overflow-hidden">
+                    {pkg.includes.slice(0, 4).map((item, i) => (
+                      <li key={i} className="flex items-start">
+                        <Check size={14} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                        <span className="line-clamp-1">{item}</span>
+                      </li>
+                    ))}
+                    {pkg.includes.length > 4 && (
+                      <li className="text-secondary-500 font-medium text-xs">
+                        +{pkg.includes.length - 4} more items...
+                      </li>
+                    )}
+                  </ul>
+                  <div className="flex gap-2 mt-auto">
+                    <Button
+                      onClick={() => openModal(pkg)}
+                      variant="primary"
+                      className="flex-1 bg-gradient-to-r from-secondary-300 to-secondary-500 hover:from-secondary-400 hover:to-secondary-600"
+                    >
+                      Register Now
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1 border-gray-300 text-gray-700 flex items-center justify-center gap-1"
+                      onClick={() => openDetailsModal(pkg)}
+                    >
+                      <Info size={16} />
+                      More
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-500 mb-2">{pkg.roomType}</p>
-                <h4 className="font-semibold text-gray-800 mb-2">Package Includes:</h4>
-                <ul className="text-sm text-gray-600 space-y-1 mb-4 flex-1 overflow-hidden">
-                  {pkg.includes.slice(0, 4).map((item, i) => (
-                    <li key={i} className="flex items-start">
-                      <Check size={14} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
-                      <span className="line-clamp-1">{item}</span>
-                    </li>
-                  ))}
-                  {pkg.includes.length > 4 && (
-                    <li className="text-secondary-500 font-medium text-xs">
-                      +{pkg.includes.length - 4} more items...
-                    </li>
-                  )}
-                </ul>
-                <div className="flex gap-2 mt-auto">
-                  <Button
-                    onClick={() => openModal(pkg)}
-                    variant="primary"
-                    className="flex-1 bg-gradient-to-r from-secondary-300 to-secondary-500 hover:from-secondary-400 hover:to-secondary-600"
-                  >
-                    Register Now
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex-1 border-gray-300 text-gray-700 flex items-center justify-center gap-1"
-                    onClick={() => openDetailsModal(pkg)}
-                  >
-                    <Info size={16} />
-                    More
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Package Details Modal */}
-      <PackageDetailsModal 
-        pkg={detailsPackage} 
-        isOpen={detailsModalOpen} 
-        onClose={() => setDetailsModalOpen(false)} 
+      <PackageDetailsModal
+        pkg={detailsPackage}
+        isOpen={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
         openModal={openModal}
       />
 
@@ -1070,13 +1070,12 @@ export default function HajjPage() {
                       <button
                         key={step}
                         disabled={index > currentStep}
-                        className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
-                          currentStep === index
+                        className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${currentStep === index
                             ? 'bg-gradient-to-r from-secondary-300 to-secondary-500 text-white'
                             : index < currentStep
                               ? 'bg-secondary-100 text-secondary-700'
                               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        }`}
+                          }`}
                       >
                         {step}
                       </button>
@@ -1306,7 +1305,7 @@ export default function HajjPage() {
                             </p>
                             <p className="text-xs text-gray-400 mt-2">Supported: PDF, JPG, PNG, DOC, DOCX</p>
                           </label>
-                          
+
                           {/* Uploaded Files List */}
                           {formData.documents.length > 0 && (
                             <div className="mt-4 space-y-2">

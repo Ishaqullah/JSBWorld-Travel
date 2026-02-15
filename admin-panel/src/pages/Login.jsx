@@ -14,7 +14,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error('Please fill in all fields');
       return;
@@ -39,7 +39,7 @@ const Login = () => {
         <div className="login-card">
           <div className="login-header">
             <div className="login-logo">
-              <span className="logo-icon">T</span>
+              <span className="logo-icon">JSB</span>
             </div>
             <h1 className="login-title">Admin Panel</h1>
             <p className="login-subtitle">Sign in to manage your tours</p>
@@ -86,7 +86,7 @@ const Login = () => {
           </form>
 
           <div className="login-footer">
-            <p>Travecations Admin Panel &copy; {new Date().getFullYear()}</p>
+            <p>JSB World Travel Admin Panel &copy; {new Date().getFullYear()}</p>
           </div>
         </div>
       </div>

@@ -60,14 +60,14 @@ export default function Home() {
   const [cardsToShow, setCardsToShow] = useState(3);
   const autoPlayRef = useRef(null);
   const nextSectionRef = useRef(null);
-  
+
   // Search state
   const [activeTab, setActiveTab] = useState('tour');
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredTours, setFilteredTours] = useState([]);
   const searchRef = useRef(null);
-  
+
   // Enquire modal state
   const [enquireModalOpen, setEnquireModalOpen] = useState(false);
 
@@ -92,8 +92,8 @@ export default function Home() {
     const fetchAllTours = async () => {
       try {
         // Fetch all tours
-        const response = await tourService.getAllTours({ 
-          sortBy: 'rating', 
+        const response = await tourService.getAllTours({
+          sortBy: 'rating',
           order: 'desc',
           limit: 1000
         });
@@ -112,7 +112,7 @@ export default function Home() {
   useEffect(() => {
     if (searchQuery.trim() && allTours.length > 0) {
       const query = searchQuery.toLowerCase();
-      const filtered = allTours.filter(tour => 
+      const filtered = allTours.filter(tour =>
         tour.title?.toLowerCase().includes(query) ||
         tour.subtitle?.toLowerCase().includes(query) ||
         tour.location?.toLowerCase().includes(query) ||
@@ -154,7 +154,7 @@ export default function Home() {
   // Auto-scroll carousel
   useEffect(() => {
     if (allTours.length <= cardsToShow) return;
-    
+
     autoPlayRef.current = setInterval(() => {
       setCurrentIndex((prev) => {
         const maxIndex = allTours.length - cardsToShow;
@@ -207,7 +207,7 @@ export default function Home() {
                   <X size={24} className="text-gray-500" />
                 </button>
               </div>
-              
+
               <div className="space-y-4">
                 <a
                   href="tel:+16828772835"
@@ -221,7 +221,7 @@ export default function Home() {
                     <p className="font-semibold text-gray-900">+1 (682) 877-2835</p>
                   </div>
                 </a>
-                
+
                 <a
                   href="https://wa.me/14697990834"
                   target="_blank"
@@ -236,7 +236,7 @@ export default function Home() {
                     <p className="font-semibold text-gray-900">+1 (469) 799-0834</p>
                   </div>
                 </a>
-                
+
                 <a
                   href="mailto:info@jsbworld-travel.com"
                   className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
@@ -295,7 +295,7 @@ export default function Home() {
             <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">with JSB WORLD</span>
           </motion.h1>
-          
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -332,21 +332,19 @@ export default function Home() {
             <div className="flex gap-2 mb-3">
               <button
                 onClick={() => setActiveTab('tour')}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                  activeTab === 'tour'
-                    ? 'bg-gradient-to-r from-secondary-400 to-secondary-500 text-white shadow-lg'
-                    : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === 'tour'
+                  ? 'bg-gradient-to-r from-secondary-400 to-secondary-500 text-white shadow-lg'
+                  : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
               >
                 Tour
               </button>
               <button
                 onClick={() => setActiveTab('flight')}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                  activeTab === 'flight'
-                    ? 'bg-gradient-to-r from-secondary-400 to-secondary-500 text-white shadow-lg'
-                    : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === 'flight'
+                  ? 'bg-gradient-to-r from-secondary-400 to-secondary-500 text-white shadow-lg'
+                  : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
               >
                 Flight
               </button>
@@ -425,44 +423,44 @@ export default function Home() {
           className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer z-50"
           onClick={scrollToNextSection}
         >
-          <ChevronDown 
-            size={32} 
-            className="text-white/80 hover:text-white transition-colors drop-shadow-lg" 
+          <ChevronDown
+            size={32}
+            className="text-white/80 hover:text-white transition-colors drop-shadow-lg"
           />
         </motion.div>
       </section>
 
       {/* Partner Logos Marquee - FIXED */}
-<section ref={nextSectionRef} className="py-8 bg-white border-b overflow-hidden relative z-[-30]">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-    <h3 className="text-center text-gray-500 text-4xl font-medium uppercase tracking-wider">
-      Our Trusted Partners
-    </h3>
-  </div>
-  <div className="relative">
-    {/* Gradient overlays with lower z-index */}
-    <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-20" />
-    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-20" />
-    
-    {/* Marquee container with lower z-index */}
-    <div className="flex animate-marquee relative z-10">
-      {/* First set of logos */}
-      <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
-        {partnerLogos.map((logo, index) => (
-          <img key={index} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-        ))}
-      </div>
-      {/* Duplicate set for seamless loop */}
-      <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
-        {partnerLogos.map((logo, index) => (
-          <img key={`dup-${index}`} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+      <section ref={nextSectionRef} className="py-8 bg-white border-b overflow-hidden relative z-[-30]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+          <h3 className="text-center text-gray-500 text-4xl font-medium uppercase tracking-wider">
+            Our Trusted Partners
+          </h3>
+        </div>
+        <div className="relative">
+          {/* Gradient overlays with lower z-index */}
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-20" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-20" />
 
-  {/* All Tours Carousel */}
+          {/* Marquee container with lower z-index */}
+          <div className="flex animate-marquee relative z-10">
+            {/* First set of logos */}
+            <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
+              {partnerLogos.map((logo, index) => (
+                <img key={index} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+              ))}
+            </div>
+            {/* Duplicate set for seamless loop */}
+            <div className="flex items-center gap-12 md:gap-16 px-8 shrink-0">
+              {partnerLogos.map((logo, index) => (
+                <img key={`dup-${index}`} src={logo.src} alt={logo.alt} className="h-10 md:h-12 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* All Tours Carousel */}
       <section style={{ marginTop: '50px' }} className="section-padding bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -512,15 +510,15 @@ export default function Home() {
                   <motion.div
                     key={tour.id}
                     className="flex-shrink-0 px-1"
-                    style={{ 
-                      width: cardsToShow === 1 
-                        ? '100%' 
-                        : `calc(${100 / cardsToShow}% - ${(cardsToShow - 1) * 24 / cardsToShow}px)` 
+                    style={{
+                      width: cardsToShow === 1
+                        ? '100%'
+                        : `calc(${100 / cardsToShow}% - ${(cardsToShow - 1) * 24 / cardsToShow}px)`
                     }}
                     whileHover={{ y: -8 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Link to={`/tours/${tour.id}`}>
+                    <Link to={`/tours/${tour.slug}/${tour.id}`}>
                       <Card hover className="group h-full">
                         <div className="relative overflow-hidden h-64">
                           <img
@@ -547,7 +545,7 @@ export default function Home() {
                             <div className="text-right">
                               <div className="text-sm text-gray-500">From</div>
                               <div className="text-2xl font-bold text-secondary-600">
-                                ${tour.price}
+                                ${tour.price} <span className="text-sm font-normal text-gray-500">/ person</span>
                               </div>
                             </div>
                           </div>
@@ -566,11 +564,10 @@ export default function Home() {
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      currentIndex === index
-                        ? 'bg-secondary-500 w-8'
-                        : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${currentIndex === index
+                      ? 'bg-secondary-500 w-8'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                      }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
                 ))}
@@ -590,7 +587,7 @@ export default function Home() {
 
 
 
-            
+
       {/* Where to Next? - Destinations Grid */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -679,7 +676,7 @@ export default function Home() {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute top-3 right-3 bg-secondary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      ${moment.price}
+                      ${moment.price} <span className="text-[10px] font-normal opacity-80">/ person</span>
                     </div>
                   </div>
                   <div className="p-4">
@@ -807,16 +804,16 @@ export default function Home() {
         </div>
       </section>
 
-    
 
 
-     
- {/* Why Choose Us - Design Handoff: 6 columns, 100-140px padding */}
+
+
+      {/* Why Choose Us - Design Handoff: 6 columns, 100-140px padding */}
       <section className="py-24 md:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-              Why Choose <span className="text-gradient">JSB World-Travel</span> for Your Next Adventure?
+              Why Choose <span className="text-gradient">JSB World Travel</span> for Your Next Adventure?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               When you look for a travel agency in Dallas, you want more than a middleman—you want an advocate.

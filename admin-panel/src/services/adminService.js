@@ -89,6 +89,24 @@ export const adminService = {
     return response.data.data.addOns;
   },
 
+  // Tour Notes (accordion)
+  updateTourNotes: async (tourId, notes) => {
+    const response = await api.put(`/admin/tours/${tourId}/notes`, { notes });
+    return response.data.data.notes;
+  },
+
+  // Tour Price Includes (list)
+  updateTourPriceIncludes: async (tourId, priceIncludes) => {
+    const response = await api.put(`/admin/tours/${tourId}/price-includes`, { priceIncludes });
+    return response.data.data.priceIncludes;
+  },
+
+  // Tour Activities (cards)
+  updateTourActivities: async (tourId, activities) => {
+    const response = await api.put(`/admin/tours/${tourId}/activities`, { activities });
+    return response.data.data.activities;
+  },
+
   // Tour Categories (package categories with price)
   updateTourCategories: async (tourId, tourCategories) => {
     const response = await api.put(`/admin/tours/${tourId}/categories`, { tourCategories });
@@ -120,7 +138,7 @@ export const adminService = {
   },
 
   // ========== Bank Transfer Management ==========
-  
+
   // Get pending bank transfers
   getPendingBankTransfers: async () => {
     const response = await api.get('/admin/payments/pending-transfers');

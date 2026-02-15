@@ -32,19 +32,19 @@ export default function ToursListing() {
         // Map frontend sort to backend sort
         let sortParams = {};
         switch (sortBy) {
-            case 'price-low':
-                sortParams = { sortBy: 'price', order: 'asc' };
-                break;
-            case 'price-high':
-                sortParams = { sortBy: 'price', order: 'desc' };
-                break;
-            case 'rating':
-                sortParams = { sortBy: 'rating', order: 'desc' };
-                break;
-            case 'popular':
-            default:
-                sortParams = { sortBy: 'reviewCount', order: 'desc' };
-                break;
+          case 'price-low':
+            sortParams = { sortBy: 'price', order: 'asc' };
+            break;
+          case 'price-high':
+            sortParams = { sortBy: 'price', order: 'desc' };
+            break;
+          case 'rating':
+            sortParams = { sortBy: 'rating', order: 'desc' };
+            break;
+          case 'popular':
+          default:
+            sortParams = { sortBy: 'reviewCount', order: 'desc' };
+            break;
         }
 
         const data = await tourService.getAllTours({ ...filters, ...sortParams, limit: 1000 });
@@ -106,87 +106,87 @@ export default function ToursListing() {
 
         {/* Tours Grid - 4 columns on xl screens */}
         {loading ? (
-            <div className="text-center py-20">Loading tours...</div>
+          <div className="text-center py-20">Loading tours...</div>
         ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {visibleTours.map((tour, index) => (
-            <motion.div
-              key={tour.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.03 }}
-            >
-              <Link to={`/tours/${tour.id}`}>
-                <Card hover className="group h-full">
-                  <div className="relative overflow-hidden h-56">
-                    <img
-                      src={tour.featuredImage}
-                      alt={tour.title}
-                      className="w-full h-full object-cover image-zoom"
-                    />
-                    <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-sm font-semibold">
-                      {tour.category.name}
-                    </div>
-                    <div className="absolute top-3 right-3 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      {tour.duration} days
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                      <div className="flex items-center text-white text-sm">
-                        <MapPin size={16} className="mr-1" />
-                        {tour.location}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {visibleTours.map((tour, index) => (
+              <motion.div
+                key={tour.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.03 }}
+              >
+                <Link to={`/tours/${tour.slug}/${tour.id}`}>
+                  <Card hover className="group h-full">
+                    <div className="relative overflow-hidden h-56">
+                      <img
+                        src={tour.featuredImage}
+                        alt={tour.title}
+                        className="w-full h-full object-cover image-zoom"
+                      />
+                      <div className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-sm font-semibold">
+                        {tour.category.name}
                       </div>
-                    </div>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary-600 transition-colors line-clamp-1">
-                      {tour.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {tour.description}
-                    </p>
-
-                    <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <Clock size={16} className="mr-1" />
+                      <div className="absolute top-3 right-3 bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                         {tour.duration} days
                       </div>
-                      <div className="flex items-center">
-                        <Users size={16} className="mr-1" />
-                        Max {tour.maxGroupSize}
-                      </div>
-                    </div>
-
-                    {/* Add-ons Badge */}
-                    {tour.addOns && tour.addOns.length > 0 && (
-                      <div className="mb-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary-100 text-secondary-700">
-                          +{tour.addOns.length} Add-on{tour.addOns.length > 1 ? 's' : ''} available
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-end pt-4 border-t border-gray-200">
-                      <div className="text-right">
-                        <div className="text-xs text-gray-500">From</div>
-                        <div className="text-2xl font-bold text-primary-600">
-                          ${tour.price}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                        <div className="flex items-center text-white text-sm">
+                          <MapPin size={16} className="mr-1" />
+                          {tour.location}
                         </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+                    <div className="p-5">
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary-600 transition-colors line-clamp-1">
+                        {tour.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {tour.description}
+                      </p>
+
+                      <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Clock size={16} className="mr-1" />
+                          {tour.duration} days
+                        </div>
+                        <div className="flex items-center">
+                          <Users size={16} className="mr-1" />
+                          Max {tour.maxGroupSize}
+                        </div>
+                      </div>
+
+                      {/* Add-ons Badge */}
+                      {tour.addOns && tour.addOns.length > 0 && (
+                        <div className="mb-4">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary-100 text-secondary-700">
+                            +{tour.addOns.length} Add-on{tour.addOns.length > 1 ? 's' : ''} available
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-end pt-4 border-t border-gray-200">
+                        <div className="text-right">
+                          <div className="text-xs text-gray-500">From</div>
+                          <div className="text-2xl font-bold text-primary-600">
+                            ${tour.price}<span className="text-sm font-normal text-gray-500 ml-1">/ person</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
         )}
 
         {/* Load More Button */}
         {!loading && hasMoreTours && (
           <div className="text-center mt-12">
-            <Button 
-              onClick={handleLoadMore} 
-              variant="primary" 
+            <Button
+              onClick={handleLoadMore}
+              variant="primary"
               size="lg"
               loading={loadingMore}
             >

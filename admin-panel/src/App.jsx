@@ -8,6 +8,7 @@ import ToursList from './pages/Tours/ToursList';
 import TourForm from './pages/Tours/TourForm';
 import PendingPayments from './pages/PendingPayments';
 import Bookings from './pages/Bookings';
+import Settings from './pages/Settings';
 import './index.css';
 
 // Protected Route wrapper
@@ -87,7 +88,7 @@ function App() {
             <Route path="bookings" element={<Bookings />} />
             <Route path="pending-payments" element={<PendingPayments />} />
             <Route path="users" element={<ComingSoon title="Users" />} />
-            <Route path="settings" element={<ComingSoon title="Settings" />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
 
           {/* Catch all - redirect to dashboard */}

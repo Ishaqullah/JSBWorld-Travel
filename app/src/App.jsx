@@ -45,7 +45,7 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/tours" element={<ToursListing />} />
-                <Route path="/tours/:id" element={<TourDetails />} />
+                <Route path="/tours/:slug/:id" element={<TourDetails />} />
                 <Route path="/umrah" element={<UmrahHajj />} />
                 <Route path="/hajj" element={<HajjPage />} />
                 <Route path="/custom-itinerary" element={<CustomItineraryPage />} />

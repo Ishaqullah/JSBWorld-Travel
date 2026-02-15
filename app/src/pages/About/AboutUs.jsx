@@ -68,7 +68,7 @@ export default function AboutUs() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4"
           >
-            About <span className="bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">JSB World-Travel</span>
+            About <span className="bg-clip-text text-transparent bg-gradient-to-r from-secondary-400 to-secondary-200">JSB World Travel</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -94,7 +94,7 @@ export default function AboutUs() {
               <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src={CeoPhoto}
-                  alt="Jaffar Sorathia - Founder of JSB World-Travel"
+                  alt="Jaffar Sorathia - Founder of JSB World Travel"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -114,7 +114,7 @@ export default function AboutUs() {
                 Meet Jaffar Sorathia
               </h2>
               <blockquote className="text-lg md:text-xl text-gray-700 leading-relaxed border-l-4 border-secondary-500 pl-6 italic">
-                "Hi, I'm Jaffar Sorathia. I've been a proud Dallasite for 35 years, and I started JSB World-Travel because I believe every traveler deserves a journey that feels personal, not packaged. With deep roots in Pakistan and over three decades in North Texas, I offer a unique perspective that combines genuine Texas hospitality with global 'insider' knowledge. My goal is to create authentic travel experiences you simply won't find on a generic booking site."
+                "Hi, I'm Jaffar Sorathia. I've been a proud Dallasite for 35 years, and I started JSB World Travel because I believe every traveler deserves a journey that feels personal, not packaged. With deep roots in Pakistan and over three decades in North Texas, I offer a unique perspective that combines genuine Texas hospitality with global 'insider' knowledge. My goal is to create authentic travel experiences you simply won't find on a generic booking site."
               </blockquote>
               <div className="flex items-center gap-4 pt-4">
                 <div className="h-px flex-1 bg-gradient-to-r from-secondary-300 to-transparent"></div>
@@ -134,16 +134,15 @@ export default function AboutUs() {
             </h2>
             <div className="space-y-4 text-gray-700 text-lg leading-relaxed">
               <p>
-                JSB World-Travel is a Dallas, Texas–based travel marketing company helping travelers find 
+                JSB World Travel is a Dallas, Texas–based travel marketing company helping travelers find
                 <strong> affordable flights from US</strong>, hotel deals, vacation packages, and religious travel services.
               </p>
               <p>
-                We specialize in <strong>airline tickets, hotel bookings, Umrah/Hajj packages, family vacations, 
-                and group travel</strong>. To ensure professional booking and fulfillment, JSB World-Travel partners 
-                with <strong>Travecations</strong>, a licensed travel and tours company located in Houston, Texas.
+                We specialize in <strong>airline tickets, hotel bookings, Umrah/Hajj packages, family vacations,
+                  and group travel</strong>. JSB World Travel is a licensed travel and tours company.
               </p>
               <p>
-                While JSB World-Travel focuses on <strong>marketing, sales, and customer support</strong>, all reservations, 
+                While JSB World Travel focuses on <strong>marketing, sales, and customer support</strong>, all reservations,
                 ticketing, and tour management are handled by our trusted fulfillment partner and authorized travel suppliers.
               </p>
             </div>
@@ -169,7 +168,7 @@ export default function AboutUs() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4">
-              Why Choose <span className="text-gradient">JSB World-Travel</span> for Your Next Adventure?
+              Why Choose <span className="text-gradient">JSB World Travel</span> for Your Next Adventure?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               When you look for a travel agency in Dallas, you want more than a middleman—you want an advocate.
@@ -209,7 +208,7 @@ export default function AboutUs() {
           </p>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 inline-block">
             <div className="space-y-3 text-left">
-              <p className="text-lg"><strong>JSB World-Travel</strong></p>
+              <p className="text-lg"><strong>JSB World Travel</strong></p>
               <p className="text-gray-300">Dallas, Texas, USA</p>
               <p>
                 Email:{' '}

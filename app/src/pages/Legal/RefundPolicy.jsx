@@ -16,7 +16,7 @@ export default function RefundPolicy() {
         </p>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 space-y-8">
-          
+
           {/* Airline Tickets */}
           <section>
             <h2 className="text-2xl font-semibold text-primary-600 mb-4">Airline Tickets</h2>
@@ -40,7 +40,7 @@ export default function RefundPolicy() {
           <section>
             <h2 className="text-2xl font-semibold text-primary-600 mb-4">Processing Time</h2>
             <p className="text-gray-700">
-              Approved refunds may take <strong>4–12 weeks</strong> to process and are returned to the 
+              Approved refunds may take <strong>4–12 weeks</strong> to process and are returned to the
               original form of payment.
             </p>
           </section>
@@ -49,7 +49,7 @@ export default function RefundPolicy() {
           <section>
             <h2 className="text-2xl font-semibold text-primary-600 mb-4">Service Fees</h2>
             <p className="text-gray-700">
-              JSB World-Travel and Travecations service fees are <strong>non-refundable</strong>.
+              JSB World Travel and its partners' service fees are <strong>non-refundable</strong>.
             </p>
           </section>
 

@@ -58,23 +58,23 @@ function PricingTable({ dates, duration, onReserve }) {
             <th className="py-4 px-6 rounded-tr-lg"></th>
           </tr>
         </thead>
-        
+
         {/* Body */}
         <tbody>
           {dates.map((date, index) => {
             const soldOut = isSoldOut(date);
             const showEarlyBird = hasEarlyBird(date);
-            
+
             // Read prices directly from database
             const priceWithout = parseFloat(date.priceWithoutFlight);
             const priceWith = parseFloat(date.priceWithFlight);
             const earlyBirdWithout = date.earlyBirdPriceWithout ? parseFloat(date.earlyBirdPriceWithout) : null;
             const earlyBirdWith = date.earlyBirdPriceWith ? parseFloat(date.earlyBirdPriceWith) : null;
             const earlyBirdDeadline = date.earlyBirdDeadline ? new Date(date.earlyBirdDeadline) : null;
-            
+
             return (
-              <tr 
-                key={date.id || index} 
+              <tr
+                key={date.id || index}
                 className={`border-b border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} ${soldOut ? 'opacity-60' : ''}`}
               >
                 {/* Date Column */}
@@ -86,7 +86,7 @@ function PricingTable({ dates, duration, onReserve }) {
                     <span className="text-red-500 text-xs font-medium">(Sold out)</span>
                   )}
                 </td>
-                
+
                 {/* Without Flight - Before */}
                 <td className="py-4 px-4 text-center border-l border-gray-200">
                   {showEarlyBird && earlyBirdWithout && !soldOut ? (
@@ -99,7 +99,7 @@ function PricingTable({ dates, duration, onReserve }) {
                     <div className="text-red-500 font-bold">${priceWithout.toLocaleString()}</div>
                   )}
                 </td>
-                
+
                 {/* Without Flight - After */}
                 <td className="py-4 px-4 text-center border-r border-gray-300">
                   {showEarlyBird && earlyBirdWithout && !soldOut ? (
@@ -110,7 +110,7 @@ function PricingTable({ dates, duration, onReserve }) {
                     </div>
                   ) : null}
                 </td>
-                
+
                 {/* Land and Flight - Before */}
                 <td className="py-4 px-4 text-center">
                   {showEarlyBird && earlyBirdWith && !soldOut ? (
@@ -123,7 +123,7 @@ function PricingTable({ dates, duration, onReserve }) {
                     <div className="text-red-500 font-bold">${priceWith.toLocaleString()}</div>
                   )}
                 </td>
-                
+
                 {/* Land and Flight - After */}
                 <td className="py-4 px-4 text-center">
                   {showEarlyBird && earlyBirdWith && !soldOut ? (
@@ -134,7 +134,7 @@ function PricingTable({ dates, duration, onReserve }) {
                     </div>
                   ) : null}
                 </td>
-                
+
                 {/* Reserve Button - Blue theme */}
                 <td className="py-4 px-6">
                   {!soldOut ? (
@@ -177,6 +177,7 @@ export default function TourDetails() {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [emailSuccess, setEmailSuccess] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null); // For Read More modal
 
 
   useEffect(() => {
@@ -322,12 +323,24 @@ export default function TourDetails() {
   // Get images array - handle both API and static data formats
   const images = tour.images?.map(img => img.imageUrl || img) || [tour.featuredImage];
   const currentImage = images[currentImageIndex] || tour.featuredImage;
-  
+
   // Get tour details - handle both API and static data formats
   const highlights = tour.highlights?.map(h => h.highlight || h) || [];
   const included = tour.inclusions?.filter(i => i.type === 'INCLUDED').map(i => i.item) || tour.included || [];
   const excluded = tour.inclusions?.filter(i => i.type === 'EXCLUDED').map(i => i.item) || tour.excluded || [];
-  const itinerary = tour.itinerary?.map(i => ({ day: i.dayNumber || i.day, title: i.title, description: i.description, imageUrl: i.imageUrl })) || [];
+  const itinerary = tour.itinerary?.map(i => ({
+    day: i.dayNumber || i.day,
+    title: i.title,
+    description: i.description,
+    imageUrl: i.imageUrl,
+    accommodationTitle: i.accommodationTitle,
+    accommodationDescription: i.accommodationDescription,
+    accommodationImage: i.accommodationImage,
+    activityTitle: i.activityTitle,
+    activityDescription: i.activityDescription,
+    activityImage: i.activityImage,
+    activityPrice: i.activityPrice,
+  })) || [];
   const tourDates = tour.dates || [];
 
   return (
@@ -361,11 +374,10 @@ export default function TourDetails() {
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentImageIndex
-                          ? 'bg-white w-8'
-                          : 'bg-white/50'
-                      }`}
+                      className={`w-2 h-2 rounded-full transition-all ${index === currentImageIndex
+                        ? 'bg-white w-8'
+                        : 'bg-white/50'
+                        }`}
                     />
                   ))}
                 </div>
@@ -391,7 +403,7 @@ export default function TourDetails() {
                   <div className="flex items-center text-amber-500">
                     <Star size={20} fill="currentColor" className="mr-1" />
                     <span className="font-semibold">{tour.rating}</span>
-                    <span className="text-gray-500 ml-1">({tour.reviewCount || tour._count?.reviews || 0} reviews)</span>
+                    <span className="font-semibold">{tour.rating}</span>
                   </div>
                   <div className="flex items-center">
                     <MapPin size={18} className="mr-1" />
@@ -419,7 +431,7 @@ export default function TourDetails() {
                     <Calendar size={20} className="text-primary-600 mr-2" />
                     <div>
                       <div className="text-sm text-gray-600">Starting From</div>
-                      <div className="font-semibold text-primary-600">${parseFloat(tour.price).toLocaleString()}</div>
+                      <div className="font-semibold text-primary-600">${parseFloat(tour.price).toLocaleString()} <span className="text-sm font-normal text-gray-500">/ person</span></div>
                     </div>
                   </div>
                 </div>
@@ -431,11 +443,10 @@ export default function TourDetails() {
                 <button
                   onClick={handleWishlistToggle}
                   disabled={wishlistLoading}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all disabled:opacity-50 ${
-                    saved
-                      ? 'bg-red-50 text-red-600 border-2 border-red-200 hover:bg-red-100'
-                      : 'bg-gray-50 text-gray-700 border-2 border-gray-200 hover:bg-gray-100'
-                  }`}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all disabled:opacity-50 ${saved
+                    ? 'bg-red-50 text-red-600 border-2 border-red-200 hover:bg-red-100'
+                    : 'bg-gray-50 text-gray-700 border-2 border-gray-200 hover:bg-gray-100'
+                    }`}
                 >
                   {wishlistLoading ? (
                     <Loader2 size={20} className="animate-spin" />
@@ -474,11 +485,10 @@ export default function TourDetails() {
                       key={cat.id}
                       type="button"
                       onClick={() => setSelectedCategoryId(cat.id)}
-                      className={`relative text-left p-5 rounded-xl border-2 transition-all ${
-                        isSelected
-                          ? 'border-primary-600 bg-primary-50/50'
-                          : 'border-gray-200 bg-white hover:border-gray-300'
-                      }`}
+                      className={`relative text-left p-5 rounded-xl border-2 transition-all ${isSelected
+                        ? 'border-primary-600 bg-primary-50/50'
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                        }`}
                     >
                       {isSelected && (
                         <span className="absolute top-3 right-3 px-2 py-0.5 bg-gray-900 text-white text-xs font-medium rounded-md">
@@ -560,11 +570,10 @@ export default function TourDetails() {
                                       onClick={() =>
                                         setAccommodationImageIndex((prev) => ({ ...prev, [acc.id]: i }))
                                       }
-                                      className={`w-2 h-2 rounded-full transition-all ${
-                                        i === (accommodationImageIndex[acc.id] ?? 0)
-                                          ? 'bg-white w-6'
-                                          : 'bg-white/50'
-                                      }`}
+                                      className={`w-2 h-2 rounded-full transition-all ${i === (accommodationImageIndex[acc.id] ?? 0)
+                                        ? 'bg-white w-6'
+                                        : 'bg-white/50'
+                                        }`}
                                     />
                                   ))}
                                 </div>
@@ -626,9 +635,8 @@ export default function TourDetails() {
                           key={i}
                           type="button"
                           onClick={() => setAccommodationCarouselIndex(i)}
-                          className={`w-2 h-2 rounded-full transition-all ${
-                            i === accommodationCarouselIndex ? 'bg-primary-600 w-6' : 'bg-gray-300'
-                          }`}
+                          className={`w-2 h-2 rounded-full transition-all ${i === accommodationCarouselIndex ? 'bg-primary-600 w-6' : 'bg-gray-300'
+                            }`}
                         />
                       ))}
                     </div>
@@ -661,14 +669,70 @@ export default function TourDetails() {
                 </ul>
               </>
             )}
+
+            {tour.tags && (
+              <div className="flex flex-wrap gap-2 mt-4">
+                {tour.tags.split(',').map((tag, i) => (
+                  <span
+                    key={i}
+                    className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-sm"
+                  >
+                    {tag.trim()}
+                  </span>
+                ))}
+              </div>
+            )}
           </Card>
+
+          {/* Included Activities - Full Width */}
+          {tour.activities && tour.activities.length > 0 && (
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-6">Included Activities</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {tour.activities.map((activity, index) => (
+                  <div key={index} className="flex gap-4 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                      {activity.imageUrl ? (
+                        <img
+                          src={activity.imageUrl}
+                          alt={activity.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                          <Check size={32} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start mb-1">
+                        <h3 className="font-bold text-lg">{activity.title}</h3>
+                        {activity.badge && (
+                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                            {activity.badge}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-gray-600 text-sm line-clamp-3 mb-2">{activity.description}</p>
+                      <button
+                        onClick={() => setSelectedItem(activity)}
+                        className="text-primary-600 text-sm font-semibold hover:underline"
+                      >
+                        Read More
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
 
           {/* Pricing Table */}
           {tourDates.length > 0 && (
             <Card className="p-6">
               <h2 className="text-2xl font-bold mb-6">Available Dates & Pricing</h2>
-              <PricingTable 
-                dates={tourDates} 
+              <PricingTable
+                dates={tourDates}
                 duration={tour.duration}
                 onReserve={handleReserve}
               />
@@ -684,11 +748,30 @@ export default function TourDetails() {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Column */}
             <div className="space-y-8">
+
+              {/* "The Price Includes" List */}
+              {/* {tour.priceIncludes && tour.priceIncludes.length > 0 && (
+                <Card className="p-6 bg-green-50/50 border-green-100">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <Check className="text-green-600" size={24} />
+                    The Price Includes
+                  </h3>
+                  <ul className="grid gap-3">
+                    {tour.priceIncludes.map((item, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                        <span className="text-gray-700 font-medium">{item.item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              )} */}
+
               {/* Included/Excluded */}
               <div className="grid md:grid-cols-2 gap-6">
                 {included.length > 0 && (
                   <Card className="p-6">
-                    <h3 className="text-xl font-bold mb-4">Included</h3>
+                    <h3 className="text-xl font-bold mb-4">The Price Includes</h3>
                     <ul className="space-y-2">
                       {included.map((item, index) => (
                         <li key={index} className="flex items-start">
@@ -720,13 +803,13 @@ export default function TourDetails() {
                   <h3 className="text-xl font-bold mb-4">Optional Add-ons</h3>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {tour.addOns.map((addOn) => (
-                      <div 
-                        key={addOn.id} 
+                      <div
+                        key={addOn.id}
                         className="flex items-start gap-3 p-4 bg-gradient-to-r from-secondary-50 to-primary-50 rounded-lg border border-secondary-100"
                       >
                         {addOn.imageUrl && (
-                          <img 
-                            src={addOn.imageUrl} 
+                          <img
+                            src={addOn.imageUrl}
                             alt={addOn.name}
                             className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                           />
@@ -739,8 +822,14 @@ export default function TourDetails() {
                             </span>
                           </div>
                           {addOn.description && (
-                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{addOn.description}</p>
+                            <p className="text-sm text-gray-600 mt-1 line-clamp-2 mb-1">{addOn.description}</p>
                           )}
+                          <button
+                            onClick={() => setSelectedItem(addOn)}
+                            className="text-primary-600 text-xs font-semibold hover:underline"
+                          >
+                            Read More
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -748,6 +837,31 @@ export default function TourDetails() {
                   <p className="text-xs text-gray-500 mt-4">
                     Add-ons can be selected during the booking process
                   </p>
+                </Card>
+              )}
+
+
+              {/* Accordion Notes */}
+              {tour.notes && tour.notes.length > 0 && (
+                <Card className="p-6">
+                  <h3 className="text-xl font-bold mb-4">Important Information</h3>
+                  <div className="divide-y divide-gray-100">
+                    {tour.notes.map((note, index) => (
+                      <div key={index} className="py-2">
+                        <details className="group">
+                          <summary className="flex justify-between items-center font-medium cursor-pointer list-none py-2 text-gray-800 hover:text-primary-600 transition-colors">
+                            <span>{note.title}</span>
+                            <span className="transition group-open:rotate-180">
+                              <ChevronDown size={20} />
+                            </span>
+                          </summary>
+                          <div className="text-gray-600 mt-2 mb-4 text-sm leading-relaxed whitespace-pre-wrap">
+                            {note.content}
+                          </div>
+                        </details>
+                      </div>
+                    ))}
+                  </div>
                 </Card>
               )}
             </div>
@@ -759,19 +873,19 @@ export default function TourDetails() {
                 <div className="relative">
                   {/* Timeline vertical line */}
                   <div className="absolute left-3 top-6 bottom-6 w-0.5 bg-gray-200"></div>
-                  
+
                   <div className="space-y-2">
                     {itinerary.map((day, index) => {
                       const dayNumber = day.day || index + 1;
                       const isExpanded = expandedItineraryDays[dayNumber];
-                      
+
                       return (
                         <div key={dayNumber} className="relative">
                           {/* Timeline marker */}
                           <div className="absolute left-0 top-4 w-6 h-6 rounded-full bg-gradient-to-br from-secondary-300 to-secondary-500 flex items-center justify-center z-10">
                             <div className="w-2 h-2 bg-white rounded-full"></div>
                           </div>
-                          
+
                           {/* Day content */}
                           <div className="ml-10">
                             <button
@@ -791,7 +905,7 @@ export default function TourDetails() {
                                 <ChevronDown size={20} className="text-gray-500 flex-shrink-0" />
                               )}
                             </button>
-                            
+
                             {isExpanded && (
                               <div className="py-4 space-y-4">
                                 {/* Day image */}
@@ -805,9 +919,98 @@ export default function TourDetails() {
                                   </div>
                                 )}
                                 {/* Day description */}
-                                <p className="text-gray-600 text-sm leading-relaxed">
+                                <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
                                   {day.description}
                                 </p>
+
+                                {/* Day Extras */}
+                                {/* Day Extras (Rich Cards) */}
+                                {(day.accommodationTitle || day.activityTitle) && (
+                                  <div className="grid md:grid-cols-2 gap-4 mt-6">
+                                    {/* Accommodation Card */}
+                                    {day.accommodationTitle && (
+                                      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                                        <div className="h-40 bg-gray-100 relative">
+                                          {day.accommodationImage ? (
+                                            <img
+                                              src={day.accommodationImage}
+                                              alt={day.accommodationTitle}
+                                              className="w-full h-full object-cover"
+                                            />
+                                          ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                              <span className="text-4xl">🏨</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="p-4">
+                                          <h5 className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Accommodation</h5>
+                                          <h4 className="font-bold text-gray-900 mb-2">{day.accommodationTitle}</h4>
+                                          {day.accommodationDescription && (
+                                            <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                                              {day.accommodationDescription}
+                                            </p>
+                                          )}
+                                          {day.accommodationDescription && (
+                                            <button
+                                              onClick={() => setSelectedItem({
+                                                title: day.accommodationTitle,
+                                                description: day.accommodationDescription,
+                                                imageUrl: day.accommodationImage,
+                                                badge: 'Accommodation'
+                                              })}
+                                              className="text-primary-600 text-sm font-semibold hover:underline"
+                                            >
+                                              See more
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {/* Activity Card */}
+                                    {day.activityTitle && (
+                                      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                                        <div className="h-40 bg-gray-100 relative">
+                                          {day.activityImage ? (
+                                            <img
+                                              src={day.activityImage}
+                                              alt={day.activityTitle}
+                                              className="w-full h-full object-cover"
+                                            />
+                                          ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                              <span className="text-4xl">🎯</span>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="p-4">
+                                          <h5 className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Activity</h5>
+                                          <h4 className="font-bold text-gray-900 mb-2">{day.activityTitle}</h4>
+                                          {day.activityDescription && (
+                                            <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                                              {day.activityDescription}
+                                            </p>
+                                          )}
+                                          {day.activityDescription && (
+                                            <button
+                                              onClick={() => setSelectedItem({
+                                                title: day.activityTitle,
+                                                description: day.activityDescription,
+                                                imageUrl: day.activityImage,
+                                                price: day.activityPrice,
+                                                badge: 'Activity'
+                                              })}
+                                              className="text-primary-600 text-sm font-semibold hover:underline"
+                                            >
+                                              See more
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
@@ -864,79 +1067,138 @@ export default function TourDetails() {
       </div>
 
       {/* Email Modal for Logged-out Users */}
-      {showEmailModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl max-w-md w-full p-6"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Add to Wishlist</h2>
-              <button 
-                onClick={() => {
-                  setShowEmailModal(false);
-                  setEmail('');
-                  setEmailError('');
-                  setEmailSuccess('');
-                }}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            <p className="text-gray-600 mb-4">
-              Enter your email to save this tour to your wishlist. You'll need an account to view your wishlist later.
-            </p>
-
-            <form onSubmit={handleEmailWishlist}>
-              <div className="mb-4">
-                <Input
-                  icon={Mail}
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                {emailError && (
-                  <p className="text-red-500 text-sm mt-2">{emailError}</p>
-                )}
-                {emailSuccess && (
-                  <p className="text-green-500 text-sm mt-2">{emailSuccess}</p>
-                )}
+      {
+        showEmailModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-2xl max-w-md w-full p-6"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Add to Wishlist</h2>
+                <button
+                  onClick={() => {
+                    setShowEmailModal(false);
+                    setEmail('');
+                    setEmailError('');
+                    setEmailSuccess('');
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
-              <div className="flex gap-3">
-                <Button 
-                  type="submit" 
-                  className="flex-1"
-                  disabled={wishlistLoading}
-                >
-                  {wishlistLoading ? (
-                    <Loader2 size={20} className="animate-spin mr-2" />
-                  ) : (
-                    <Heart size={20} className="mr-2" />
-                  )}
-                  Save to Wishlist
-                </Button>
-              </div>
-
-              <p className="text-xs text-gray-500 mt-4 text-center">
-                Don't have an account?{' '}
-                <button 
-                  type="button"
-                  onClick={() => navigate('/signup')}
-                  className="text-primary-600 hover:underline"
-                >
-                  Sign up
-                </button>{' '}
-                to manage your wishlist.
+              <p className="text-gray-600 mb-4">
+                Enter your email to save this tour to your wishlist. You'll need an account to view your wishlist later.
               </p>
-            </form>
-          </motion.div>
-        </div>
-      )}
-    </div>
+
+              <form onSubmit={handleEmailWishlist}>
+                <div className="mb-4">
+                  <Input
+                    icon={Mail}
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  {emailError && (
+                    <p className="text-red-500 text-sm mt-2">{emailError}</p>
+                  )}
+                  {emailSuccess && (
+                    <p className="text-green-500 text-sm mt-2">{emailSuccess}</p>
+                  )}
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    type="submit"
+                    className="flex-1"
+                    disabled={wishlistLoading}
+                  >
+                    {wishlistLoading ? (
+                      <Loader2 size={20} className="animate-spin mr-2" />
+                    ) : (
+                      <Heart size={20} className="mr-2" />
+                    )}
+                    Save to Wishlist
+                  </Button>
+                </div>
+
+                <p className="text-xs text-gray-500 mt-4 text-center">
+                  Don't have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/signup')}
+                    className="text-primary-600 hover:underline"
+                  >
+                    Sign up
+                  </button>{' '}
+                  to manage your wishlist.
+                </p>
+              </form>
+            </motion.div>
+          </div>
+        )
+      }
+
+      {/* Generic Read More Modal */}
+      {
+        selectedItem && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedItem(null)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto flex flex-col"
+            >
+              <div className="relative h-64 sm:h-80 flex-shrink-0">
+                {selectedItem.imageUrl ? (
+                  <img
+                    src={selectedItem.imageUrl}
+                    alt={selectedItem.title || selectedItem.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-400">No Image</span>
+                  </div>
+                )}
+                <button
+                  onClick={() => setSelectedItem(null)}
+                  className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full transition-colors shadow-sm backdrop-blur-sm"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4 gap-4">
+                  <div>
+                    {selectedItem.badge && (
+                      <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded mb-2 inline-block">
+                        {selectedItem.badge}
+                      </span>
+                    )}
+                    <h2 className="text-2xl font-bold text-gray-900">{selectedItem.title || selectedItem.name}</h2>
+                  </div>
+                  {selectedItem.price && (
+                    <span className="text-primary-600 font-bold text-xl whitespace-nowrap">
+                      +${parseFloat(selectedItem.price).toFixed(0)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="prose max-w-none text-gray-600">
+                  <p className="whitespace-pre-wrap">{selectedItem.description}</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )
+      }
+
+    </div >
   );
 }

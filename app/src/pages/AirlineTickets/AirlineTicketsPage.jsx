@@ -169,7 +169,7 @@ export default function AirlineTicketsPage() {
           className="bg-white rounded-xl shadow-sm p-6 md:p-10 mb-16"
         >
           <p className="text-xl text-gray-700 leading-relaxed text-center max-w-3xl mx-auto">
-            Skip the endless tabs and confusing prices. At JSB World-Travel, we leverage our airline partnerships and industry expertise to find you the perfect flight at the best price — every time.
+            Skip the endless tabs and confusing prices. At JSB World Travel, we leverage our airline partnerships and industry expertise to find you the perfect flight at the best price — every time.
           </p>
         </motion.div>
 
@@ -240,7 +240,7 @@ export default function AirlineTicketsPage() {
           </div>
         </div>
 
-        {/* Why Book With JSB World-Travel */}
+        {/* Why Book With JSB World Travel */}
         <div className="mb-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -250,7 +250,7 @@ export default function AirlineTicketsPage() {
           >
             <div className="text-center mb-10">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                The JSB World-Travel Difference
+                The JSB World Travel Difference
               </h2>
               <p className="text-xl text-gray-200 max-w-3xl mx-auto">
                 With 35 years of experience in the Dallas-Fort Worth area, we combine local expertise with global connections to deliver exceptional flight booking services.

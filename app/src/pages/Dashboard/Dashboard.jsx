@@ -106,13 +106,12 @@ export default function Dashboard() {
                 </div>
               </div>
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  booking.status === 'CONFIRMED'
+                className={`px-3 py-1 rounded-full text-sm font-medium ${booking.status === 'CONFIRMED'
                     ? 'bg-green-100 text-green-700'
                     : booking.status === 'CANCELLED'
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-gray-100 text-gray-700'
-                }`}
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-gray-100 text-gray-700'
+                  }`}
               >
                 {booking.status}
               </span>
@@ -126,7 +125,7 @@ export default function Dashboard() {
               <div>
                 <span className="text-gray-600">Start Date:</span>
                 <div className="font-semibold">
-                  {booking.tourDate?.startDate 
+                  {booking.tourDate?.startDate
                     ? new Date(booking.tourDate.startDate).toLocaleDateString()
                     : 'N/A'
                   }
@@ -148,14 +147,14 @@ export default function Dashboard() {
 
             {isUpcoming && (
               <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                icon={Eye}
-                onClick={() => setSelectedBooking(booking)}
-              >
-                View Details
-              </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={Eye}
+                  onClick={() => setSelectedBooking(booking)}
+                >
+                  View Details
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -260,31 +259,28 @@ export default function Dashboard() {
             <div className="flex gap-4 mb-6 flex-wrap">
               <button
                 onClick={() => setActiveTab('upcoming')}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                  activeTab === 'upcoming'
+                className={`px-6 py-3 rounded-lg font-semibold transition-all ${activeTab === 'upcoming'
                     ? 'bg-gradient-to-r from-secondary-300 to-secondary-500 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 Upcoming ({upcomingBookings.length})
               </button>
               <button
                 onClick={() => setActiveTab('past')}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                  activeTab === 'past'
+                className={`px-6 py-3 rounded-lg font-semibold transition-all ${activeTab === 'past'
                     ? 'bg-gradient-to-r from-secondary-300 to-secondary-500 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 Past ({pastBookings.length})
               </button>
               <button
                 onClick={() => setActiveTab('wishlist')}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
-                  activeTab === 'wishlist'
+                className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${activeTab === 'wishlist'
                     ? 'bg-gradient-to-r from-secondary-300 to-secondary-500 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 <Heart size={18} className={activeTab === 'wishlist' ? 'fill-white' : ''} />
                 Wishlist ({wishlistTours.length})
@@ -342,7 +338,7 @@ export default function Dashboard() {
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <Link to={`/tours/${tour.id}`} className="hover:text-secondary-600 transition-colors">
+                            <Link to={`/tours/${tour.slug}/${tour.id}`} className="hover:text-secondary-600 transition-colors">
                               <h3 className="font-bold text-lg truncate">{tour.title}</h3>
                             </Link>
                             <button
@@ -365,7 +361,7 @@ export default function Dashboard() {
                             <div className="text-secondary-600 font-bold">${tour.price}</div>
                           </div>
                           <div className="flex gap-2 mt-3">
-                            <Link to={`/tours/${tour.id}`}>
+                            <Link to={`/tours/${tour.slug}/${tour.id}`}>
                               <Button size="sm" variant="outline">View Details</Button>
                             </Link>
                             <Link to="/custom-itinerary">
@@ -400,21 +396,21 @@ export default function Dashboard() {
       {/* Booking Details Modal */}
       {selectedBooking && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           >
             <div className="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white">
               <h2 className="text-xl font-bold">Booking Details</h2>
-              <button 
+              <button
                 onClick={() => setSelectedBooking(null)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {/* Tour Info */}
               <div className="flex gap-4">
@@ -429,18 +425,17 @@ export default function Dashboard() {
                     <MapPin size={14} className="mr-1" />
                     {selectedBooking.tour?.location}
                   </div>
-                  <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
-                    selectedBooking.status === 'CONFIRMED'
+                  <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${selectedBooking.status === 'CONFIRMED'
                       ? 'bg-green-100 text-green-700'
                       : selectedBooking.status === 'CANCELLED'
-                      ? 'bg-red-100 text-red-700'
-                      : 'bg-amber-100 text-amber-700'
-                  }`}>
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-amber-100 text-amber-700'
+                    }`}>
                     {selectedBooking.status}
                   </span>
                 </div>
               </div>
-              
+
               {/* Booking Info Grid */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-4 rounded-lg">
@@ -450,10 +445,10 @@ export default function Dashboard() {
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <div className="text-sm text-gray-600">Tour Date</div>
                   <div className="font-semibold">
-                    {selectedBooking.tourDate?.startDate 
+                    {selectedBooking.tourDate?.startDate
                       ? new Date(selectedBooking.tourDate.startDate).toLocaleDateString('en-US', {
-                          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                        })
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                      })
                       : 'N/A'
                     }
                   </div>
@@ -471,7 +466,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Pricing */}
               <div className="border-t pt-4">
                 <div className="flex justify-between mb-2">
@@ -497,7 +492,7 @@ export default function Dashboard() {
                   </>
                 )}
               </div>
-              
+
               {/* Special Requests */}
               {selectedBooking.specialRequests && (
                 <div className="border-t pt-4">
@@ -506,7 +501,7 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
-            
+
             <div className="p-6 border-t border-gray-200 bg-gray-50">
               <Button onClick={() => setSelectedBooking(null)} className="w-full">
                 Close
